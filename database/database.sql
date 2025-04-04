@@ -44,7 +44,7 @@ CREATE TABLE NhanVien (
     DiaChi TEXT,
     ChucVu VARCHAR(50) NOT NULL,
     TrangThai TINYINT DEFAULT 1,
-    NgayTao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    NgayTao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 INSERT INTO NhanVien (HoTen, GioiTinh, SoDienThoai, Email, DiaChi, ChucVu)
