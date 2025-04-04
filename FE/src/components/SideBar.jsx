@@ -53,8 +53,8 @@ const Sidebar = () => {
           <SidebarItem
             isOpen={isOpen}
             icon={<People />}
-            label="Users"
-            to="/admin/users"
+            label="Kho Hàng"
+            to="/admin/khohang"
           />
           <SidebarItem
             isOpen={isOpen}

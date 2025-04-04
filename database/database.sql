@@ -140,3 +140,78 @@ INSERT INTO SanPham (TenSanPham, GiaSanXuat, GiaBan, HinhAnh, SoLuong, MoTa, Tra
 ('Cơm Gà', 30000, 55000, 'http://localhost:8080/api/upload/com_ga.jpg', 120, 'Cơm gà thơm ngon với rau củ', 1, '2025-04-03'),
 ('Gà Rán Không Xương', 40000, 65000, 'http://localhost:8080/api/upload/ga_ran_khong_xuong.jpg', 90, 'Gà rán không xương, tiện lợi thưởng thức', 1, '2025-04-03');
 
+CREATE TABLE KhoHang (
+    MaKhoHang INT PRIMARY KEY AUTO_INCREMENT,
+    TenKhoHang VARCHAR(100) NOT NULL,
+    DiaDiem TEXT NOT NULL,
+    TrangThai TINYINT DEFAULT 1,
+    NgayTao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO KhoHang (TenKhoHang, DiaDiem, TrangThai)
+VALUES ('Kho Hà Nội', '789 Đường Trường Chinh, Quận Đống Đa, Hà Nội', 1),
+       ('Kho Hải Phòng', '123 Đường Lạch Tray, Quận Ngô Quyền, Hải Phòng', 1),
+       ('Kho Bình Dương', '456 Đường Mỹ Phước Tân Vạn, TP. Thủ Dầu Một, Bình Dương', 0),
+       ('Kho Nha Trang', '789 Đường Trần Phú, TP. Nha Trang, Khánh Hòa', 1),
+       ('Kho Cần Thơ', '321 Đường Nguyễn Trãi, TP. Cần Thơ', 0);
+
+CREATE TABLE TonKho (
+    MaTonKho INT PRIMARY KEY AUTO_INCREMENT, -- Mã tồn kho tự động tăng
+    MaKhoHang INT NOT NULL,                  -- Mã kho (liên kết với bảng KhoHang)
+    MaSanPham INT NOT NULL,                  -- Mã sản phẩm (liên kết với bảng SanPham)
+    SoLuong INT NOT NULL,                    -- Số lượng tồn kho
+    NgayCapNhat TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày cập nhật
+    FOREIGN KEY (MaKhoHang) REFERENCES KhoHang(MaKhoHang),
+    FOREIGN KEY (MaSanPham) REFERENCES SanPham(MaSanPham)
+);
+
+INSERT INTO TonKho (MaKhoHang, MaSanPham, SoLuong) VALUES
+(1, 1, 100), -- Kho Trung Tâm có 100 sản phẩm "Gà Rán Truyền Thống"
+(1, 2, 80),  -- Kho Trung Tâm có 80 sản phẩm "Gà Rán Cay"
+(2, 3, 50),  -- Kho Khu Vực (Hà Nội) có 50 sản phẩm "Burger Gà"
+(3, 4, 150), -- Kho Miền Tây có 150 sản phẩm "Khoai Tây Chiên"
+(3, 5, 30),  -- Kho Miền Tây có 30 sản phẩm "Salad Gà"
+(2, 6, 70),  -- Kho Khu Vực (Hà Nội) có 70 sản phẩm "Gà Viên Chiên"
+(1, 7, 200), -- Kho Trung Tâm có 200 sản phẩm "Nước Ngọt Cola"
+(1, 8, 180), -- Kho Trung Tâm có 180 sản phẩm "Nước Ngọt Chanh"
+(3, 9, 90),  -- Kho Miền Tây có 90 sản phẩm "Cơm Gà"
+(2, 10, 40); -- Kho Khu Vực (Hà Nội) có 40 sản phẩm "Gà Rán Không Xương"
+
+CREATE TABLE ChiTietNguyenLieuSanPham (
+    MaChiTiet INT PRIMARY KEY AUTO_INCREMENT, -- Mã chi tiết tự động tăng
+    MaSanPham INT NOT NULL,                   -- Mã sản phẩm (liên kết với bảng SanPham)
+    MaNguyenLieu INT NOT NULL,                -- Mã nguyên liệu (liên kết với bảng NguyenLieu)
+    SoLuongNguyenLieu DOUBLE NOT NULL,        -- Số lượng nguyên liệu cần cho 1 sản phẩm
+    FOREIGN KEY (MaSanPham) REFERENCES SanPham(MaSanPham),
+    FOREIGN KEY (MaNguyenLieu) REFERENCES NguyenLieu(MaNguyenLieu)
+);
+
+CREATE TABLE NhapKho (
+    MaNhapKho INT PRIMARY KEY AUTO_INCREMENT, -- Mã nhập kho tự động tăng
+    MaKhoHang INT NOT NULL,                   -- Mã kho (liên kết với bảng KhoHang)
+    MaNguyenLieu INT NOT NULL,                -- Mã nguyên liệu (liên kết với bảng NguyenLieu)
+    SoLuong INT NOT NULL,                     -- Số lượng nhập
+    GiaNhap DOUBLE NOT NULL,                  -- Giá nhập
+    NgayNhap TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày nhập
+    FOREIGN KEY (MaKhoHang) REFERENCES KhoHang(MaKhoHang),
+    FOREIGN KEY (MaNguyenLieu) REFERENCES NguyenLieu(MaNguyenLieu)
+);
+
+CREATE TABLE XuatKho (
+    MaXuatKho INT PRIMARY KEY AUTO_INCREMENT, -- Mã xuất kho tự động tăng
+    MaKhoHang INT NOT NULL,                   -- Mã kho (liên kết với bảng KhoHang)
+    MaSanPham INT NOT NULL,                   -- Mã sản phẩm (liên kết với bảng SanPham)
+    SoLuong INT NOT NULL,                     -- Số lượng xuất
+    NgayXuat TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày xuất
+    FOREIGN KEY (MaKhoHang) REFERENCES KhoHang(MaKhoHang),
+    FOREIGN KEY (MaSanPham) REFERENCES SanPham(MaSanPham)
+);
+
+INSERT INTO ChiTietNguyenLieuSanPham (MaSanPham, MaNguyenLieu, SoLuongNguyenLieu) VALUES
+(1, 1, 2.5),
+(1, 3, 1.0),
+(2, 2, 3.0),
+(3, 3, 2.0),
+(3, 4, 5.0);
+
+

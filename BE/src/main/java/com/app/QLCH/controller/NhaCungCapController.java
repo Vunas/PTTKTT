@@ -47,8 +47,7 @@ public class NhaCungCapController {
             }
 
             // Lưu nhà cung cấp nếu không có lỗi
-            nhaCungCapService.saveNhaCungCap(nhaCungCap);
-            return ResponseEntity.ok("Lưu thông tin nhà cung cấp thành công!");
+            return ResponseEntity.ok(nhaCungCapService.saveNhaCungCap(nhaCungCap));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra khi lưu nhà cung cấp.");
         }

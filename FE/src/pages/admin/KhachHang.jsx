@@ -34,12 +34,14 @@ const KhachHang = () => {
   });
 
   useEffect(() => {
+    setLoading(true);
     fetchData(
       "http://localhost:8080/api/khachhang",
       setKhachHangList,
       setLoading,
       setError
     );
+    setLoading(false);
   }, []);
 
   const handleFilter = useCallback(() => {
@@ -61,14 +63,7 @@ const KhachHang = () => {
     addItem(
       "http://localhost:8080/api/khachhang",
       newData,
-      () => {
-        fetchData(
-          "http://localhost:8080/api/khachhang",
-          setKhachHangList,
-          setLoading,
-          setError
-        );
-      },
+      setKhachHangList,
       setSnackbar
     );
   };

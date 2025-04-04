@@ -49,8 +49,7 @@ public class TaiKhoanController {
             }
 
             // Lưu tài khoản nếu không có lỗi
-            taiKhoanService.saveTaiKhoan(taiKhoan);
-            return ResponseEntity.ok("Thêm tài khoản thành công!");
+            return ResponseEntity.ok(taiKhoanService.saveTaiKhoan(taiKhoan));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Có lỗi xảy ra khi thêm tài khoản.");

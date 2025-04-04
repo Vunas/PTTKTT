@@ -45,9 +45,8 @@ public class SanPhamController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Sản phẩm với tên này đã tồn tại!");
             }
 
-            // Lưu sản phẩm nếu không có lỗi
-            sanPhamService.saveSanPham(sanPham);
-            return ResponseEntity.ok("Thêm sản phẩm thành công!");
+            // Lưu sản phẩm nếu không có lỗi    
+            return ResponseEntity.ok(sanPhamService.saveSanPham(sanPham));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra khi thêm sản phẩm.");
         }

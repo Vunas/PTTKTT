@@ -37,12 +37,14 @@ const NhanVien = () => {
 
   // Fetch dữ liệu nhân viên lần đầu
   useEffect(() => {
+    setLoading(true);
     fetchData(
       "http://localhost:8080/api/nhanvien",
       setNhanVienList,
       setLoading,
       setError
     );
+  setLoading(false);
   }, []);
 
   // Hàm lọc dữ liệu
@@ -66,14 +68,7 @@ const NhanVien = () => {
     addItem(
       "http://localhost:8080/api/nhanvien",
       newData,
-      () => {
-        fetchData(
-          "http://localhost:8080/api/nhanvien",
-          setNhanVienList,
-          setLoading,
-          setError
-        );
-      },
+      setNhanVienList,
       setSnackbar
     );
   };

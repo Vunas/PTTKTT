@@ -46,9 +46,8 @@ public class NhanVienController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Số điện thoại đã tồn tại!");
             }
 
-            // Lưu nhân viên nếu không có lỗi
-            nhanVienService.saveNhanVien(nhanVien);
-            return ResponseEntity.ok("Lưu thông tin nhân viên thành công!");
+            // Lưu nhân viên nếu không có lỗi    
+            return ResponseEntity.ok(nhanVienService.saveNhanVien(nhanVien));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra khi lưu nhân viên.");
         }

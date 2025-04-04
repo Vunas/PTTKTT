@@ -1,32 +1,28 @@
 import React, { useEffect, useState, useCallback } from "react";
 import fetchData from "../../utils/FetchData";
-import { addItem, editItem, deleteItem } from "../../utils/CRUD";
+import { addItem, editItem, deleteItem} from "../../utils/CRUD";
 import filterData from "../../utils/FilterData";
-import CommonToolbar from "../../components/CommonToolBar";
-import SanPhamDialog from "../../components/Dialog/SanPhamDialog";
-import SanPhamTable from "../../components/Table/SanPhamTable";
-import Loading from "../../utils/state/Loading";
-import Error from "../../utils/state/Error";
-import { exportExcel } from "../../utils/ExcelJS";
-import SanPhamFilter from "../../components/Filter/SanPhamFilter";
+import CommonToolbar from "../../components/CommonToolBar"; // Toolbar chung
+import KhoHangDialog from "../../components/Dialog/KhoHangDialog"; // Dialog
+import KhoHangTable from "../../components/Table/KhoHangTable"; // Bảng
+import Loading from "../../utils/state/Loading"; // Spinner khi đang tải
+import Error from "../../utils/state/Error"; // Thông báo lỗi
+import { exportExcel } from "../../utils/ExcelJS"; // Xuất file Excel
+import KhoHangFilter from "../../components/Filter/KhoHangFilter"; // Bộ lọc
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 
-const SanPham = () => {
-  const [sanPhamList, setSanPhamList] = useState([]);
+const KhoHang = () => {
+  const [khoHangList, setKhoHangList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isDialogOpen, setDialogOpen] = useState(false);
-  const [editSanPham, setEditSanPham] = useState(null);
+  const [editKhoHang, setEditKhoHang] = useState(null);
   const [title, setTitle] = useState("");
   const [filterParams, setFilterParams] = useState({
-    tenSanPham: "",
-    giaBanMin: "",
-    giaBanMax: "",
-    soLuongMin: "",
-    soLuongMax: "",
+    tenKhoHang: "",
+    diaDiem: "",
   });
-
   const [search, setSearch] = useState("");
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -37,8 +33,8 @@ const SanPham = () => {
   useEffect(() => {
     setLoading(true);
     fetchData(
-      "http://localhost:8080/api/sanpham",
-      setSanPhamList,
+      "http://localhost:8080/api/khohang",
+      setKhoHangList,
       setLoading,
       setError
     );
@@ -47,10 +43,10 @@ const SanPham = () => {
 
   const handleFilter = useCallback(() => {
     filterData(
-      "http://localhost:8080/api/sanpham/filter",
+      "http://localhost:8080/api/khohang/filter",
       filterParams,
       search,
-      setSanPhamList,
+      setKhoHangList,
       setError
     );
   }, [filterParams, search]);
@@ -60,32 +56,33 @@ const SanPham = () => {
   }, [handleFilter]);
 
   const handleAdd = (newData) => {
+    setEditKhoHang(null);
     addItem(
-      "http://localhost:8080/api/sanpham",
+      "http://localhost:8080/api/khohang",
       newData,
-      setSanPhamList,
+      setKhoHangList,
       setSnackbar
     );
   };
 
   const handleEdit = (id, updatedData) => {
     editItem(
-      "http://localhost:8080/api/sanpham",
+      "http://localhost:8080/api/khohang",
       id,
       updatedData,
-      setSanPhamList,
+      setKhoHangList,
       setSnackbar,
-      "maSanPham"
+      "maKhoHang"
     );
   };
 
   const handleDelete = (id) => {
     deleteItem(
-      "http://localhost:8080/api/sanpham",
+      "http://localhost:8080/api/khohang",
       id,
-      setSanPhamList,
+      setKhoHangList,
       setSnackbar,
-      "maSanPham"
+      "maKhoHang"
     );
   };
 
@@ -99,16 +96,13 @@ const SanPham = () => {
 
   const handleExport = () => {
     exportExcel(
-      sanPhamList,
+      khoHangList,
       [
-        { header: "Mã Sản Phẩm", key: "maSanPham" },
-        { header: "Tên Sản Phẩm", key: "tenSanPham" },
-        { header: "Giá Sản Xuất", key: "giaSanXuat" },
-        { header: "Giá Bán", key: "giaBan" },
-        { header: "Số Lượng", key: "soLuong" },
-        { header: "Hình Ảnh", key: "hinhAnh" },
+        { header: "Mã Kho Hàng", key: "maKhoHang" },
+        { header: "Tên Kho Hàng", key: "tenKhoHang" },
+        { header: "Địa Điểm", key: "diaDiem" },
       ],
-      "DanhSachSanPham.xlsx"
+      "DanhSachKhoHang.xlsx"
     );
   };
 
@@ -119,38 +113,38 @@ const SanPham = () => {
     <div>
       <CommonToolbar
         onAdd={() => {
-          setEditSanPham(null);
-          setTitle("Thêm Sản Phẩm");
+          setEditKhoHang(null);
+          setTitle("Thêm Kho Hàng");
           setDialogOpen(true);
         }}
         onSearch={(keyword) => setSearch(keyword.trim())}
         onExport={handleExport}
       />
 
-      <SanPhamFilter
+      <KhoHangFilter
         FilterParams={filterParams}
         onFilterParamsChange={setFilterParams}
       />
 
-      <SanPhamTable
-        sanPhamList={sanPhamList}
-        onEdit={(sanPham) => {
-          setTitle("Sửa Sản Phẩm");
-          setEditSanPham(sanPham);
+      <KhoHangTable
+        khoHangList={khoHangList}
+        onEdit={(khoHang) => {
+          setTitle("Sửa Kho Hàng");
+          setEditKhoHang(khoHang);
           setDialogOpen(true);
         }}
         onDelete={handleDelete}
       />
 
-      <SanPhamDialog
+      <KhoHangDialog
         open={isDialogOpen}
         onClose={handleDialogClose}
         onSave={
-          editSanPham
-            ? (data) => handleEdit(editSanPham.maSanPham, data)
+          editKhoHang
+            ? (data) => handleEdit(editKhoHang.maKhoHang, data)
             : handleAdd
         }
-        sanPham={editSanPham}
+        khoHang={editKhoHang}
         title={title}
       />
 
@@ -172,4 +166,4 @@ const SanPham = () => {
   );
 };
 
-export default SanPham;
+export default KhoHang;

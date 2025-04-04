@@ -46,8 +46,7 @@ public class NguyenLieuController {
             }
 
             // Lưu nguyên liệu nếu không có lỗi
-            nguyenLieuService.saveNguyenLieu(nguyenLieu);
-            return ResponseEntity.ok("Thêm nguyên liệu thành công!");
+            return ResponseEntity.ok(nguyenLieuService.saveNguyenLieu(nguyenLieu));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra khi thêm nguyên liệu.");
         }

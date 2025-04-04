@@ -33,12 +33,14 @@ const NhaCungCap = () => {
   });
 
   useEffect(() => {
+    setLoading(true);
     fetchData(
       "http://localhost:8080/api/nhacungcap",
       setNhaCungCapList,
       setLoading,
       setError
     );
+    setLoading(false);
   }, []);
 
   const handleFilter = useCallback(() => {
@@ -60,14 +62,7 @@ const NhaCungCap = () => {
     addItem(
       "http://localhost:8080/api/nhacungcap",
       newData,
-      () => {
-        fetchData(
-          "http://localhost:8080/api/nhacungcap",
-          setNhaCungCapList,
-          setLoading,
-          setError
-        );
-      },
+      setNhaCungCapList,
       setSnackbar
     );
   };

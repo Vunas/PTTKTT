@@ -47,8 +47,7 @@ public class KhachHangController {
             }
 
             // Lưu khách hàng nếu không có lỗi
-            khachHangService.saveKhachHang(khachHang);
-            return ResponseEntity.ok("Lưu thông tin khách hàng thành công!");
+            return ResponseEntity.ok(khachHangService.saveKhachHang(khachHang));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra khi lưu khách hàng.");
         }

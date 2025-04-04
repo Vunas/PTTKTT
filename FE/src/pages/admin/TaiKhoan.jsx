@@ -36,6 +36,7 @@ const TaiKhoan = () => {
 
   // Fetch dữ liệu tài khoản lần đầu
   useEffect(() => {
+    setLoading(true);
     fetchData(
       "http://localhost:8080/api/taikhoan",
       setTaiKhoanList,
@@ -48,6 +49,7 @@ const TaiKhoan = () => {
       setLoading,
       setError
     );
+    setLoading(false);
   }, []);
 
   // Hàm lọc dữ liệu
@@ -71,14 +73,7 @@ const TaiKhoan = () => {
     addItem(
       "http://localhost:8080/api/taikhoan",
       newData,
-      () => {
-        fetchData(
-          "http://localhost:8080/api/taikhoan",
-          setTaiKhoanList,
-          setLoading,
-          setError
-        );
-      },
+      setTaiKhoanList,
       setSnackbar
     );
   };

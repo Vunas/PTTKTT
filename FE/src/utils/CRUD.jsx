@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const addItem = async (url, data, fetchList, setSnackbar) => {
+const addItem = async (url, data, setList, setSnackbar) => {
   try {
     const response = await axios.post(url, data);
-    fetchList(); // Refresh danh sách
-    setSnackbar({ open: true, message: response.data, type: "success" });
+    setList((prevList) => [...prevList, response.data]); // Corrected syntax
+    setSnackbar({ open: true, message: "Thêm thành công!", type: "success" });
   } catch (error) {
     const errorMessage = error.response?.data || "Có lỗi xảy ra khi thêm.";
     setSnackbar({ open: true, message: errorMessage, type: "error" });
@@ -31,6 +31,9 @@ const editItem = async (url, id, data, setList, setSnackbar, keyField) => {
 
 const deleteItem = async (url, id, setList, setSnackbar, keyField) => {
   try {
+    if (!window.confirm("Bạn có chắc chắn muốn xóa mục này?")) {
+      return; // If the user cancels, do nothing
+    }
     const response = await axios.delete(`${url}/${id}`);
     setList((prevList) => prevList.filter((item) => item[keyField] !== id));
     const message =

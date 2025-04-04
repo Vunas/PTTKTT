@@ -42,8 +42,7 @@ public class PhanQuyenController {
             }
 
             // Lưu quyền nếu không có lỗi
-            phanQuyenService.saveQuyen(phanQuyen);
-            return ResponseEntity.ok("Lưu thông tin quyền thành công!");
+            return ResponseEntity.ok(phanQuyenService.saveQuyen(phanQuyen));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra khi lưu quyền.");
         }

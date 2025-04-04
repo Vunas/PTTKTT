@@ -9,7 +9,7 @@ import Error from "../../utils/state/Error";
 import { exportExcel } from "../../utils/ExcelJS";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import QuyenDetails from "./ccc";
+import QuyenDetails from "../../components/Details/PhanQuyenDetail";
 
 const PhanQuyen = () => {
   const [phanQuyenList, setPhanQuyenList] = useState([]);
@@ -26,12 +26,14 @@ const PhanQuyen = () => {
   });
 
   useEffect(() => {
+    setLoading(true);
     fetchData(
       "http://localhost:8080/api/phanquyen",
       setPhanQuyenList,
       setLoading,
       setError
     );
+    setLoading(false);
   }, []);
 
   const handleSearch = (keyword) => {
@@ -55,14 +57,7 @@ const PhanQuyen = () => {
     addItem(
       "http://localhost:8080/api/phanquyen",
       newData,
-      () => {
-        fetchData(
-          "http://localhost:8080/api/phanquyen",
-          setPhanQuyenList,
-          setLoading,
-          setError
-        );
-      },
+      setPhanQuyenList,
       setSnackbar
     );
   };
