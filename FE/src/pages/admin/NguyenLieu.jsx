@@ -36,14 +36,12 @@ const NguyenLieu = () => {
   });
 
   useEffect(() => {
-    setLoading(true);
     fetchData(
       "http://localhost:8080/api/nguyenlieu",
       setNguyenLieuList,
       setLoading,
       setError
     );
-    setLoading(false);
   }, []);
 
   const handleFilter = useCallback(() => {

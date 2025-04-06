@@ -35,14 +35,12 @@ const SanPham = () => {
   });
 
   useEffect(() => {
-    setLoading(true);
     fetchData(
       "http://localhost:8080/api/sanpham",
       setSanPhamList,
       setLoading,
       setError
     );
-    setLoading(false);
   }, []);
 
   const handleFilter = useCallback(() => {

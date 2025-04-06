@@ -26,14 +26,12 @@ const PhanQuyen = () => {
   });
 
   useEffect(() => {
-    setLoading(true);
     fetchData(
       "http://localhost:8080/api/phanquyen",
       setPhanQuyenList,
       setLoading,
       setError
     );
-    setLoading(false);
   }, []);
 
   const handleSearch = (keyword) => {

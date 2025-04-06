@@ -16,7 +16,8 @@ import axios from "axios";
 const TaiKhoan = () => {
   const [taiKhoanList, setTaiKhoanList] = useState([]);
   const [phanQuyenList, setPhanQuyenList] = useState([]); 
-  const [loading, setLoading] = useState(true);
+  const [loadingTaiKhoan, setLoadingTaiKhoan] = useState(true);
+  const [loadingPhanQuyen, setLoadingPhanQuyen] = useState(true);
   const [error, setError] = useState(null);
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [editTaiKhoan, setEditTaiKhoan] = useState(null);
@@ -36,20 +37,18 @@ const TaiKhoan = () => {
 
   // Fetch dữ liệu tài khoản lần đầu
   useEffect(() => {
-    setLoading(true);
     fetchData(
       "http://localhost:8080/api/taikhoan",
       setTaiKhoanList,
-      setLoading,
+      setLoadingTaiKhoan,
       setError
     );
     fetchData(
       "http://localhost:8080/api/phanquyen",
       setPhanQuyenList,
-      setLoading,
+      setLoadingPhanQuyen,
       setError
     );
-    setLoading(false);
   }, []);
 
   // Hàm lọc dữ liệu
@@ -110,7 +109,7 @@ const TaiKhoan = () => {
       .catch((err) => {
         console.error("Lỗi khi lấy dữ liệu:", err);
         setError("Không thể tải dữ liệu từ server");
-        setLoading(false);
+        setLoadingTaiKhoan(false);
       });
   };
 
@@ -154,7 +153,7 @@ const TaiKhoan = () => {
   };
 
   // Render giao diện
-  if (loading) return <Loading />;
+  if (loadingTaiKhoan || loadingPhanQuyen) return <Loading />;
   if (error) return <Error />;
 
   return (

@@ -31,14 +31,12 @@ const KhoHang = () => {
   });
 
   useEffect(() => {
-    setLoading(true);
     fetchData(
       "http://localhost:8080/api/khohang",
       setKhoHangList,
       setLoading,
       setError
     );
-    setLoading(false);
   }, []);
 
   const handleFilter = useCallback(() => {
