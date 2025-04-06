@@ -34,7 +34,7 @@ const App = () => {
       <Routes>
         <Route
           path="/login-admin"
-          element={isLoggedIn ? <Navigate to="/admin" replace /> : <LoginAdmin setIsLoggedIn={setIsLoggedIn} />}
+          element={isLoggedIn ? <Navigate to="/admin/dashboard" replace /> : <LoginAdmin setIsLoggedIn={setIsLoggedIn} />}
         />
         <Route path="/admin/*" element={isLoggedIn ? <AdminRoutes /> : <Navigate to="/login-admin" replace />} />
         <Route path="*" element={<h1>404 - Không tìm thấy trang</h1>} />

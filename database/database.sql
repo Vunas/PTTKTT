@@ -32,6 +32,9 @@ INSERT INTO TaiKhoan (TenDangNhap, MatKhau, Email, MaPhanQuyen)
 VALUES
     ('user1', 'hashed_password1', 'user1@example.com', 1),
     ('shipper1', 'hashed_password2', 'shipper1@example.com', 2),
+    ('shipper2', 'hashed_password2', 'vuh265@gmail.com', 2),
+    ('shipper3', 'hashed_password2', 'anhtuancogang123@gmail.com', 2),
+    ('shipper4', 'hashed_password2', 'phamtandat2206@gmail.com', 2),
     ('manager1', 'hashed_password3', 'manager1@example.com', 3);
 
 -- Tạo bảng NhanVien
