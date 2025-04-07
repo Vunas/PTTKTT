@@ -10,6 +10,7 @@ import NguyenLieu from "../pages/admin/NguyenLieu";
 import NhaCungCap from "../pages/admin/NhaCungCap";
 import SanPham from "../pages/admin/SanPham";
 import KhoHang from "../pages/admin/KhoHang";
+import DonHang from "../pages/admin/DonHang";
 
 const AdminRoutes = () => {
   return (
@@ -21,6 +22,7 @@ const AdminRoutes = () => {
       <div className="flex-1 p-4">
         <Routes>
           <Route path="dashboard" element={<Dashboard />} />
+          <Route path="donhang" element={<DonHang />} />
           <Route path="khohang" element={<KhoHang />} />
           <Route path="nhacungcap" element={<NhaCungCap />} />
           <Route path="sanpham" element={<SanPham />} />

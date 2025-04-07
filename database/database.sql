@@ -35,7 +35,7 @@ VALUES
     ('shipper2', 'hashed_password2', 'vuh265@gmail.com', 2),
     ('shipper3', 'hashed_password2', 'anhtuancogang123@gmail.com', 2),
     ('shipper4', 'hashed_password2', 'phamtandat2206@gmail.com', 2),
-    ('manager1', 'hashed_password3', 'manager1@example.com', 3);
+    ('manager1', 'hashed_password3', 'vietdq19042005@gmail.com', 2);
 
 -- Tạo bảng NhanVien
 CREATE TABLE NhanVien (
@@ -70,7 +70,16 @@ CREATE TABLE KhachHang (
 INSERT INTO KhachHang (HoTen, GioiTinh, SoDienThoai, Email, DiaChi)
 VALUES
     ('Nguyen Van A', 'Nam', '0909123456', 'a.nguyen@example.com', '123 Đường ABC, TP.HCM'),
-    ('Tran Thi B', 'Nữ', '0912345678', 'b.tran@example.com', '456 Đường XYZ, Hà Nội');
+    ('Tran Thi B', 'Nữ', '0912345678', 'b.tran@example.com', '456 Đường XYZ, Hà Nội'),
+    ('Le Van C', 'Nam', '0923456789', 'c.le@example.com', '789 Đường PQR, Đà Nẵng'),
+    ('Pham Thi D', 'Nữ', '0934567890', 'd.pham@example.com', '101 Đường JKL, Cần Thơ'),
+    ('Hoang Van E', 'Nam', '0945678901', 'e.hoang@example.com', '202 Đường DEF, Hải Phòng'),
+    ('Vu Thi F', 'Nữ', '0956789012', 'f.vu@example.com', '303 Đường GHI, Bình Dương'),
+    ('Ngo Van G', 'Nam', '0967890123', 'g.ngo@example.com', '404 Đường LMN, Nha Trang'),
+    ('Nguyen Thi H', 'Nữ', '0978901234', 'h.nguyen@example.com', '505 Đường STU, Huế'),
+    ('Tran Van I', 'Nam', '0989012345', 'i.tran@example.com', '606 Đường VWX, Quy Nhơn'),
+    ('Le Thi J', 'Nữ', '0990123456', 'j.le@example.com', '707 Đường YZ, Vũng Tàu');
+
 
 -- Tạo bảng NguyenLieu
 CREATE TABLE NguyenLieu (
@@ -216,5 +225,27 @@ INSERT INTO ChiTietNguyenLieuSanPham (MaSanPham, MaNguyenLieu, SoLuongNguyenLieu
 (2, 2, 3.0),
 (3, 3, 2.0),
 (3, 4, 5.0);
+
+CREATE TABLE DonHang (
+    maDonHang INT PRIMARY KEY AUTO_INCREMENT,
+    maKhachHang INT NOT NULL,
+    ngayDat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    trangThai INT NOT NULL,
+    tongGia DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (maKhachHang) REFERENCES KhachHang(maKhachHang)
+);
+
+INSERT INTO DonHang (maKhachHang, trangThai, tongGia) VALUES
+(1, 1, 250000.00), -- Đơn hàng 1: Kích hoạt, giá 250,000
+(2, 2, 450000.00), -- Đơn hàng 2: Đang xử lý, giá 450,000
+(3, 3, 650000.00), -- Đơn hàng 3: Hoàn thành, giá 650,000
+(4, 4, 850000.00), -- Đơn hàng 4: Hủy, giá 850,000
+(5, 1, 150000.00), -- Đơn hàng 5: Kích hoạt, giá 150,000
+(6, 2, 550000.00), -- Đơn hàng 6: Đang xử lý, giá 550,000
+(7, 3, 750000.00), -- Đơn hàng 7: Hoàn thành, giá 750,000
+(8, 4, 950000.00), -- Đơn hàng 8: Hủy, giá 950,000
+(9, 1, 350000.00), -- Đơn hàng 9: Kích hoạt, giá 350,000
+(10, 2, 450000.00); -- Đơn hàng 10: Đang xử lý, giá 450,000
+
 
 

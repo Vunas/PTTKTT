@@ -33,95 +33,108 @@ const TaiKhoanTable = ({ taiKhoanList, onEdit, onDelete, onToggleLock }) => {
   };
 
   return (
-    <TableContainer
-      component={Paper}
-      style={{ marginTop: "20px" }}
-      sx={{ maxHeight: 600 }}
-    >
-      <Table stickyHeader>
-        <TableHead>
-          <TableRow>
-            <TableCell align="center" onClick={() => handleSort("maTaiKhoan")}>
-              <strong>
-                Mã tài khoản{" "}
-                {sortField === "maTaiKhoan" &&
-                  (sortOrder === "asc" ? "▲" : "▼")}
-              </strong>
-            </TableCell>
-            <TableCell align="center" onClick={() => handleSort("tenDangNhap")}>
-              <strong>
-                Tên đăng nhập{" "}
-                {sortField === "tenDangNhap" &&
-                  (sortOrder === "asc" ? "▲" : "▼")}
-              </strong>
-            </TableCell>
-            <TableCell align="center" onClick={() => handleSort("email")}>
-              <strong>
-                Email{" "}
-                {sortField === "email" && (sortOrder === "asc" ? "▲" : "▼")}
-              </strong>
-            </TableCell>
-            <TableCell align="center" onClick={() => handleSort("maPhanQuyen")}>
-              <strong>
-                Phân quyền{" "}
-                {sortField === "maPhanQuyen" &&
-                  (sortOrder === "asc" ? "▲" : "▼")}
-              </strong>
-            </TableCell>
-            <TableCell align="center" onClick={() => handleSort("trangThai")}>
-              <strong>
-                Trạng thái{" "}
-                {sortField === "trangThai" && (sortOrder === "asc" ? "▲" : "▼")}
-              </strong>
-            </TableCell>
-            <TableCell align="center">
-              <strong>Chức năng</strong>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {taiKhoanList.length > 0 ? (
-            taiKhoanList.map((taiKhoan) => (
-              <TableRow key={taiKhoan.maTaiKhoan}>
-                <TableCell align="center">{taiKhoan.maTaiKhoan}</TableCell>
-                <TableCell align="center">{taiKhoan.tenDangNhap}</TableCell>
-                <TableCell align="center">{taiKhoan.email}</TableCell>
-                <TableCell align="center">{taiKhoan.maPhanQuyen}</TableCell>
-                <TableCell align="center">
-                  {taiKhoan.trangThai === 1 ? "Kích hoạt" : "Khóa"}
-                </TableCell>
-                <TableCell align="center">
-                  <IconButton
-                    color="primary"
-                    onClick={() => onEdit(taiKhoan)} // Chỉnh sửa tài khoản
-                  >
-                    <CreateIcon />
-                  </IconButton>
-                  <IconButton
-                    color="secondary"
-                    onClick={() => onDelete(taiKhoan.maTaiKhoan)} // Xóa tài khoản
-                  >
-                    <DeleteOutlineIcon />
-                  </IconButton>
-                  <IconButton
-                    color={taiKhoan.trangThai === 1 ? "success" : "error"}
-                    onClick={() => onToggleLock(taiKhoan.maTaiKhoan)} // Khóa/Mở tài khoản
-                  >
-                    {taiKhoan.trangThai === 1 ? <LockOpenIcon /> : <LockIcon />}
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))
-          ) : (
+    <>
+      <TableContainer
+        component={Paper}
+        style={{ marginTop: "20px" }}
+        sx={{ maxHeight: 600 }}
+      >
+        <Table stickyHeader>
+          <TableHead>
             <TableRow>
-              <TableCell colSpan={6} align="center">
-                Không có dữ liệu để hiển thị
+              <TableCell align="center" onClick={() => handleSort("maTaiKhoan")}>
+                <strong>
+                  Mã tài khoản{" "}
+                  {sortField === "maTaiKhoan" &&
+                    (sortOrder === "asc" ? "▲" : "▼")}
+                </strong>
+              </TableCell>
+              <TableCell align="center" onClick={() => handleSort("tenDangNhap")}>
+                <strong>
+                  Tên đăng nhập{" "}
+                  {sortField === "tenDangNhap" &&
+                    (sortOrder === "asc" ? "▲" : "▼")}
+                </strong>
+              </TableCell>
+              <TableCell align="center" onClick={() => handleSort("email")}>
+                <strong>
+                  Email{" "}
+                  {sortField === "email" && (sortOrder === "asc" ? "▲" : "▼")}
+                </strong>
+              </TableCell>
+              <TableCell align="center" onClick={() => handleSort("maPhanQuyen")}>
+                <strong>
+                  Phân quyền{" "}
+                  {sortField === "maPhanQuyen" &&
+                    (sortOrder === "asc" ? "▲" : "▼")}
+                </strong>
+              </TableCell>
+              <TableCell align="center" onClick={() => handleSort("trangThai")}>
+                <strong>
+                  Trạng thái{" "}
+                  {sortField === "trangThai" &&
+                    (sortOrder === "asc" ? "▲" : "▼")}
+                </strong>
+              </TableCell>
+              <TableCell align="center">
+                <strong>Chức năng</strong>
               </TableCell>
             </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {taiKhoanList.length > 0 ? (
+              taiKhoanList.map((taiKhoan) => (
+                <TableRow key={taiKhoan.maTaiKhoan}>
+                  <TableCell align="center">{taiKhoan.maTaiKhoan}</TableCell>
+                  <TableCell align="center">{taiKhoan.tenDangNhap}</TableCell>
+                  <TableCell align="center">{taiKhoan.email}</TableCell>
+                  <TableCell align="center">{taiKhoan.maPhanQuyen}</TableCell>
+                  <TableCell className="text-center">
+                    {taiKhoan.trangThai === 1 ? (
+                      <div className="bg-green-100 text-green-700 px-2 py-1 rounded-md flex items-center justify-center w-28 mx-auto">
+                        <span className="mr-2">Kích hoạt</span>
+                        <span>✔️</span>
+                      </div>
+                    ) : (
+                      <div className="bg-red-100 text-red-700 px-2 py-1 rounded-md flex items-center justify-center w-24 mx-auto">
+                        <span className="mr-2">Khóa</span>
+                        <span>❌</span>
+                      </div>
+                    )}
+                  </TableCell>
+                  <TableCell align="center">
+                    <IconButton
+                      color="primary"
+                      onClick={() => onEdit(taiKhoan)} // Chỉnh sửa tài khoản
+                    >
+                      <CreateIcon />
+                    </IconButton>
+                    <IconButton
+                      color="secondary"
+                      onClick={() => onDelete(taiKhoan.maTaiKhoan)} // Xóa tài khoản
+                    >
+                      <DeleteOutlineIcon />
+                    </IconButton>
+                    <IconButton
+                      color={taiKhoan.trangThai === 1 ? "success" : "error"}
+                      onClick={() => onToggleLock(taiKhoan.maTaiKhoan)} // Khóa/Mở tài khoản
+                    >
+                      {taiKhoan.trangThai === 1 ? <LockOpenIcon /> : <LockIcon />}
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={6} align="center">
+                  Không có dữ liệu để hiển thị
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   );
 };
 
