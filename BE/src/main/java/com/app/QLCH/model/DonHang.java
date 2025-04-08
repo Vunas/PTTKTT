@@ -7,24 +7,31 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name = "DonHang") // Tương ứng với bảng trong cơ sở dữ liệu
+@Table(name = "DonHang")
 public class DonHang {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // ID tự tăng
-    private Integer maDonHang; // Mã đơn hàng (khóa chính)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer maDonHang;
 
-    @Column(name = "maKhachHang", nullable = false) // Lưu mã khách hàng (Integer)
-    private Integer maKhachHang; // Mã khách hàng, không dùng ManyToOne
+    @Column(name = "maKhachHang", nullable = false)
+    private Integer maKhachHang;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "ngayDat", nullable = false) // Ngày đặt hàng
-    private Date ngayDat = new Date(); // Giá trị mặc định là thời gian hiện tại
+    @Column(name = "ngayDat", nullable = false, updatable = false)
+    private Date ngayDat = new Date();
 
-    @Column(name = "trangThai", nullable = false) // Trạng thái đơn hàng
-    private Integer trangThai; // Trạng thái (0 là đã xóa, 1 là đã đặt, v.v.)
+    @Column(name = "trangThai", nullable = false, length = 50)
+    private String trangThai; // Sử dụng String thay vì Enum
 
-    @Column(name = "tongGia", nullable = false, columnDefinition = "DECIMAL(10, 2)") // Tổng giá trị đơn hàng
-    private Double tongGia; // Giá trị tổng của đơn hàng
+    @Column(name = "tongGia", nullable = false, columnDefinition = "DECIMAL(10, 2)")
+    private Double tongGia;
+
+    @Column(name = "diaChiGiaoHang", nullable = false, length = 255)
+    private String diaChiGiaoHang;
+
+    @Column(name = "phuongThucThanhToan", nullable = false, length = 50)
+    private String phuongThucThanhToan; // Sử dụng String thay vì Enum
+
+    @Column(name = "ghiChu")
+    private String ghiChu;
 }
-
-// 0 là đã xóa, 1 là đã đặt, 2 là đã xác nhận, 3 là đang giao, 4 là đã giao, 5 là đã hủy

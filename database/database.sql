@@ -227,25 +227,30 @@ INSERT INTO ChiTietNguyenLieuSanPham (MaSanPham, MaNguyenLieu, SoLuongNguyenLieu
 (3, 4, 5.0);
 
 CREATE TABLE DonHang (
-    maDonHang INT PRIMARY KEY AUTO_INCREMENT,
-    maKhachHang INT NOT NULL,
-    ngayDat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    trangThai INT NOT NULL,
-    tongGia DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (maKhachHang) REFERENCES KhachHang(maKhachHang)
+    maDonHang INT PRIMARY KEY AUTO_INCREMENT, -- Mã đơn hàng duy nhất
+    maKhachHang INT NOT NULL, -- Mã khách hàng
+    ngayDat TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày đặt hàng
+    trangThai VARCHAR(50) DEFAULT 'Đã đặt', -- Trạng thái đơn hàng
+    tongGia DECIMAL(10, 2) NOT NULL CHECK (tongGia >= 0), -- Tổng giá trị đơn hàng (không âm)
+    diaChiGiaoHang VARCHAR(255) NOT NULL, -- Địa chỉ giao hàng
+    phuongThucThanhToan VARCHAR(50) NOT NULL, -- Phương thức thanh toán
+    ghiChu TEXT, -- Ghi chú bổ sung cho đơn hàng (nếu cần)
+    FOREIGN KEY (maKhachHang) REFERENCES KhachHang(maKhachHang) -- Khóa ngoại liên kết với bảng KhachHang
 );
 
-INSERT INTO DonHang (maKhachHang, trangThai, tongGia) VALUES
-(1, 1, 250000.00), -- Đơn hàng 1: Kích hoạt, giá 250,000
-(2, 2, 450000.00), -- Đơn hàng 2: Đang xử lý, giá 450,000
-(3, 3, 650000.00), -- Đơn hàng 3: Hoàn thành, giá 650,000
-(4, 4, 850000.00), -- Đơn hàng 4: Hủy, giá 850,000
-(5, 1, 150000.00), -- Đơn hàng 5: Kích hoạt, giá 150,000
-(6, 2, 550000.00), -- Đơn hàng 6: Đang xử lý, giá 550,000
-(7, 3, 750000.00), -- Đơn hàng 7: Hoàn thành, giá 750,000
-(8, 4, 950000.00), -- Đơn hàng 8: Hủy, giá 950,000
-(9, 1, 350000.00), -- Đơn hàng 9: Kích hoạt, giá 350,000
-(10, 2, 450000.00); -- Đơn hàng 10: Đang xử lý, giá 450,000
+INSERT INTO DonHang (maKhachHang, trangThai, tongGia, diaChiGiaoHang, phuongThucThanhToan, ghiChu)
+VALUES
+(1, 'Đã đặt', 250000.00, '123 Nguyễn Văn Cừ, Hà Nội', 'Tiền mặt', 'Không có yêu cầu đặc biệt'),
+(2, 'Đã xác nhận', 450000.00, '456 Trần Hưng Đạo, TP.HCM', 'Thẻ ngân hàng', 'Yêu cầu giao nhanh'),
+(3, 'Đang giao', 650000.00, '789 Lý Thường Kiệt, Đà Nẵng', 'Ví điện tử', NULL),
+(4, 'Đã giao', 850000.00, '321 Phan Đình Phùng, Cần Thơ', 'Tiền mặt', 'Khách không nhận đúng giờ'),
+(5, 'Đã hủy', 150000.00, '654 Hoàng Diệu, Hải Phòng', 'Thẻ ngân hàng', 'Khách thay đổi địa chỉ'),
+(6, 'Đã đặt', 550000.00, '987 Nguyễn Du, Hà Nội', 'Ví điện tử', 'Yêu cầu không cay'),
+(7, 'Đã xác nhận', 750000.00, '345 Bùi Thị Xuân, TP.HCM', 'Tiền mặt', NULL),
+(8, 'Đang giao', 950000.00, '210 Lê Văn Sỹ, Đà Lạt', 'Thẻ ngân hàng', 'Địa chỉ xa, giao trễ'),
+(9, 'Đã giao', 350000.00, '890 Pasteur, TP.HCM', 'Ví điện tử', 'Khách hài lòng'),
+(10, 'Đã xóa', 450000.00, '123 Tôn Đức Thắng, Hà Nội', 'Tiền mặt', NULL);
+
 
 
 

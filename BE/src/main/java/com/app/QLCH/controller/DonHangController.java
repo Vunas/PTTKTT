@@ -6,9 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import com.app.QLCH.model.DonHang;
 import com.app.QLCH.service.DonHangService;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @RestController
 @RequestMapping("/api/donhang")
@@ -67,27 +69,33 @@ public class DonHangController {
         }
     }
 
-    // API lấy danh sách đơn hàng theo trạng thái
-    @GetMapping("/trangthai/{trangThai}")
-    public List<DonHang> getDonHangByTrangThai(@PathVariable Integer trangThai) {
-        return donHangService.getDonHangByTrangThai(trangThai);
-    }
 
-    // // API lấy danh sách đơn hàng của một khách hàng
-    // @GetMapping("/khachhang/{maKhachHang}")
-    // public List<DonHang> getDonHangByKhachHangId(@PathVariable Integer maKhachHang) {
-    //     return donHangService.getDonHangByKhachHangId(maKhachHang);
-    // }
-
-    // API lọc đơn hàng theo trạng thái và khoảng giá
     @GetMapping("/filter")
-    public List<DonHang> filterDonHangByTrangThaiAndTongGia(
+    public List<DonHang> filterDonHang(
             @RequestParam(required = false) Integer maKhachHang,
-            @RequestParam(required = false) Date ngayDatBatDau,
-            @RequestParam(required = false) Date ngayDatKetThuc,
-            @RequestParam(required = false) Integer trangThai,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate ngayDatBatDau,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate ngayDatKetThuc,
+            @RequestParam(required = false) String diaChiGiaoHang,
+            @RequestParam(required = false) String phuongThucThanhToan,
             @RequestParam(required = false) Double minGia,
-            @RequestParam(required = false) Double maxGia) {
-        return donHangService.filterDonHang(maKhachHang, ngayDatBatDau, ngayDatKetThuc, minGia, maxGia, trangThai);
+            @RequestParam(required = false) Double maxGia,
+            @RequestParam(required = false) String trangThai) {
+    
+        // Gán giá trị mặc định nếu tham số ngày không được cung cấp
+        if (ngayDatBatDau == null) {
+            ngayDatBatDau = LocalDate.of(1970, 1, 1); // Ngày bắt đầu mặc định (epoch)
+        }
+        if (ngayDatKetThuc == null) {
+            ngayDatKetThuc = LocalDate.now().plusDays(1); // Bao gồm cả ngày hiện tại
+        }
+    
+        // Chuyển đổi LocalDate sang java.sql.Date nếu Service yêu cầu kiểu Date
+        Date startDate = java.sql.Date.valueOf(ngayDatBatDau);
+        Date endDate = java.sql.Date.valueOf(ngayDatKetThuc);
+    
+        return donHangService.filterDonHang(maKhachHang, startDate, endDate, 
+                                            diaChiGiaoHang, phuongThucThanhToan, 
+                                            minGia, maxGia, trangThai);
     }
+    
 }

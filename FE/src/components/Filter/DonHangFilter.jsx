@@ -1,7 +1,20 @@
 import React from "react";
-import { TextField, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import {
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Button
+} from "@mui/material";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
-const DonHangFilter = ({ filterParams, onFilterParamsChange, khachHangList }) => {
+const DonHangFilter = ({
+  filterParams,
+  onFilterParamsChange,
+  khachHangList,
+  onRefresh,
+}) => {
   return (
     <div
       style={{
@@ -9,7 +22,7 @@ const DonHangFilter = ({ filterParams, onFilterParamsChange, khachHangList }) =>
         justifyContent: "center",
         marginTop: "16px",
         gap: "16px",
-        flexWrap: "wrap",
+        flexWrap: "nowrap",
       }}
     >
       {/* Mã Khách Hàng */}
@@ -27,7 +40,7 @@ const DonHangFilter = ({ filterParams, onFilterParamsChange, khachHangList }) =>
           <MenuItem value="">Tất cả</MenuItem>
           {khachHangList.map((khachHang) => (
             <MenuItem key={khachHang.maKhachHang} value={khachHang.maKhachHang}>
-              {khachHang.hoTen}
+              {khachHang.maKhachHang} {khachHang.hoTen}
             </MenuItem>
           ))}
         </Select>
@@ -37,25 +50,23 @@ const DonHangFilter = ({ filterParams, onFilterParamsChange, khachHangList }) =>
       <TextField
         label="Ngày Đặt Bắt Đầu"
         type="date"
-        value={filterParams.ngayDatBatDau}
+        value={filterParams.ngayDatBatDau || ""} // Đảm bảo giá trị không phải null hoặc undefined
         onChange={(e) =>
           onFilterParamsChange({
             ...filterParams,
-            ngayDatBatDau: e.target.value,
+            ngayDatBatDau: e.target.value, // Giá trị luôn là định dạng YYYY-MM-DD
           })
         }
         InputLabelProps={{
           shrink: true,
         }}
         size="small"
-        required
       />
 
-      {/* Ngày Đặt Kết Thúc */}
       <TextField
         label="Ngày Đặt Kết Thúc"
         type="date"
-        value={filterParams.ngayDatKetThuc}
+        value={filterParams.ngayDatKetThuc || ""} // Xử lý giá trị null hoặc undefined
         onChange={(e) =>
           onFilterParamsChange({
             ...filterParams,
@@ -66,7 +77,22 @@ const DonHangFilter = ({ filterParams, onFilterParamsChange, khachHangList }) =>
           shrink: true,
         }}
         size="small"
-        required
+      />
+
+      <TextField
+        label="Địa chỉ giao hàng"
+        type="text"
+        value={filterParams.diaChiGiaoHang || ""} // Xử lý giá trị null hoặc undefined
+        onChange={(e) =>
+          onFilterParamsChange({
+            ...filterParams,
+            diaChiGiaoHang: e.target.value,
+          })
+        }
+        InputLabelProps={{
+          shrink: true,
+        }}
+        size="small"
       />
 
       {/* Trạng Thái */}
@@ -82,17 +108,16 @@ const DonHangFilter = ({ filterParams, onFilterParamsChange, khachHangList }) =>
           }
         >
           <MenuItem value="">Tất cả</MenuItem>
-          <MenuItem value={1}>Đã Đặt</MenuItem>
-          <MenuItem value={2}>Đã Xác Nhận</MenuItem>
-          <MenuItem value={3}>Đang Giao</MenuItem>
-          <MenuItem value={4}>Đã Giao</MenuItem>
-          <MenuItem value={5}>Đã Hủy</MenuItem>
-          <MenuItem value={0}>Đã Xóa</MenuItem>
+          <MenuItem value="Đã đặt">Đã Đặt</MenuItem>
+          <MenuItem value="Đã xác nhận">Đã Xác Nhận</MenuItem>
+          <MenuItem value="Đang giao">Đang Giao Hàng</MenuItem>
+          <MenuItem value="Đã giao">Đã Giao</MenuItem>
+          <MenuItem value="Đã xóa">Đã Xóa</MenuItem>
+          <MenuItem value="Đã hủy">Đã Hủy</MenuItem>
         </Select>
       </FormControl>
 
-      {/* Tổng Giá Tối Thiểu */}
-      <TextField
+      {/* <TextField
         label="Tổng Giá Tối Thiểu"
         type="number"
         value={filterParams.tongGiaMin}
@@ -104,8 +129,6 @@ const DonHangFilter = ({ filterParams, onFilterParamsChange, khachHangList }) =>
         }
         size="small"
       />
-
-      {/* Tổng Giá Tối Đa */}
       <TextField
         label="Tổng Giá Tối Đa"
         type="number"
@@ -117,7 +140,16 @@ const DonHangFilter = ({ filterParams, onFilterParamsChange, khachHangList }) =>
           })
         }
         size="small"
-      />
+      /> */}
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={onRefresh} // Gọi hàm làm mới
+        size="small"
+        startIcon={<RefreshIcon />}
+      >
+        Làm Mới
+      </Button>
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import dayjs from "dayjs";
 import {
   Dialog,
   DialogTitle,
@@ -24,11 +25,14 @@ const DonHangDialog = ({
     maDonHang: "",
     maKhachHang: "",
     ngayDat: "",
-    trangThai: 1,
+    trangThai: "Đã đặt", // Mặc định là "Đã Đặt"
     tongGia: "",
+    phuongThucThanhToan: "",
+    diaChiGiaoHang: "",
+    ghiChu: "",
   });
 
-  const [errors, setErrors] = useState({}); // Quản lý lỗi
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (donHang) {
@@ -38,9 +42,12 @@ const DonHangDialog = ({
         maDonHang: "",
         maKhachHang: "",
         ngayDat: "",
-        trangThai: 1,
+        trangThai: "Đã đặt",
         tongGia: "",
-      }); // Reset khi thêm mới
+        phuongThucThanhToan: "",
+        diaChiGiaoHang: "",
+        ghiChu: "",
+      });
     }
     setErrors({}); // Reset lỗi
   }, [donHang]);
@@ -51,17 +58,19 @@ const DonHangDialog = ({
       ...prevValues,
       [name]: value,
     }));
-    validateField(name, value); // Kiểm tra giá trị
+    validateField(name, value);
   };
 
   const validateField = (field, value) => {
     let errorMessage = "";
     if (!value) {
       errorMessage = "Trường này không được để trống";
-    } else if (field === "tongGia" && isNaN(Number(value))) {
-      errorMessage = "Tổng giá phải là số hợp lệ";
+    } else if (
+      field === "tongGia" &&
+      (isNaN(Number(value)) || Number(value) <= 0)
+    ) {
+      errorMessage = "Tổng giá phải là số lớn hơn 0";
     }
-
     setErrors((prevErrors) => ({
       ...prevErrors,
       [field]: errorMessage,
@@ -69,30 +78,28 @@ const DonHangDialog = ({
   };
 
   const handleAdd = () => {
-    const requiredFields = ["maKhachHang", "ngayDat", "trangThai", "tongGia"];
+    const requiredFields = [
+      "maKhachHang",
+      "ngayDat",
+      "trangThai",
+      "tongGia",
+      "phuongThucThanhToan",
+      "diaChiGiaoHang",
+    ];
     const newErrors = {};
 
     requiredFields.forEach((field) => {
       if (!newDonHang[field]) {
         newErrors[field] = "Trường này không được để trống";
-      } else {
-        validateField(field, newDonHang[field]);
       }
     });
 
-    if (Object.values(newErrors).some((err) => err)) {
+    if (Object.values(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
-    onSave(newDonHang); // Gửi dữ liệu lên cha
-    setNewDonHang({
-      maDonHang: "",
-      maKhachHang: "",
-      ngayDat: "",
-      trangThai: 1,
-      tongGia: "",
-    }); // Reset form
+    onSave(newDonHang); // Gửi dữ liệu về component cha
     onClose(); // Đóng dialog
   };
 
@@ -100,7 +107,7 @@ const DonHangDialog = ({
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        {/* Mã Đơn Hàng (Ẩn khi thêm mới) */}
+        {/* Mã Đơn Hàng */}
         {donHang && (
           <TextField
             label="Mã Đơn Hàng"
@@ -108,7 +115,7 @@ const DonHangDialog = ({
             fullWidth
             margin="dense"
             value={newDonHang.maDonHang}
-            disabled // Không cho sửa
+            disabled
           />
         )}
         {/* Mã Khách Hàng */}
@@ -119,43 +126,33 @@ const DonHangDialog = ({
             value={newDonHang.maKhachHang}
             onChange={handleChange}
           >
-            <MenuItem key={-1} value="">
-              Chọn Khách Hàng
-            </MenuItem>
-            {khachHangList.length > 0 ? (
-              khachHangList.map((khachHang) => (
-                <MenuItem
-                  key={khachHang.maKhachHang}
-                  value={khachHang.maKhachHang}
-                >
-                  {khachHang.hoTen}
-                </MenuItem>
-              ))
-            ) : (
-              <MenuItem value={0}>Không có dữ liệu</MenuItem>
-            )}
+            <MenuItem value="">Chọn Khách Hàng</MenuItem>
+            {khachHangList.map((khachHang) => (
+              <MenuItem
+                key={khachHang.maKhachHang}
+                value={khachHang.maKhachHang}
+              >
+                {khachHang.hoTen}
+              </MenuItem>
+            ))}
           </Select>
-          {errors.maKhachHang && (
-            <p style={{ color: "red", fontSize: "0.8em" }}>
-              {errors.maKhachHang}
-            </p>
-          )}
         </FormControl>
+
         {/* Ngày Đặt */}
+
         <TextField
           label="Ngày Đặt"
           name="ngayDat"
           type="date"
           fullWidth
           margin="dense"
-          value={newDonHang.ngayDat}
+          value={dayjs(newDonHang.ngayDat).format("YYYY-MM-DD")}
           onChange={handleChange}
-          error={!!errors.ngayDat}
-          helperText={errors.ngayDat}
           InputLabelProps={{
             shrink: true,
           }}
         />
+
         {/* Trạng Thái */}
         <FormControl fullWidth margin="dense" error={!!errors.trangThai}>
           <InputLabel>Trạng Thái</InputLabel>
@@ -164,13 +161,14 @@ const DonHangDialog = ({
             value={newDonHang.trangThai}
             onChange={handleChange}
           >
-            <MenuItem value={1}>Đã Đặt</MenuItem>
-            <MenuItem value={2}>Đã Xác Nhận</MenuItem>
-            <MenuItem value={3}>Đang Giao</MenuItem>
-            <MenuItem value={4}>Đã Giao</MenuItem>
-            <MenuItem value={5}>Đã Hủy</MenuItem>
+            <MenuItem value={"Đã đặt"}>Đã Đặt</MenuItem>
+            <MenuItem value={"Đã xác nhận"}>Đã Xác Nhận</MenuItem>
+            <MenuItem value={"Đang giao"}>Đang Giao</MenuItem>
+            <MenuItem value={"Đã giao"}>Đã Giao</MenuItem>
+            <MenuItem value={"Đã hủy"}>Đã Hủy</MenuItem>
           </Select>
         </FormControl>
+
         {/* Tổng Giá */}
         <TextField
           label="Tổng Giá"
@@ -179,8 +177,46 @@ const DonHangDialog = ({
           margin="dense"
           value={newDonHang.tongGia}
           onChange={handleChange}
-          error={!!errors.tongGia}
-          helperText={errors.tongGia}
+        />
+
+        {/* Phương Thức Thanh Toán */}
+        <FormControl
+          fullWidth
+          margin="dense"
+          error={!!errors.phuongThucThanhToan}
+        >
+          <InputLabel>Phương Thức Thanh Toán</InputLabel>
+          <Select
+            name="phuongThucThanhToan"
+            value={newDonHang.phuongThucThanhToan}
+            onChange={handleChange}
+          >
+            <MenuItem value="Tiền mặt">Tiền Mặt</MenuItem>
+            <MenuItem value="Thẻ ngân hàng">Thẻ Ngân Hàng</MenuItem>
+            <MenuItem value="Ví điện tử">Ví Điện Tử</MenuItem>
+          </Select>
+        </FormControl>
+
+        {/* Địa Chỉ Giao Hàng */}
+        <TextField
+          label="Địa Chỉ Giao Hàng"
+          name="diaChiGiaoHang"
+          fullWidth
+          margin="dense"
+          value={newDonHang.diaChiGiaoHang}
+          onChange={handleChange}
+        />
+
+        {/* Ghi Chú */}
+        <TextField
+          label="Ghi Chú"
+          name="ghiChu"
+          fullWidth
+          margin="dense"
+          value={newDonHang.ghiChu}
+          onChange={handleChange}
+          multiline
+          rows={3}
         />
       </DialogContent>
       <DialogActions>

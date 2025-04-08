@@ -12,7 +12,7 @@ import Snackbar from "@mui/material/Snackbar"; // Snackbar thông báo
 import Alert from "@mui/material/Alert"; // Alert thông báo
 import { exportExcel } from "../../utils/ExcelJS"; // Xuất file Excel
 
-const DonHang = () => {3
+const DonHang = () => {
   const [donHangList, setDonHangList] = useState([]);
   const [khachHangList, setKhachHangList] = useState([]);
   const [loadingDonHang, setLoadingDonHang] = useState(true);
@@ -22,12 +22,14 @@ const DonHang = () => {3
   const [editDonHang, setEditDonHang] = useState(null);
   const [title, setTitle] = useState("");
   const [filterParams, setFilterParams] = useState({
-    maKhachHang: null,
-    ngayDatBatDau: null,
-    ngayDatKetThuc: null,
-    tongGiaMin: null,
-    tongGiaMax: null,
-    trangThai: null,
+    maKhachHang: "",
+    ngayDatBatDau: "",
+    ngayDatKetThuc: "",
+    diaChiGiaoHang: "",
+    phuongThucThanhToan: "",
+    MinGia: "",
+    MaxGia: "",
+    trangThai: "",
   });
   const [search, setSearch] = useState("");
   const [snackbar, setSnackbar] = useState({
@@ -52,23 +54,28 @@ const DonHang = () => {3
     );
   }, []);
 
+  const handleRefresh = () => {
+    // Reset tất cả các filter về mặc định
+    setFilterParams({
+      maKhachHang: "",
+      ngayDatBatDau: "",
+      ngayDatKetThuc: "",
+      diaChiGiaoHang: "",
+      phuongThucThanhToan: "",
+      trangThai: "",
+      tongGiaMin: "",
+      tongGiaMax: "",
+    });
+  };
+
   // Hàm lọc dữ liệu
   const handleFilter = useCallback(() => {
-    const cleanedFilterParams = {
-      maKhachHang: filterParams.maKhachHang || null,
-      ngayDatBatDau: filterParams.ngayDatBatDau || null,
-      ngayDatKetThuc: filterParams.ngayDatKetThuc || null,
-      tongGiaMin: filterParams.tongGiaMin || null,
-      tongGiaMax: filterParams.tongGiaMax || null,
-      trangThai: filterParams.trangThai || null,
-    };
-  
-    // Ghi log các giá trị gửi đến API để kiểm tra
-    console.log("Sending filter params to API:", cleanedFilterParams);
-  
+
+    console.log("Sending filter params to API:", filterParams);
+
     filterData(
       "http://localhost:8080/api/donhang/filter",
-      cleanedFilterParams,
+      filterParams,
       search,
       setDonHangList,
       setError
@@ -114,14 +121,10 @@ const DonHang = () => {3
   };
 
   // Đóng dialog
-  const handleDialogClose = () => {
-    setDialogOpen(false);
-  };
+  const handleDialogClose = () => setDialogOpen(false);
 
   // Đóng snackbar
-  const handleSnackbarClose = () => {
-    setSnackbar({ ...snackbar, open: false });
-  };
+  const handleSnackbarClose = () => setSnackbar({ ...snackbar, open: false });
 
   // Xuất file Excel
   const handleExport = () => {
@@ -158,6 +161,7 @@ const DonHang = () => {3
         filterParams={filterParams}
         onFilterParamsChange={setFilterParams}
         khachHangList={khachHangList}
+        onRefresh={handleRefresh}
       />
 
       <DonHangTable

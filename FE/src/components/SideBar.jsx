@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import {
   Dashboard,
   Inventory,
-  LocalShipping,
   Category,
   Restaurant,
   Work,
@@ -13,6 +12,9 @@ import {
   Security,
   Menu,
   Close,
+  Assignment,
+  Business,
+
 } from "@mui/icons-material";
 
 const Sidebar = () => {
@@ -24,7 +26,7 @@ const Sidebar = () => {
       {/* Nút thu gọn/mở rộng */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="absolute top-4 right-2 z-50 p-3 rounded-full transition-all duration-300"
+        className="absolute top-1.5 right-2 z-50 p-3 rounded-full transition-all duration-300"
       >
         {isOpen ? <Close /> : <Menu />}
       </button>
@@ -56,7 +58,7 @@ const Sidebar = () => {
           />
           <SidebarItem
             isOpen={isOpen}
-            icon={<Dashboard />}
+            icon={<Assignment />}
             label="Đơn Hàng"
             to="/admin/donhang"
             active={location.pathname === "/admin/donhang"}
@@ -68,13 +70,13 @@ const Sidebar = () => {
             to="/admin/khohang"
             active={location.pathname === "/admin/khohang"}
           />
-          <SidebarItem
-            isOpen={isOpen}
-            icon={<LocalShipping />}
-            label="Nhà Cung Cấp"
-            to="/admin/nhacungcap"
-            active={location.pathname === "/admin/nhacungcap"}
-          />
+            <SidebarItem
+              isOpen={isOpen}
+              icon={<Business />}
+              label="Nhà Cung Cấp"
+              to="/admin/nhacungcap"
+              active={location.pathname === "/admin/nhacungcap"}
+            />
           <SidebarItem
             isOpen={isOpen}
             icon={<Category />}
