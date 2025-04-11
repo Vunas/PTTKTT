@@ -276,6 +276,32 @@ INSERT INTO ChiTietDonHang (maDonHang, maSanPham, soLuong, donGia) VALUES
 (7, 8, 1, 450000),
 (8, 9, 3, 120000);
 
+CREATE TABLE KhuyenMai (
+    MaKhuyenMai INT PRIMARY KEY AUTO_INCREMENT,
+    TenKhuyenMai VARCHAR(100) NOT NULL,
+    MoTa TEXT,
+    GiaTriKhuyenMai DECIMAL(10, 2) NOT NULL,
+    LoaiKhuyenMai INT NOT NULL, -- 1: phần trăm giảm, 2: giá cố định giảm, 3: quà tặng
+    NgayBatDau DATE NOT NULL,
+    NgayKetThuc DATE NOT NULL,
+    TrangThai TINYINT DEFAULT 1,
+    NgayTao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO KhuyenMai (TenKhuyenMai, MoTa, GiaTriKhuyenMai, LoaiKhuyenMai, NgayBatDau, NgayKetThuc, TrangThai)
+VALUES 
+('Giảm 10% Cánh Gà', 'Giảm 10% cho tất cả các phần cánh gà', 10.00, 1, '2025-04-15', '2025-04-30', 1),
+('Giảm 20% Gà Viên', 'Giảm giá 20% cho các phần gà viên chiên giòn', 20.00, 1, '2025-05-01', '2025-05-15', 1),
+('Giảm 30,000 VND Đùi Gà', 'Giảm ngay 30,000 VND khi mua mỗi phần đùi gà rán', 30000.00, 2, '2025-05-10', '2025-05-20', 1),
+('Giảm 50,000 VND Gà Cay', 'Giảm 50,000 VND áp dụng cho các phần gà cay đặc biệt', 50000.00, 2, '2025-06-01', '2025-06-15', 1),
+('Tặng Nước Ngọt Khi Mua Đùi Gà', 'Mua 1 phần đùi gà rán tặng 1 lon nước ngọt', NULL, 3, '2025-06-20', '2025-06-30', 1),
+('Tặng Khoai Tây Khi Mua Gà Rán', 'Tặng 1 phần khoai tây chiên cho mỗi phần gà rán', NULL, 3, '2025-07-01', '2025-07-15', 1),
+('Giảm 15% Ức Gà', 'Giảm giá 15% cho các phần ức gà rán', 15.00, 1, '2025-07-20', '2025-07-30', 1),
+('Giảm 25,000 VND Gà Không Xương', 'Giảm giá 25,000 VND cho gà rán không xương', 25000.00, 2, '2025-08-01', '2025-08-15', 1),
+('Tặng Sốt Khi Mua Gà Rán', 'Tặng 1 phần sốt khi mua gà rán bất kỳ', NULL, 3, '2025-08-20', '2025-08-31', 1),
+('Giảm 5% Gà Nguyên Con', 'Giảm giá 5% cho gà rán nguyên con', 5.00, 1, '2025-09-01', '2025-09-10', 1);
+
+
 
 
 

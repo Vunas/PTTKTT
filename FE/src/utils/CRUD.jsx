@@ -13,14 +13,12 @@ const addItem = async (url, data, setList, setSnackbar) => {
   }
 };
 
-const addList = async (url, data, setSnackbar) => {
+const addList = async (url, data, setError) => {
   try {
     const response = await axios.post(url, data);
-    setSnackbar({ open: true, message: "Thêm thành công!", type: "success" });
     return response.data; // Trả về dữ liệu từ phản hồi
   } catch (error) {
-    const errorMessage = error.response?.data || "Có lỗi xảy ra khi thêm.";
-    setSnackbar({ open: true, message: errorMessage, type: "error" });
+    setError(error.response?.data?.message || "Có lỗi xảy ra khi cập nhật.");
     throw error; // Ném lỗi để xử lý phía gọi hàm
   }
 };

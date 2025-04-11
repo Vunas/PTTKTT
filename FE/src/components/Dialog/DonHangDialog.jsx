@@ -289,7 +289,6 @@ const DonHangDialog = ({
       "maKhachHang",
       "ngayDat",
       "trangThaiGiaoHang",
-      "tongGia",
       "phuongThucThanhToan",
     ];
     const newErrors = {};
@@ -301,8 +300,22 @@ const DonHangDialog = ({
     });
 
     if (Object.values(newErrors).length > 0) {
+      setSnackbar({
+        open: true,
+        message: "Vui lòng nhập đầy đủ thông tin!",
+        type: "error",
+      });
       setErrors(newErrors);
       console.log(errors);
+      return;
+    }
+
+    if (!newChiTietDonHang["tongGia"]) {
+      setSnackbar({
+        open: true,
+        message: "Vui lòng chọn thực đơn!",
+        type: "error",
+      });
       return;
     }
 

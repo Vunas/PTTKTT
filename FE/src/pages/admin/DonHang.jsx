@@ -146,7 +146,7 @@ const DonHang = () => {
       const addedDonHang = await addList(
         "http://localhost:8080/api/donhang",
         newDonHang,
-        setSnackbar
+        setError
       );
 
       // Sau khi thêm xong `DonHang`, lấy mã đơn hàng vừa tạo và thêm `ChiTietDonHang`
@@ -265,7 +265,7 @@ const DonHang = () => {
 
   // Render giao diện
   if (loadingDonHang || loadingKhachHang || loadingSanPham) return <Loading />;
-  if (error) return <Error />;
+  if (error) return <Error message={error.message} />;
 
   return (
     <div>

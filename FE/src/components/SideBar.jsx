@@ -14,6 +14,7 @@ import {
   Close,
   Assignment,
   Business,
+  LocalOffer,
 
 } from "@mui/icons-material";
 
@@ -55,6 +56,13 @@ const Sidebar = () => {
             label="Dashboard"
             to="/admin/dashboard"
             active={location.pathname === "/admin/dashboard"}
+          />
+          <SidebarItem
+            isOpen={isOpen}
+            icon={<LocalOffer />}
+            label="Khuyến Mãi"
+            to="/admin/khuyenmai"
+            active={location.pathname === "/admin/khuyenmai"}
           />
           <SidebarItem
             isOpen={isOpen}
