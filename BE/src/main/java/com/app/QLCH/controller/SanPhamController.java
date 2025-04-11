@@ -45,7 +45,7 @@ public class SanPhamController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Sản phẩm với tên này đã tồn tại!");
             }
 
-            // Lưu sản phẩm nếu không có lỗi    
+            // Lưu sản phẩm nếu không có lỗi
             return ResponseEntity.ok(sanPhamService.saveSanPham(sanPham));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra khi thêm sản phẩm.");
@@ -74,6 +74,49 @@ public class SanPhamController {
             return ResponseEntity.ok("Cập nhật sản phẩm thành công!");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra khi cập nhật sản phẩm.");
+        }
+    }
+
+    @PutMapping("/bulk")
+    public ResponseEntity<?> validateAndUpdateSanPhamBulk(@RequestBody List<SanPham> sanPhamList) {
+        List<SanPham> sanPhamListDeFault = sanPhamService.getAllSanPham();
+        System.out.println("Hàm validate và cập nhật số lượng sản phẩm được gọi");
+
+        try {
+
+            for (SanPham sanPham : sanPhamList) {
+                for (SanPham sp : sanPhamListDeFault) {
+                    System.out.println("texxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+                    if (sp.getMaSanPham() == sanPham.getMaSanPham()) {
+                        if ((sp.getSoLuong() - sanPham.getSoLuong()) < 0) {
+                            System.out.println(sp.getSoLuong());
+                            System.out.println(sanPham.getSoLuong());
+                            System.out.println("accccccccccccccccccccccssssssssss");
+                            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                    .body("Số lượng cập nhật không hợp lệ cho sản phẩm ID: " + sanPham.getMaSanPham()
+                                            + ". Số lượng còn lại không đủ!");
+                        }
+                        break;
+                    }
+                }
+            }
+
+            System.out.println("123");
+
+            for (SanPham sanPham : sanPhamList) {
+                for (SanPham sp : sanPhamListDeFault) {
+                    if (sanPham.getMaSanPham() == sp.getMaSanPham()) {
+                        sp.setSoLuong(sp.getSoLuong() - sanPham.getSoLuong());
+                        break;
+                    }
+                }
+            }
+
+            return ResponseEntity.ok(sanPhamService.saveSanPhamBulk(sanPhamListDeFault));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Có lỗi xảy ra khi kiểm tra hoặc cập nhật số lượng sản phẩm.");
         }
     }
 

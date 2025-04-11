@@ -3,13 +3,28 @@ import axios from "axios";
 const addItem = async (url, data, setList, setSnackbar) => {
   try {
     const response = await axios.post(url, data);
-    setList((prevList) => [...prevList, response.data]); // Corrected syntax
+    setList((prevList) => [...prevList, response.data]); // Cập nhật danh sách
     setSnackbar({ open: true, message: "Thêm thành công!", type: "success" });
+    return response.data; // Trả về dữ liệu từ phản hồi
   } catch (error) {
     const errorMessage = error.response?.data || "Có lỗi xảy ra khi thêm.";
     setSnackbar({ open: true, message: errorMessage, type: "error" });
+    throw error; // Ném lỗi để xử lý phía gọi hàm
   }
 };
+
+const addList = async (url, data, setSnackbar) => {
+  try {
+    const response = await axios.post(url, data);
+    setSnackbar({ open: true, message: "Thêm thành công!", type: "success" });
+    return response.data; // Trả về dữ liệu từ phản hồi
+  } catch (error) {
+    const errorMessage = error.response?.data || "Có lỗi xảy ra khi thêm.";
+    setSnackbar({ open: true, message: errorMessage, type: "error" });
+    throw error; // Ném lỗi để xử lý phía gọi hàm
+  }
+};
+
 
 const editItem = async (url, id, data, setList, setSnackbar, keyField) => {
   try {
@@ -26,6 +41,15 @@ const editItem = async (url, id, data, setList, setSnackbar, keyField) => {
     const errorMessage =
       error.response?.data?.message || "Có lỗi xảy ra khi cập nhật.";
     setSnackbar({ open: true, message: errorMessage, type: "error" });
+  }
+};
+
+const editList = async (url, data, setError) => {
+  try {
+    const response = await axios.put(`${url}`, data);
+    return response.data;
+  } catch (error) {
+    setError(error.response?.data?.message || "Có lỗi xảy ra khi cập nhật.");
   }
 };
 
@@ -46,4 +70,4 @@ const deleteItem = async (url, id, setList, setSnackbar, keyField) => {
   }
 };
 
-export { addItem, editItem, deleteItem };
+export { addItem, editItem, deleteItem, addList, editList };

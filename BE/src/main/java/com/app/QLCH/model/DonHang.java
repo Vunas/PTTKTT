@@ -2,6 +2,7 @@ package com.app.QLCH.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
 
@@ -17,21 +18,25 @@ public class DonHang {
     private Integer maKhachHang;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "ngayDat", nullable = false, updatable = false)
-    private Date ngayDat = new Date();
+    @Column(name = "ngayDat", nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
+    private Date ngayDat;
 
-    @Column(name = "trangThai", nullable = false, length = 50)
-    private String trangThai; // Sử dụng String thay vì Enum
+    @Column(name = "trangThaiGiaoHang", nullable = false, length = 50)
+    private String trangThaiGiaoHang; // Đổi tên để đồng nhất với SQL
 
     @Column(name = "tongGia", nullable = false, columnDefinition = "DECIMAL(10, 2)")
     private Double tongGia;
 
-    @Column(name = "diaChiGiaoHang", nullable = false, length = 255)
+    @Column(name = "diaChiGiaoHang", length = 255)
     private String diaChiGiaoHang;
 
     @Column(name = "phuongThucThanhToan", nullable = false, length = 50)
-    private String phuongThucThanhToan; // Sử dụng String thay vì Enum
+    private String phuongThucThanhToan;
 
-    @Column(name = "ghiChu")
-    private String ghiChu;
+    @Column(name = "ghiChu", columnDefinition = "TEXT")
+    private String ghiChu; // Thêm columnDefinition để khớp với kiểu TEXT của SQL
+
+    @Column(name = "TrangThai")
+    private Integer trangThai = 1; // Đặt giá trị mặc định là 1
 }

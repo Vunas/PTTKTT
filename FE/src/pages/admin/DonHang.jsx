@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import fetchData from "../../utils/FetchData"; // Hàm fetch dữ liệu chung
-import { addItem, editItem, deleteItem } from "../../utils/CRUD"; // Các thao tác CRUD
+import { deleteItem, addList, editList } from "../../utils/CRUD"; // Các thao tác CRUD
 import filterData from "../../utils/FilterData"; // Hàm lọc chung
 import CommonToolbar from "../../components/CommonToolBar"; // Toolbar chung
 import DonHangDialog from "../../components/Dialog/DonHangDialog"; // Dialog đơn hàng
@@ -15,8 +15,10 @@ import { exportExcel } from "../../utils/ExcelJS"; // Xuất file Excel
 const DonHang = () => {
   const [donHangList, setDonHangList] = useState([]);
   const [khachHangList, setKhachHangList] = useState([]);
+  const [sanPhamList, setSanPhamList] = useState([]);
   const [loadingDonHang, setLoadingDonHang] = useState(true);
   const [loadingKhachHang, setLoadingKhachHang] = useState(true);
+  const [loadingSanPham, setLoadingSanPham] = useState(true);
   const [error, setError] = useState(null);
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [editDonHang, setEditDonHang] = useState(null);
@@ -29,7 +31,7 @@ const DonHang = () => {
     phuongThucThanhToan: "",
     MinGia: "",
     MaxGia: "",
-    trangThai: "",
+    trangThaiGiaoHang: "",
   });
   const [search, setSearch] = useState("");
   const [snackbar, setSnackbar] = useState({
@@ -37,6 +39,9 @@ const DonHang = () => {
     message: "",
     type: "success",
   });
+  const [expandedChiTiet, setExpandedChiTiet] = useState({});
+  const [currentChiTietDonHang, setCurrentChiTietDonHang] = useState([]);
+  const [dialogSanPhamList, setDialogSanPhamList] = useState([]); // State riêng cho danh sách sản phẩm trong dialog
 
   // Fetch dữ liệu đơn hàng và khách hàng lần đầu
   useEffect(() => {
@@ -52,7 +57,48 @@ const DonHang = () => {
       setLoadingKhachHang,
       setError
     );
+    fetchData(
+      "http://localhost:8080/api/sanpham",
+      setSanPhamList,
+      setLoadingSanPham,
+      setError
+    );
   }, []);
+
+  useEffect(() => {
+    setExpandedChiTiet({});
+  }, [donHangList]);
+
+  // Lấy chi tiết đơn hàng
+  const getChiTietDonHang = async (maDonHang) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/chitietdonhang/donhang/${maDonHang}`
+      );
+      const data = await response.json();
+      setExpandedChiTiet((prev) => ({ ...prev, [maDonHang]: data }));
+      return data;
+    } catch (error) {
+      console.error("Lỗi khi lấy chi tiết đơn hàng:", error);
+    }
+  };
+
+  const handleOpenDialog = async (donHang = null) => {
+    setTitle(donHang ? "Sửa Đơn Hàng" : "Thêm Đơn Hàng");
+    setEditDonHang(donHang);
+    setDialogOpen(true);
+
+    // Cập nhật danh sách sản phẩm cho dialog mỗi khi mở
+    setDialogSanPhamList(sanPhamList);
+
+    if (donHang) {
+      const chiTiet = await getChiTietDonHang(donHang.maDonHang);
+      setCurrentChiTietDonHang(chiTiet);
+    } else {
+      setCurrentChiTietDonHang([]); // Reset chi tiết đơn hàng khi thêm mới
+    }
+  };
+
 
   const handleRefresh = () => {
     // Reset tất cả các filter về mặc định
@@ -62,7 +108,7 @@ const DonHang = () => {
       ngayDatKetThuc: "",
       diaChiGiaoHang: "",
       phuongThucThanhToan: "",
-      trangThai: "",
+      trangThaiGiaoHang: "",
       tongGiaMin: "",
       tongGiaMax: "",
     });
@@ -70,9 +116,6 @@ const DonHang = () => {
 
   // Hàm lọc dữ liệu
   const handleFilter = useCallback(() => {
-
-    console.log("Sending filter params to API:", filterParams);
-
     filterData(
       "http://localhost:8080/api/donhang/filter",
       filterParams,
@@ -88,25 +131,104 @@ const DonHang = () => {
   }, [handleFilter]);
 
   // Xử lý thêm đơn hàng
-  const handleAdd = (newData) => {
-    addItem(
-      "http://localhost:8080/api/donhang",
-      newData,
-      setDonHangList,
-      setSnackbar
-    );
+  const handleAdd = async (newDonHang, newChiTietDonHang, updatedSanPhamList) => {
+    console.log(updatedSanPhamList);
+    try {
+      // Cập nhật lại danh sách sản phẩm sau khi thêm đơn hàng
+      const newSanPhamList = await editList(
+        "http://localhost:8080/api/sanpham/bulk",
+        updatedSanPhamList,
+        setError
+      );
+      setSanPhamList(newSanPhamList);
+
+
+      const addedDonHang = await addList(
+        "http://localhost:8080/api/donhang",
+        newDonHang,
+        setSnackbar
+      );
+
+      // Sau khi thêm xong `DonHang`, lấy mã đơn hàng vừa tạo và thêm `ChiTietDonHang`
+      await addList(
+        "http://localhost:8080/api/chitietdonhang/bulk",
+        newChiTietDonHang.map((item) => ({
+          ...item,
+          maDonHang: addedDonHang.maDonHang, // Thêm mã đơn hàng vào chi tiết
+        })),
+        setError
+      );
+
+      // Refetch danh sách đơn hàng
+      fetchData(
+        "http://localhost:8080/api/donhang",
+        setDonHangList,
+        setLoadingDonHang,
+        setError
+      );
+
+      setSnackbar({ open: true, message: "Thêm thành công!", type: "success" });
+
+    } catch (error) {
+      console.error("Lỗi khi thêm đơn hàng hoặc chi tiết:", error);
+      setSnackbar({
+        open: true,
+        message: "Lỗi khi thêm dữ liệu.",
+        type: "error",
+      });
+    }
   };
 
   // Xử lý sửa đơn hàng
-  const handleEdit = (id, updatedData) => {
-    editItem(
-      "http://localhost:8080/api/donhang",
-      id,
-      updatedData,
-      setDonHangList,
-      setSnackbar,
-      "maDonHang"
-    );
+  const handleEdit = async (id, updatedDonHang, updatedChiTietDonHang, updatedSanPhamList) => {
+    console.log(updatedSanPhamList);
+    try {
+      setLoadingDonHang(true);
+      console.log(updatedDonHang);
+      console.log(updatedChiTietDonHang);
+
+      // Cập nhật danh sách sản phẩm
+      const newSanPhamList = await editList(
+        "http://localhost:8080/api/sanpham/bulk",
+        updatedSanPhamList,
+        setError
+      );
+      setSanPhamList(newSanPhamList);
+
+      // Cập nhật thông tin DonHang
+      await editList(
+        `http://localhost:8080/api/donhang/${id}`,
+        updatedDonHang,
+        setError,
+      );
+
+      // Cập nhật danh sách ChiTietDonHang liên quan đến DonHang
+      await editList(
+        "http://localhost:8080/api/chitietdonhang/bulk",
+        updatedChiTietDonHang.map((item) => ({
+          ...item,
+          maDonHang: updatedDonHang.maDonHang, // Đảm bảo mã đơn hàng được gán chính xác
+        })),
+        setError,
+      );
+
+      // Refetch danh sách đơn hàng
+      fetchData(
+        "http://localhost:8080/api/donhang",
+        setDonHangList,
+        setLoadingDonHang,
+        setError
+      );
+      setLoadingDonHang(false);
+      setSnackbar({ open: true, message: "Cập nhật thành công!", type: "success" });
+    } catch (error) {
+      console.error("Lỗi khi chỉnh sửa đơn hàng hoặc chi tiết:", error);
+      setSnackbar({
+        open: true,
+        message: "Lỗi khi chỉnh sửa dữ liệu.",
+        type: "error",
+      });
+    }
   };
 
   // Xử lý xóa mềm đơn hàng
@@ -134,7 +256,7 @@ const DonHang = () => {
         { header: "Mã Đơn Hàng", key: "maDonHang" },
         { header: "Mã Khách Hàng", key: "maKhachHang" },
         { header: "Ngày Đặt", key: "ngayDat" },
-        { header: "Trạng Thái", key: "trangThai" },
+        { header: "Trạng Thái Giao Hàng", key: "trangThaiGiaoHang" },
         { header: "Tổng Giá", key: "tongGia" },
       ],
       "DanhSachDonHang.xlsx"
@@ -142,17 +264,13 @@ const DonHang = () => {
   };
 
   // Render giao diện
-  if (loadingDonHang || loadingKhachHang) return <Loading />;
+  if (loadingDonHang || loadingKhachHang || loadingSanPham) return <Loading />;
   if (error) return <Error />;
 
   return (
     <div>
       <CommonToolbar
-        onAdd={() => {
-          setDialogOpen(true);
-          setEditDonHang(null);
-          setTitle("Thêm Đơn Hàng");
-        }}
+        onAdd={() => handleOpenDialog()}
         onSearch={(keyword) => setSearch(keyword.trim())}
         onExport={handleExport}
       />
@@ -167,11 +285,11 @@ const DonHang = () => {
       <DonHangTable
         donHangList={donHangList}
         onEdit={(donHang) => {
-          setTitle("Sửa Đơn Hàng");
-          setEditDonHang(donHang);
-          setDialogOpen(true);
+          handleOpenDialog(donHang);
         }}
         onDelete={handleDelete}
+        getChiTietDonHang={getChiTietDonHang}
+        chiTietDonHang={expandedChiTiet}
       />
 
       <DonHangDialog
@@ -179,12 +297,16 @@ const DonHang = () => {
         onClose={handleDialogClose}
         onSave={
           editDonHang
-            ? (data) => handleEdit(editDonHang.maDonHang, data)
-            : handleAdd
+            ? (data) => handleEdit(editDonHang.maDonHang, data.donHang, data.chiTietDonHang, data.sanPhamList)
+            : (donHangData, chiTietData, sanPhamData) => handleAdd(donHangData, chiTietData, sanPhamData)
         }
         donHang={editDonHang}
+        chiTietDonHang={currentChiTietDonHang}
         title={title}
         khachHangList={khachHangList}
+        sanPhamList={dialogSanPhamList} // Sử dụng danh sách sản phẩm riêng cho dialog
+        setSanPhamList={setDialogSanPhamList} // Cập nhật danh sách sản phẩm riêng cho dialog
+        setSnackbar={setSnackbar}
       />
 
       <Snackbar

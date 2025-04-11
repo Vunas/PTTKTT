@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.app.QLCH.model.TaiKhoan;
 import com.app.QLCH.service.TaiKhoanService;
+import com.app.QLCH.utils.HashUtil;
 
 import java.util.List;
 
@@ -47,6 +48,8 @@ public class TaiKhoanController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("Email đã tồn tại!");
             }
+
+            taiKhoan.setMatKhau(HashUtil.hashString(taiKhoan.getMatKhau()));
 
             // Lưu tài khoản nếu không có lỗi
             return ResponseEntity.ok(taiKhoanService.saveTaiKhoan(taiKhoan));

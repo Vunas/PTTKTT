@@ -230,15 +230,16 @@ CREATE TABLE DonHang (
     maDonHang INT PRIMARY KEY AUTO_INCREMENT, -- Mã đơn hàng duy nhất
     maKhachHang INT NOT NULL, -- Mã khách hàng
     ngayDat TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày đặt hàng
-    trangThai VARCHAR(50) DEFAULT 'Đã đặt', -- Trạng thái đơn hàng
+    trangThaiGiaoHang VARCHAR(50) DEFAULT 'Đã đặt', -- Trạng thái đơn hàng
     tongGia DECIMAL(10, 2) NOT NULL CHECK (tongGia >= 0), -- Tổng giá trị đơn hàng (không âm)
     diaChiGiaoHang VARCHAR(255) NOT NULL, -- Địa chỉ giao hàng
     phuongThucThanhToan VARCHAR(50) NOT NULL, -- Phương thức thanh toán
     ghiChu TEXT, -- Ghi chú bổ sung cho đơn hàng (nếu cần)
+    TrangThai TINYINT DEFAULT 1, -- 1 là bình thường 0 là xóa 2 là đã xuất hóa đơnđơn
     FOREIGN KEY (maKhachHang) REFERENCES KhachHang(maKhachHang) -- Khóa ngoại liên kết với bảng KhachHang
 );
 
-INSERT INTO DonHang (maKhachHang, trangThai, tongGia, diaChiGiaoHang, phuongThucThanhToan, ghiChu)
+INSERT INTO DonHang (maKhachHang, trangThaiGiaoHang, tongGia, diaChiGiaoHang, phuongThucThanhToan, ghiChu)
 VALUES
 (1, 'Đã đặt', 250000.00, '123 Nguyễn Văn Cừ, Hà Nội', 'Tiền mặt', 'Không có yêu cầu đặc biệt'),
 (2, 'Đã xác nhận', 450000.00, '456 Trần Hưng Đạo, TP.HCM', 'Thẻ ngân hàng', 'Yêu cầu giao nhanh'),
@@ -250,6 +251,34 @@ VALUES
 (8, 'Đang giao', 950000.00, '210 Lê Văn Sỹ, Đà Lạt', 'Thẻ ngân hàng', 'Địa chỉ xa, giao trễ'),
 (9, 'Đã giao', 350000.00, '890 Pasteur, TP.HCM', 'Ví điện tử', 'Khách hài lòng'),
 (10, 'Đã xóa', 450000.00, '123 Tôn Đức Thắng, Hà Nội', 'Tiền mặt', NULL);
+
+CREATE TABLE ChiTietDonHang (
+    maChiTiet INT PRIMARY KEY AUTO_INCREMENT, -- Mã chi tiết đơn hàng duy nhất
+    maDonHang INT NOT NULL, -- Mã đơn hàng liên kết
+    maSanPham INT NOT NULL, -- Mã sản phẩm liên kết
+    soLuong INT NOT NULL CHECK (soLuong > 0), -- Số lượng sản phẩm (phải lớn hơn 0)
+    donGia DECIMAL(10, 2) NOT NULL CHECK (donGia >= 0), -- Đơn giá sản phẩm (không âm)
+    thanhTien DECIMAL(10, 2) GENERATED ALWAYS AS (soLuong * donGia), -- Tổng giá trị của sản phẩm
+    TrangThai TINYINT DEFAULT 1, 
+    FOREIGN KEY (maDonHang) REFERENCES DonHang(maDonHang), -- Khóa ngoại liên kết với bảng đơn hàng
+    FOREIGN KEY (maSanPham) REFERENCES SanPham(maSanPham) -- Khóa ngoại liên kết với bảng sản phẩm
+);
+
+INSERT INTO ChiTietDonHang (maDonHang, maSanPham, soLuong, donGia) VALUES
+(1, 1, 2, 150000),
+(1, 2, 1, 300000),
+(2, 3, 5, 50000),
+(2, 1, 3, 150000),
+(3, 4, 1, 250000),
+(4, 5, 7, 80000),
+(5, 6, 2, 180000),
+(6, 7, 4, 220000),
+(7, 8, 1, 450000),
+(8, 9, 3, 120000);
+
+
+
+
 
 
 

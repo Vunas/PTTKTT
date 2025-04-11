@@ -99,11 +99,11 @@ const DonHangFilter = ({
       <FormControl size="small" style={{ minWidth: 150 }}>
         <InputLabel>Trạng Thái</InputLabel>
         <Select
-          value={filterParams.trangThai || ""}
+          value={filterParams.trangThaiGiaoHang || ""}
           onChange={(e) =>
             onFilterParamsChange({
               ...filterParams,
-              trangThai: e.target.value || null,
+              trangThaiGiaoHang: e.target.value || null,
             })
           }
         >

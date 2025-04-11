@@ -8,7 +8,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import AdminRoutes from "./router/AdminRoutes";
-import {LoginAdmin} from "./pages/Login";
+import LoginAdmin from "./pages/Login";
 
 const App = () => {
 

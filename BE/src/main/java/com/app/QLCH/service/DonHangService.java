@@ -17,13 +17,13 @@ public class DonHangService {
 
     // Lấy danh sách tất cả đơn hàng đang hoạt động (không bị xóa mềm)
     public List<DonHang> getAllDonHang() {
-        return donHangRepository.findByTrangThaiNot("đã xóa"); // Lấy tất cả trừ trạng thái xóa mềm
+        return donHangRepository.findByTrangThai(1); // Lấy tất cả trừ trạng thái xóa mềm
     }
 
     // Lấy đơn hàng theo ID, nhưng không bao gồm đơn hàng bị xóa mềm
     public DonHang getDonHangById(Integer id) {
         DonHang donHang = donHangRepository.findById(id).orElse(null);
-        return (donHang != null && !"đã xóa".equals(donHang.getTrangThai())) ? donHang : null;
+        return (donHang != null && donHang.getTrangThai() == 1) ? donHang : null;
     }
 
     // Thêm hoặc cập nhật đơn hàng
@@ -35,15 +35,18 @@ public class DonHangService {
     public void deleteDonHangById(Integer id) {
         DonHang donHang = donHangRepository.findById(id).orElse(null);
         if (donHang != null) {
-            donHang.setTrangThai("đã xóa"); // Đánh dấu là đã xóa
+            donHang.setTrangThai(0); // Đánh dấu là đã xóa
             donHangRepository.save(donHang); // Cập nhật trạng thái
         }
     }
 
     // Lọc danh sách đơn hàng dựa trên nhiều tiêu chí
-    public List<DonHang> filterDonHang(Integer maKhachHang, Date startDate, Date endDate, String diaChiGiaoHang, String phuongThucThanhToan, Double minGia, Double maxGia, String trangThai) {
-        if (minGia == null) minGia = 0.0;
-        if (maxGia == null) maxGia = Double.MAX_VALUE;
+    public List<DonHang> filterDonHang(Integer maKhachHang, Date startDate, Date endDate, String diaChiGiaoHang,
+            String phuongThucThanhToan, Double minGia, Double maxGia, String trangThaiGiaoHang) {
+        if (minGia == null)
+            minGia = 0.0;
+        if (maxGia == null)
+            maxGia = Double.MAX_VALUE;
         if (startDate == null) {
             startDate = Date.valueOf(LocalDate.of(1970, 1, 1)); // Ngày đầu tiên (UNIX epoch)
         }
@@ -51,18 +54,16 @@ public class DonHangService {
             endDate = Date.valueOf(LocalDate.now()); // Ngày hiện tại
         }
 
-        if (maKhachHang == null && (trangThai == null || trangThai.isEmpty())) {
-            return donHangRepository.findByNgayDatBetweenAndTrangThaiNotAndDiaChiGiaoHangContainingIgnoreCaseAndPhuongThucThanhToanContainingIgnoreCaseAndTongGiaBetween(
-                startDate, endDate, "Đã xóa", diaChiGiaoHang != null? diaChiGiaoHang : "%", phuongThucThanhToan != null ? phuongThucThanhToan : "%", minGia, maxGia);
-        } else if (maKhachHang == null) {
-            return donHangRepository.findByNgayDatBetweenAndTrangThaiAndDiaChiGiaoHangContainingIgnoreCaseAndPhuongThucThanhToanContainingIgnoreCaseAndTongGiaBetween(
-                startDate, endDate, trangThai,  diaChiGiaoHang != null? diaChiGiaoHang : "", phuongThucThanhToan != null ? phuongThucThanhToan : "", minGia, maxGia);
-        } else if (trangThai == null) {
-            return donHangRepository.findByMaKhachHangAndNgayDatBetweenAndTrangThaiNotAndDiaChiGiaoHangContainingIgnoreCaseAndPhuongThucThanhToanContainingIgnoreCaseAndTongGiaBetween(
-                maKhachHang, startDate, endDate, "Đã xóa",  diaChiGiaoHang != null? diaChiGiaoHang : "", phuongThucThanhToan != null ? phuongThucThanhToan : "", minGia, maxGia);
+        if (maKhachHang == null) {
+            return donHangRepository
+                    .findByNgayDatBetweenAndTrangThaiGiaoHangContainingIgnoreCaseAndDiaChiGiaoHangContainingIgnoreCaseAndPhuongThucThanhToanContainingIgnoreCaseAndTongGiaBetweenAndTrangThai(
+                            startDate, endDate, trangThaiGiaoHang != null ? trangThaiGiaoHang : "", diaChiGiaoHang, phuongThucThanhToan, minGia, maxGia,
+                            1);
         } else {
-            return donHangRepository.findByMaKhachHangAndNgayDatBetweenAndTrangThaiContainingIgnoreCaseAndDiaChiGiaoHangContainingIgnoreCaseAndPhuongThucThanhToanContainingIgnoreCaseAndTongGiaBetween(
-                maKhachHang, startDate, endDate, trangThai,  diaChiGiaoHang != null? diaChiGiaoHang : "", phuongThucThanhToan != null ? phuongThucThanhToan : "", minGia, maxGia);
+            return donHangRepository
+                    .findByMaKhachHangAndNgayDatBetweenAndTrangThaiGiaoHangContainingIgnoreCaseAndDiaChiGiaoHangContainingIgnoreCaseAndPhuongThucThanhToanContainingIgnoreCaseAndTongGiaBetweenAndTrangThai(
+                            maKhachHang, startDate, endDate, trangThaiGiaoHang != null? trangThaiGiaoHang : "", diaChiGiaoHang, phuongThucThanhToan,
+                            minGia, maxGia, 1);
         }
     }
 }

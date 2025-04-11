@@ -40,7 +40,7 @@ const Sidebar = () => {
       >
         {/* Tiêu đề Sidebar */}
         {isOpen ? (
-          <div className="p-4 text-xl max-h-10 overflow-hidden font-semibold border-b border-gray-300">
+          <div className="p-4 text-xl max-h-10 overflow-hidden font-semibold border-gray-300">
             Admin Panel
           </div>
         ) : (

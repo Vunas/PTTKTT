@@ -79,7 +79,7 @@ public class DonHangController {
             @RequestParam(required = false) String phuongThucThanhToan,
             @RequestParam(required = false) Double minGia,
             @RequestParam(required = false) Double maxGia,
-            @RequestParam(required = false) String trangThai) {
+            @RequestParam(required = false) String trangThaiGiaoHang) {
     
         // Gán giá trị mặc định nếu tham số ngày không được cung cấp
         if (ngayDatBatDau == null) {
@@ -95,7 +95,7 @@ public class DonHangController {
     
         return donHangService.filterDonHang(maKhachHang, startDate, endDate, 
                                             diaChiGiaoHang, phuongThucThanhToan, 
-                                            minGia, maxGia, trangThai);
+                                            minGia, maxGia, trangThaiGiaoHang);
     }
     
 }

@@ -2,7 +2,6 @@ package com.app.QLCH.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.app.QLCH.model.SanPham;
 import com.app.QLCH.repository.SanPhamRepository;
 
@@ -26,6 +25,10 @@ public class SanPhamService {
     // Thêm hoặc cập nhật sản phẩm
     public SanPham saveSanPham(SanPham sanPham) {
         return sanPhamRepository.save(sanPham);
+    }
+
+    public List<SanPham> saveSanPhamBulk(List<SanPham> sanPhamList) {
+        return sanPhamRepository.saveAll(sanPhamList); 
     }
 
     // Xóa sản phẩm theo ID (đánh dấu trạng thái là không hoạt động)
