@@ -121,6 +121,14 @@ public class KhuyenMaiController {
             @RequestParam(required = false) Integer trangThai,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate ngayBatDau,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate ngayKetThuc) {
+        
+        // Kiểm tra đầu vào
+        System.out.println("Tên: " + tenKhuyenMai);
+        System.out.println("Loại: " + loaiKhuyenMai);
+        System.out.println("Trạng thái: " + trangThai);
+        System.out.println("Ngày bắt đầu: " + ngayBatDau);
+        System.out.println("Ngày kết thúc: " + ngayKetThuc);
+    
         return khuyenMaiService.filterKhuyenMai(tenKhuyenMai, loaiKhuyenMai, trangThai, ngayBatDau, ngayKetThuc);
     }
 

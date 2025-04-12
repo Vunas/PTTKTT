@@ -36,6 +36,7 @@ const KhuyenMai = () => {
 
   // Fetch dữ liệu khuyến mãi lần đầu
   useEffect(() => {
+    console.log("truoc");
     fetchData(
       "http://localhost:8080/api/khuyenmai",
       setKhuyenMaiList,
@@ -46,6 +47,7 @@ const KhuyenMai = () => {
 
   // Hàm lọc dữ liệu
   const handleFilter = useCallback(() => {
+    console.log(filterParams);
     filterData(
       "http://localhost:8080/api/khuyenmai/filter",
       filterParams,
@@ -57,6 +59,7 @@ const KhuyenMai = () => {
 
   // Gọi lại filter khi có thay đổi
   useEffect(() => {
+    console.log("sau")
     handleFilter();
   }, [handleFilter]);
 

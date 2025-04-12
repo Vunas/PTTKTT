@@ -301,6 +301,23 @@ VALUES
 ('Tặng Sốt Khi Mua Gà Rán', 'Tặng 1 phần sốt khi mua gà rán bất kỳ', NULL, 3, '2025-08-20', '2025-08-31', 1),
 ('Giảm 5% Gà Nguyên Con', 'Giảm giá 5% cho gà rán nguyên con', 5.00, 1, '2025-09-01', '2025-09-10', 1);
 
+CREATE TABLE HoaDon (
+    maHoaDon INT PRIMARY KEY AUTO_INCREMENT, -- Mã hóa đơn duy nhất
+    maDonHang INT NOT NULL,                  -- Mã đơn hàng liên kết
+    maKhuyenMai INT DEFAULT NULL,            -- Mã khuyến mãi áp dụng (nếu có)
+    ngayXuatHoaDon TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày xuất hóa đơn
+    tongTien DECIMAL(10, 2) NOT NULL CHECK (tongTien >= 0), -- Tổng tiền sau áp dụng khuyến mãi (không âm)
+    TrangThai TINYINT DEFAULT 1,             -- Trạng thái (1: bình thường, 0: đã hủy)
+    FOREIGN KEY (maDonHang) REFERENCES DonHang(maDonHang), -- Khóa ngoại đến bảng đơn hàng
+    FOREIGN KEY (maKhuyenMai) REFERENCES KhuyenMai(MaKhuyenMai) -- Khóa ngoại đến bảng khuyến mãi
+);
+
+INSERT INTO HoaDon (maDonHang, maKhuyenMai, tongTien) VALUES 
+    (1, NULL, 120000.00), 
+    (2, 1, 95000.00), 
+    (3, 2, 85000.00), 
+    (4, NULL, 150000.00), 
+    (5, 3, 100000.00);
 
 
 

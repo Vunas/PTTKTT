@@ -29,16 +29,6 @@ public class KhuyenMaiService {
         return null; // Trả về null nếu khuyến mãi đã hết hiệu lực
     }
 
-    // Tìm kiếm khuyến mãi theo tên khuyến mãi
-    public List<KhuyenMai> searchKhuyenMaiByTen(String tenKhuyenMai) {
-        return khuyenMaiRepository.findByTenKhuyenMaiContainingIgnoreCase(tenKhuyenMai);
-    }
-
-    // Tìm kiếm khuyến mãi theo loại khuyến mãi (1, 2, 3)
-    public List<KhuyenMai> searchKhuyenMaiByLoai(Integer loaiKhuyenMai) {
-        return khuyenMaiRepository.findByLoaiKhuyenMai(loaiKhuyenMai);
-    }
-
     // Kiểm tra sự tồn tại của khuyến mãi dựa trên tên
     public boolean existsByTenKhuyenMai(String tenKhuyenMai) {
         return khuyenMaiRepository.existsByTenKhuyenMai(tenKhuyenMai);
@@ -66,19 +56,15 @@ public class KhuyenMaiService {
             ngayBatDau = LocalDate.of(1970, 1, 1); // Ngày bắt đầu mặc định (epoch)
         }
         if (ngayKetThuc == null) {
-            ngayKetThuc = LocalDate.now().plusDays(1); // Bao gồm cả ngày hiện tại
+            ngayKetThuc = LocalDate.of(9999, 12, 31); // Ngày xa trong tương lai
         }
 
         Date startDate = Date.valueOf(ngayBatDau);
         Date endDate = Date.valueOf(ngayKetThuc);
+        
 
         return khuyenMaiRepository.filterKhuyenMaiByAllConditions(tenKhuyenMai, loaiKhuyenMai, trangThai, startDate,
                 endDate);
-    }
-
-    // Tìm kiếm khuyến mãi trong khoảng thời gian
-    public List<KhuyenMai> searchKhuyenMaiByDateRange(Date ngayBatDau, Date ngayKetThuc) {
-        return khuyenMaiRepository.findByNgayBatDauGreaterThanEqualAndNgayKetThucLessThanEqual(ngayBatDau, ngayKetThuc);
     }
 
     // Khóa khuyến mãi (trạng thái = 2)
