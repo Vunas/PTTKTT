@@ -308,16 +308,18 @@ CREATE TABLE HoaDon (
     ngayXuatHoaDon TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày xuất hóa đơn
     tongTien DECIMAL(10, 2) NOT NULL CHECK (tongTien >= 0), -- Tổng tiền sau áp dụng khuyến mãi (không âm)
     TrangThai TINYINT DEFAULT 1,             -- Trạng thái (1: bình thường, 0: đã hủy)
+    maNhanVien INT NOT NULL,                 -- Mã nhân viên phụ trách hóa đơn
     FOREIGN KEY (maDonHang) REFERENCES DonHang(maDonHang), -- Khóa ngoại đến bảng đơn hàng
-    FOREIGN KEY (maKhuyenMai) REFERENCES KhuyenMai(MaKhuyenMai) -- Khóa ngoại đến bảng khuyến mãi
+    FOREIGN KEY (maKhuyenMai) REFERENCES KhuyenMai(maKhuyenMai), -- Khóa ngoại đến bảng khuyến mãi
+    FOREIGN KEY (maNhanVien) REFERENCES NhanVien(maNhanVien) -- Khóa ngoại đến bảng nhân viên
 );
 
-INSERT INTO HoaDon (maDonHang, maKhuyenMai, tongTien) VALUES 
-    (1, NULL, 120000.00), 
-    (2, 1, 95000.00), 
-    (3, 2, 85000.00), 
-    (4, NULL, 150000.00), 
-    (5, 3, 100000.00);
+INSERT INTO HoaDon (maDonHang, maKhuyenMai, tongTien, maNhanVien) VALUES 
+    (1, NULL, 120000.00, 1), 
+    (2, 1, 95000.00, 2), 
+    (3, 2, 85000.00, 3), 
+    (4, NULL, 150000.00, 4), 
+    (5, 3, 100000.00, 5);
 
 
 

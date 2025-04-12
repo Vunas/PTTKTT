@@ -13,4 +13,5 @@ const fetchData = async (url, setList, setLoading, setError) => {
   }
 };
 
+
 export default fetchData;

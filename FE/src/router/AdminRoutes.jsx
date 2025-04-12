@@ -12,6 +12,7 @@ import SanPham from "../pages/admin/SanPham";
 import KhoHang from "../pages/admin/KhoHang";
 import DonHang from "../pages/admin/DonHang";
 import KhuyenMai from "../pages/admin/KhuyenMai";
+import HoaDon from "../pages/admin/HoaDon";
 
 const AdminRoutes = () => {
   return (
@@ -25,6 +26,7 @@ const AdminRoutes = () => {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="khuyenmai" element={<KhuyenMai />} />
           <Route path="donhang" element={<DonHang />} />
+          <Route path="hoadon" element={<HoaDon />} />
           <Route path="khohang" element={<KhoHang />} />
           <Route path="nhacungcap" element={<NhaCungCap />} />
           <Route path="sanpham" element={<SanPham />} />

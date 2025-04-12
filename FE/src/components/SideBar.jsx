@@ -15,6 +15,7 @@ import {
   Assignment,
   Business,
   LocalOffer,
+  ReceiptLong,
 
 } from "@mui/icons-material";
 
@@ -70,6 +71,13 @@ const Sidebar = () => {
             label="Đơn Hàng"
             to="/admin/donhang"
             active={location.pathname === "/admin/donhang"}
+          />
+          <SidebarItem
+            isOpen={isOpen}
+            icon={<ReceiptLong />}
+            label="Hóa Đơn"
+            to="/admin/hoadon"
+            active={location.pathname === "/admin/hoadon"}
           />
           <SidebarItem
             isOpen={isOpen}

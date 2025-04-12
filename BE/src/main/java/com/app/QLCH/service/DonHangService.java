@@ -51,7 +51,7 @@ public class DonHangService {
             startDate = Date.valueOf(LocalDate.of(1970, 1, 1)); // Ngày đầu tiên (UNIX epoch)
         }
         if (endDate == null) {
-            endDate = Date.valueOf(LocalDate.now()); // Ngày hiện tại
+            endDate = Date.valueOf(LocalDate.of(9999, 12, 31)); // Ngày hiện tại
         }
 
         if (maKhachHang == null) {

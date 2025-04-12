@@ -21,7 +21,10 @@ const LoginAdmin = ({ setIsLoggedIn }) => {
     }
   }, [setIsLoggedIn]);
 
-  const handleCloseSnackbar = () => setSnackbar({ ...snackbar, open: false });
+  const handleCloseSnackbar = (_, reason) => {
+    if (reason === "clickaway") return; // Tránh đóng khi click bên ngoài
+    setSnackbar((prevSnackbar) => ({ ...prevSnackbar, open: false }));
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();

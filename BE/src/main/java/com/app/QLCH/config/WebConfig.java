@@ -12,9 +12,11 @@ public class WebConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**") // Cho phép tất cả các endpoint
-                        .allowedOrigins("http://localhost:5173") // Cho phép domain ReactJS
-                        .allowedMethods("GET", "POST", "PUT", "DELETE"); // Cho phép các HTTP method
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:5173") // URL chính xác của frontend
+                        .allowedMethods("GET", "POST", "PUT", "DELETE") // Các method được phép
+                        .allowedHeaders("*") // Cho phép tất cả headers
+                        .allowCredentials(true); // Cho phép gửi cookie qua CORS
             }
         };
     }
