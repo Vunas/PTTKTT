@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 import AdminRoutes from "./router/AdminRoutes";
 import {LoginAdmin} from "./pages/Login";
+import WarehouseRoutes from "./router/WarehouseRoutes";
 
 const App = () => {
 
@@ -37,6 +38,7 @@ const App = () => {
           element={isLoggedIn ? <Navigate to="/admin/dashboard" replace /> : <LoginAdmin setIsLoggedIn={setIsLoggedIn} />}
         />
         <Route path="/admin/*" element={isLoggedIn ? <AdminRoutes /> : <Navigate to="/login-admin" replace />} />
+        <Route path="/warehouse/*" element={isLoggedIn ? <WarehouseRoutes/>: <Navigate to="/warehouse" replace/>} />
         <Route path="*" element={<h1>404 - Không tìm thấy trang</h1>} />
       </Routes>
     </Router>
