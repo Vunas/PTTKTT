@@ -310,7 +310,7 @@ const DonHangDialog = ({
       return;
     }
 
-    if (!newChiTietDonHang["tongGia"]) {
+    if (newChiTietDonHang["tongGia"] <= 0) {
       setSnackbar({
         open: true,
         message: "Vui lòng chọn thực đơn!",
