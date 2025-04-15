@@ -60,13 +60,6 @@ const Sidebar = () => {
           />
           <SidebarItem
             isOpen={isOpen}
-            icon={<Dashboard />}
-            label="Dashboard"
-            to="/admin/dashboard"
-            active={location.pathname === "/admin/dashboard"}
-          />
-          <SidebarItem
-            isOpen={isOpen}
             icon={<LocalOffer />}
             label="Khuyến Mãi"
             to="/admin/khuyenmai"
