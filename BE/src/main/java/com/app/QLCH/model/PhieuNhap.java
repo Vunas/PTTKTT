@@ -64,7 +64,7 @@ public class PhieuNhap {
    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // Tránh vòng lặp khi serialize
    private NhanVien nguoiNhap;
 
-   // Liên kết đến đối tượng NhanVien để lưu thông tin người hủy (có thể null nếu chưa hủy)
+   
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "nguoiHuy")  // Dùng trường "nguoiHuy" để lưu khóa ngoại (id của NhanVien)
    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // Tránh vòng lặp khi serialize
@@ -74,7 +74,6 @@ public class PhieuNhap {
    @Builder.Default
    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
    private List<ChiTietPhieuNhap> chiTiet = new ArrayList<>();
-
 
    @PrePersist
    public void prePersist() {

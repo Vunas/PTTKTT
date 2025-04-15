@@ -129,7 +129,7 @@ export default function CapNhatNhapKhoDialog({ open, onClose, phieuNhap }) {
       }
   
       // Nhận phản hồi phiếu nhập đã cập nhật
-      const updatedPhieuNhap = await response.json();
+      let updatedPhieuNhap = await response.json();
       setSelectedPhieuNhap(updatedPhieuNhap);
   
       // Kiểm tra sự hợp lệ của phản hồi
@@ -137,7 +137,15 @@ export default function CapNhatNhapKhoDialog({ open, onClose, phieuNhap }) {
         throw new Error("Dữ liệu phiếu nhập không hợp lệ.");
       }
       
-      response = await fetch(`http://localhost:8080/api/phieu-nhap/${selectedPhieuNhap.id}/trang-thai?trangThai=${phieuNhap.trangThai}&nguoiNhapId=${phieuNhap.nguoiNhap}&nguoiHuyId=${phieuNhap.nguoiHuy}`, {
+      const params = new URLSearchParams();
+      params.append("trangThai", phieuNhap.trangThai);
+      params.append("nguoiNhapId", phieuNhap.nguoiNhap?.maNhanVien);
+
+      if (phieuNhap.nguoiHuy?.maNhanVien) {
+        params.append("nguoiHuyId", phieuNhap.nguoiHuy.maNhanVien);
+      }
+
+      response = await fetch(`http://localhost:8080/api/phieu-nhap/${selectedPhieuNhap.id}/trang-thai?${params.toString()}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -148,7 +156,8 @@ export default function CapNhatNhapKhoDialog({ open, onClose, phieuNhap }) {
         throw new Error("Cập nhật trạng thái phiếu nhập thất bại");
       }
 
-      updatedPhieuNhap = await response.json();
+
+      const message = await response.text();
       setSelectedPhieuNhap(updatedPhieuNhap);
 
       // Tạo danh sách chi tiết phiếu nhập
@@ -178,7 +187,7 @@ export default function CapNhatNhapKhoDialog({ open, onClose, phieuNhap }) {
   
       // Cập nhật lại UI với thông tin mới
       setSelectedIngredients(updatedChiTiet); // Cập nhật lại state UI
-  
+      
       onClose(); // Đóng modal sau khi hoàn tất
   
     } catch (error) {
@@ -382,7 +391,7 @@ export default function CapNhatNhapKhoDialog({ open, onClose, phieuNhap }) {
       <DialogActions>
         <Button onClick={onClose}>Hủy</Button>
         <Button variant="outlined" onClick={() => handleOrder("DAT_HANG")}>Cập nhật</Button>
-        <Button variant="contained" onClick={() => handleOrder("DA_NHAP")}>Đặt hàng & Nhập kho</Button>
+        <Button variant="contained" onClick={() => handleOrder("NHAP_KHO")}>Nhập kho</Button>
 				<Button variant="contained" color="error" onClick={() => handleOrder("HUY")}>Hủy phiếu nhập</Button>
       </DialogActions>
 			

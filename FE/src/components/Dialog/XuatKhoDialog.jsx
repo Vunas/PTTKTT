@@ -20,9 +20,8 @@ import {
   TableBody,
   Paper
 } from "@mui/material";
-import UploadIcon from "@mui/icons-material/Upload";
-import NhapNguyenLieuDialog from "./NhapNguyenLieuDialog";
-import NhapNhaCungCapDialog from "./NhapNhaCungCapDialog";
+import UploadIcon from "@mui/icons-material/Upload"
+import XuatNguyenLieuDialog from "./XuatNguyenLieuDialog";
 import { Snackbar, Alert } from "@mui/material";
 import NhaCungCap from "../../pages/admin/NhaCungCap";
 
@@ -46,8 +45,8 @@ export default function AddImportDialog({ open, onClose }) {
   const [maPhieuInput, setMaPhieuInput] = useState("");
   
 
-  const handleOrder = async (trangThai = "DAT_HANG") => {
-    if (!selectedSupplier || selectedIngredients.length === 0) {
+  const handleOrder = async (trangThai = "") => {
+    if (selectedIngredients.length === 0) {
       setErrorMessage("Vui lòng chọn đầy đủ nhà cung cấp và nguyên liệu.");
       setShowError(true);
       return;
@@ -60,85 +59,75 @@ export default function AddImportDialog({ open, onClose }) {
       return;
     }
   
-    const phieuNhap = {
+    const phieuXuat = {
       maPhieu: maPhieuInput,
       tenPhieu: tenPhieuInput,
       fileChungTu: file?.name || null,
       ghiChu: note,
-      nhaCungCap: { maNhaCungCap: selectedSupplier[0].maNhaCungCap },
       trangThai,
       thoiGianTao: new Date().toISOString(),
-      thoiGianCapNhat: null,
-      thoiGianHuy: null,
-      nguoiNhap: {
+      nguoiXuat: {
         maNhanVien: 1, // hoặc id, tùy theo thuộc tính bạn dùng trong entity NhanVien
       }, 
-      nguoiHuy: null
     };
   
     try {
-      
-      const response = await fetch("http://localhost:8080/api/phieu-nhap", {
+      const response = await fetch("http://localhost:8080/api/phieu-xuat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(phieuNhap),
+        body: JSON.stringify(phieuXuat),
       });
   
       // Kiểm tra nếu phản hồi không thành công
       if (!response.ok) {
-        throw new Error("Tạo phiếu nhập thất bại");
+        throw new Error("Tạo phiếu xuất thất bại");
       }
   
-      // Nhận thông tin phiếu nhập đã tạo từ phản hồi
-      const createdPhieuNhap = await response.json();
+      // Nhận thông tin phiếu xuất đã tạo từ phản hồi
+      const createdPhieuXuat = await response.json();
   
-      // Kiểm tra xem createdPhieuNhap có hợp lệ không
-      if (!createdPhieuNhap || !createdPhieuNhap.id) {
-        throw new Error("Dữ liệu phiếu nhập không hợp lệ.");
+      // Kiểm tra xem createdPhieuXuat có hợp lệ không
+      if (!createdPhieuXuat || !createdPhieuXuat.id) {
+        throw new Error("Dữ liệu phiếu xuất không hợp lệ.");
       }
-      
-
-      // Thêm chi tiết phiếu nhập
+  
+      // Thêm chi tiết phiếu xuất
       await Promise.all(
         selectedIngredients.map(async (item) => {
-          const chiTietPhieuNhap = {
-            phieuNhap: { id: createdPhieuNhap.id },
+          const chiTietPhieuXuat = {
+            phieuXuat: { id: createdPhieuXuat.id },
             nguyenLieu: { maNguyenLieu: item.maNguyenLieu },
             soLuong: item.soLuong,
-            giaNhap: item.giaNhap,
           };
-          
   
-          const chiTietResponse = await fetch("http://localhost:8080/api/chi-tiet-phieu-nhap", {
+          const chiTietResponse = await fetch("http://localhost:8080/api/chi-tiet-phieu-xuat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(chiTietPhieuNhap),
+            body: JSON.stringify(chiTietPhieuXuat),
           });
   
           if (!chiTietResponse.ok) {
-            throw new Error("Thêm chi tiết phiếu nhập thất bại");
+            throw new Error("Thêm chi tiết phiếu xuất thất bại");
           }
+
         })
       );
 
       const params = new URLSearchParams();
-      params.append("trangThai", phieuNhap.trangThai);
-      params.append("nguoiNhapId", phieuNhap.nguoiNhap?.maNhanVien);
+      params.append("trangThai", phieuXuat.trangThai);
+      params.append("nguoiXuatId", phieuXuat.nguoiXuat?.maNhanVien);
 
-      if (phieuNhap.nguoiHuy?.maNhanVien) {
-        params.append("nguoiHuyId", phieuNhap.nguoiHuy.maNhanVien);
-      }
 
-      if (createdPhieuNhap.trangThai === "NHAP_KHO") {
-        const khoResponse = await fetch(`http://localhost:8080/api/phieu-nhap/${createdPhieuNhap.id}/trang-thai?${params.toString()}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-        });
-  
-        if (!khoResponse.ok) {
-          throw new Error("Cập nhật kho thất bại");
-        }
+      const khoResponse = await fetch(`http://localhost:8080/api/phieu-xuat/xuat-kho/${createdPhieuXuat.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!khoResponse.ok) {
+        const errorData = await khoResponse.json(); // Parse JSON body
+        throw new Error(errorData.message || "Lỗi không xác định"); // Lấy message từ backend
       }
+      
   
       onClose(); // Đóng modal sau khi hoàn tất
     } catch (error) {
@@ -175,14 +164,10 @@ export default function AddImportDialog({ open, onClose }) {
     );
     setFilteredIngredients(filteredIngredients);
   }
-  
-  const tongCong = filteredIngredients.reduce((tong, item) => {
-    return tong + item.soLuong * item.giaNhap;
-  }, 0);
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle className="text-xl font-semibold">Thêm mới phiếu nhập</DialogTitle>
+      <DialogTitle className="text-xl font-semibold">Thêm mới phiếu xuất</DialogTitle>
       <DialogContent className="space-y-6">
         <div className="grid grid-cols-2 gap-4 flex-grow mt-3">
 
@@ -200,53 +185,6 @@ export default function AddImportDialog({ open, onClose }) {
         </div>
 
         <div>
-      
-          <div className="justify-center items-center flex">
-            <p className="text-lg font-semibold mb-4 mt-6">Nhà cung cấp</p>
-          </div>
-
-          <div className="flex items-center gap-8 mb-4 justify-end">
-            <Button onClick={() => setSupplierDialogOpen(true)} variant="contained" color="primary"
-            sx={{ textTransform: "none", px: "1rem", py: "1rem" }}>
-              Nhập nhà cung cấp
-            </Button>
-          </div>
-
-          <Paper variant="outlined">
-            <Table>
-              <TableHead className="bg-gray-100">
-                <TableRow>
-                  <TableCell>Mã nhà cung cấp</TableCell>
-                  <TableCell>Tên nhà cung cấp</TableCell>
-                  <TableCell>Số điện thoại</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Địa chỉ</TableCell>
-                  <TableCell>Ngày tạo</TableCell>
-                </TableRow>
-              </TableHead>
-            
-          <TableBody>
-            {filteredSuppliers.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={6} align="center">
-                  Không có nhà cung cấp nào
-                </TableCell>
-              </TableRow>
-            ) : (
-              filteredSuppliers.map((item, index) => (
-                <TableRow key={item.maNhaCungCap}>
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{item.tenNhaCungCap}</TableCell>
-                  <TableCell>{item.soDienThoai}</TableCell>
-                  <TableCell>{item.email}</TableCell>
-                  <TableCell>{item.diaChi}</TableCell>
-                  <TableCell>{item.ngayTao}</TableCell>
-                </TableRow>
-              ))
-            )}
-            </TableBody>
-            </Table>
-          </Paper>
 
           <div className="justify-center items-center flex">
             <p className="text-lg font-semibold mb-4 mt-6 pt-8">Nguyên liệu</p>
@@ -256,7 +194,7 @@ export default function AddImportDialog({ open, onClose }) {
             <TextField placeholder="Tìm nguyên liệu" className="flex-grow" onChange={(e) => {handleSearchIngredients(e)}}/>
             <Button onClick={() => setIngredientDialogOpen(true)} variant="contained" color="primary"
             sx={{ textTransform: "none", px: "1rem", py: "1rem" }}>
-              Nhập nguyên liệu
+              Xuất nguyên liệu
             </Button>
               
           </div>
@@ -269,7 +207,6 @@ export default function AddImportDialog({ open, onClose }) {
                   <TableCell>Tên nguyên liệu</TableCell>
                   <TableCell>Đơn vị</TableCell>
                   <TableCell>Số lượng</TableCell>
-                  <TableCell>Đơn giá</TableCell>
                   <TableCell>Hình ảnh</TableCell>
                 </TableRow>
               </TableHead>
@@ -288,7 +225,6 @@ export default function AddImportDialog({ open, onClose }) {
                   <TableCell>{item.ten}</TableCell>
                   <TableCell>{item.donVi}</TableCell>
                   <TableCell>{item.soLuong}</TableCell>
-                  <TableCell>{item.giaNhap.toLocaleString()} đ</TableCell>
                   <TableCell>
                     <img
                       src={item.hinhAnh}
@@ -302,23 +238,11 @@ export default function AddImportDialog({ open, onClose }) {
             </TableBody>
           </Table>
         </Paper>
-        
-        <div className="flex mt-4 items-end justify-end">
-          <p className="font-semibold text-xl text-green-700">TỔNG CỘNG: {tongCong.toLocaleString('vi-VN')} đ</p>
-        </div>
-        </div>
-
-        <div className="flex items-center gap-4">
-          <Typography>Ghi nhận thanh toán</Typography>
-          <Switch
-            checked={paymentRecorded}
-            onChange={(e) => setPaymentRecorded(e.target.checked)}
-          />
         </div>
 
         <TextField
           label="Ghi chú"
-          placeholder="Nhập ghi chú"
+          placeholder="Xuất ghi chú"
           fullWidth
           multiline
           rows={3}
@@ -329,23 +253,16 @@ export default function AddImportDialog({ open, onClose }) {
 
       <DialogActions>
         <Button onClick={onClose}>Hủy</Button>
-        <Button variant="outlined" onClick={() => handleOrder("DAT_HANG")}>Đặt hàng</Button>
-        <Button variant="contained" onClick={() => handleOrder("NHAP_KHO")}>Đặt hàng & Nhập kho</Button>
+        <Button variant="contained" onClick={() => handleOrder("")}>Xuất kho</Button>
       </DialogActions>
       
-      <NhapNguyenLieuDialog
+      <XuatNguyenLieuDialog
         open={ingredientDialogOpen}
         onClose={() => setIngredientDialogOpen(false)}
         onConfirm={handleIngredientsDialogConfirm}
         defaultSelected={selectedIngredients}
       />
       
-      <NhapNhaCungCapDialog
-        open={supplierDialogOpen}
-        onClose={() => setSupplierDialogOpen(false)}
-        onConfirm={handleSuppliersDialogConfirm}
-        defaultSelected={selectedSupplier}
-      />
       <Snackbar
         open={showError}
         autoHideDuration={4000}

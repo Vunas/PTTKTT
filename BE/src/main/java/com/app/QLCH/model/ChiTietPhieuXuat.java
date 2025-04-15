@@ -9,33 +9,29 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import jakarta.persistence.Column;
 
 @Data
 @Entity
-@Table(name = "ChiTietPhieuNhap")
-public class ChiTietPhieuNhap {
+@Table(name = "ChiTietPhieuXuat")
+public class ChiTietPhieuXuat {
 
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Integer id;
 
    @ManyToOne
-   @JoinColumn(name = "maPhieuNhap", nullable = false)
+   @JoinColumn(name = "maPhieuXuat", nullable = false)
    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "chiTiet"}) // tránh vòng lặp
-   private PhieuNhap phieuNhap;
+   private PhieuXuat phieuXuat;
 
-   @ManyToOne(fetch = FetchType.LAZY)
+   @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "maNguyenLieu", nullable = false)
    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
    private NguyenLieu nguyenLieu;
 
    @Column(nullable = false)
    private Integer soLuong;
-
-   @Column(nullable = false)
-   private Double giaNhap; // Có thể ghi đè nếu giá thực tế khác với giáNguyenLieu mặc định
 }
+
