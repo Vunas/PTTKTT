@@ -53,7 +53,11 @@ CREATE TABLE NhanVien (
 INSERT INTO NhanVien (HoTen, GioiTinh, SoDienThoai, Email, DiaChi, ChucVu)
 VALUES
     ('Le Van C', 'Nam', '0987654321', 'c.le@example.com', '789 Đường PQR, Đà Nẵng', 'Nhân viên giao hàng'),
-    ('Pham Thi D', 'Nữ', '0971234567', 'd.pham@example.com', '321 Đường LMN, TP.HCM', 'Quản lý');
+    ('Pham Thi D', 'Nữ', '0971234567', 'd.pham@example.com', '321 Đường LMN, TP.HCM', 'Quản lý'),
+    ('Nguyen Van E', 'Nam', '0901234567', 'e.nguyen@example.com', '456 Đường XYZ, Hà Nội', 'Nhân viên kho'),
+    ('Tran Thi F', 'Nữ', '0937654321', 'f.tran@example.com', '123 Đường ABC, Cần Thơ', 'Kế toán'),
+    ('Hoang Van G', 'Nam', '0918888888', 'g.hoang@example.com', '654 Đường TUV, Huế', 'Bảo vệ'),
+    ('Bui Thi H', 'Nữ', '0929999999', 'h.bui@example.com', '987 Đường QRS, Vũng Tàu', 'Nhân viên bán hàng');
 
 -- Tạo bảng KhachHang
 CREATE TABLE KhachHang (
