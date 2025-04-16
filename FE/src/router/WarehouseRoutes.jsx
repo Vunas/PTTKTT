@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom'
 import SideBarQLK from '../components/SideBarQLK'
 import NhapKho from '../pages/warehouse/NhapKho'
 import KhoHang from '../pages/admin/KhoHang'
+import XuatKho from '../pages/warehouse/XuatKho'
 
 const WarehouseRoutes = () => {
   return (
@@ -18,6 +19,7 @@ const WarehouseRoutes = () => {
         {/* <Route path="sanpham" element={<NhaCungCap />} /> */}
         {/* <Route path="nguyenlieu" element={<SanPham />} /> */}
         <Route path="nhapkho" element={<NhapKho />} />
+        <Route path="xuatkho" element={<XuatKho />}/>
         {/* <Route path="xuatkho" element={<NhanVien />} /> */}
       </Routes>
     </div>

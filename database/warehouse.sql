@@ -42,3 +42,26 @@ CREATE TABLE ChiTietPhieuNhap (
    CONSTRAINT lienKetNguyenLieu FOREIGN KEY (MaNguyenLieu)
       REFERENCES NguyenLieu(MaNguyenLieu)
 );
+
+CREATE TABLE PhieuXuat(
+   id BIGINT AUTO_INCREMENT PRIMARY KEY,
+   maPhieu VARCHAR(50) UNIQUE,
+   tenPhieu VARCHAR(255) NOT NULL,
+   fileChungTu VARCHAR(255),
+   ghiChu TEXT,
+   thoiGianTao DATETIME,
+   nguoiXuat INT,  -- Khóa ngoại tham chiếu MaNhanVien
+);
+
+CREATE TABLE ChiTietPhieuXuat(
+   id INT PRIMARY KEY AUTO_INCREMENT,                          -- Mã chi tiết tự động tăng
+   maPhieuXuat BIGINT NOT NULL,                                -- FK tới bảng PhieuXuat
+   maNguyenLieu INT NOT NULL,                                  -- FK tới bảng NguyenLieu
+   soLuong INT NOT NULL,                                       -- Số lượng nguyên liệu nhập
+
+   CONSTRAINT lienKetPhieuXuat FOREIGN KEY (MaPhieuXuat)
+      REFERENCES PhieuXuat(Id),
+
+   CONSTRAINT lienKetNguyenLieu FOREIGN KEY (MaNguyenLieu)
+      REFERENCES NguyenLieu(MaNguyenLieu)  
+);

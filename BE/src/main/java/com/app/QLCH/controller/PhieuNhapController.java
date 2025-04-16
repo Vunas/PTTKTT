@@ -95,7 +95,6 @@ public class PhieuNhapController {
       }
 
       phieuNhapService.capNhatTrangThai(id, trangThai, nguoiHuyId);
-      System.out.println("Test123: " + id);
 
       return ResponseEntity.ok("Cập nhật trạng thái thành công!");
    } 
