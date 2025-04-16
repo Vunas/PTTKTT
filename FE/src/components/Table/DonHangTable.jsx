@@ -23,7 +23,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import IosShareIcon from '@mui/icons-material/IosShare';
 
-const DonHangTable = ({ donHangList, getChiTietDonHang,chiTietDonHang, onEdit, onDelete }) => {
+const DonHangTable = ({ donHangList, getChiTietDonHang,chiTietDonHang, onEdit, onDelete, setExport }) => {
   const [sortField, setSortField] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
   const [expandedRow, setExpandedRow] = useState(null); // Dòng mở rộng
@@ -129,13 +129,19 @@ const DonHangTable = ({ donHangList, getChiTietDonHang,chiTietDonHang, onEdit, o
                     {icon}
                   </TableCell>
                   <TableCell align="center">
-                    <IconButton color="primary" onClick={() => onEdit(donHang)}>
+                    <IconButton color="primary" onClick={() => {
+                      setExport(false);
+                      onEdit(donHang)}
+                      }>
                       <CreateIcon />
                     </IconButton>
                     <IconButton color="secondary" onClick={() => onDelete(donHang.maDonHang)}>
                       <DeleteOutlineIcon />
                     </IconButton>
-                    <IconButton style={{color: "#1e88e5" }}  onClick={() => console.log("Xuất hóa đơn!")}>
+                    <IconButton style={{color: "#1e88e5" }}  onClick={() => {
+                      setExport(true);
+                      onEdit(donHang)}
+                      }>
                       <IosShareIcon />
                     </IconButton>
                   </TableCell>

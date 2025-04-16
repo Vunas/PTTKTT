@@ -14,6 +14,7 @@ import { exportExcel } from "../../utils/ExcelJS"; // Xuất file Excel
 
 const HoaDon = () => {
   const [hoaDonList, setHoaDonList] = useState([]);
+  const [khuyenMaiList, setKhuyenMaiList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isDialogOpen, setDialogOpen] = useState(false);
@@ -39,6 +40,12 @@ const HoaDon = () => {
     fetchData(
       "http://localhost:8080/api/hoadon",
       setHoaDonList,
+      setLoading,
+      setError
+    );
+    fetchData(
+      "http://localhost:8080/api/khuyenmai",
+      setKhuyenMaiList,
       setLoading,
       setError
     );
@@ -141,6 +148,7 @@ const HoaDon = () => {
 
       <HoaDonTable
         hoaDonList={hoaDonList}
+        khuyenMaiList={khuyenMaiList}
         onEdit={(hoaDon) => {
           setTitle("Sửa Hóa Đơn");
           setEditHoaDon(hoaDon);

@@ -11,10 +11,16 @@ import {
 } from "@mui/material";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import CreateIcon from "@mui/icons-material/Create";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import fetchDataById from "../../utils/FetchDataByID";
+import exportHoaDonPDF from "../../Hook/ExportHoaDonPDF";
 
-const HoaDonTable = ({ hoaDonList, onEdit, onDelete }) => {
+const HoaDonTable = ({ hoaDonList, khuyenMaiList, onEdit, onDelete }) => {
   const [sortField, setSortField] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
+  const [donHang, setDonHang] = useState([]);
+  const [errors, setErrors] = useState({});
+  const [chiTietDonHang, setChiTietDonHang] = useState([]);
 
   // Hàm sắp xếp danh sách
   const handleSort = (field) => {
@@ -29,6 +35,27 @@ const HoaDonTable = ({ hoaDonList, onEdit, onDelete }) => {
       return a[field] < b[field] ? 1 : -1;
     });
   };
+
+  const getData = async (hoaDon) => {
+    console.log(errors);
+    setDonHang(
+      await fetchDataById(
+        "http://localhost:8080/api/donhang",
+        hoaDon.maDonHang,
+        setErrors
+      )
+    );
+    setChiTietDonHang(
+      await fetchDataById(
+        "http://localhost:8080/api/chitietdonhang/donhang",
+        hoaDon.maDonHang,
+        setErrors
+      )
+    );
+    console.log(hoaDon);
+console.log(donHang);
+console.log(chiTietDonHang) 
+ };
 
   return (
     <TableContainer
@@ -57,7 +84,10 @@ const HoaDonTable = ({ hoaDonList, onEdit, onDelete }) => {
                 {sortField === "tongTien" && (sortOrder === "asc" ? "▲" : "▼")}
               </strong>
             </TableCell>
-            <TableCell align="center" onClick={() => handleSort("ngayXuatHoaDon")}>
+            <TableCell
+              align="center"
+              onClick={() => handleSort("ngayXuatHoaDon")}
+            >
               <strong>
                 Ngày Xuất Hóa Đơn{" "}
                 {sortField === "ngayXuatHoaDon" &&
@@ -89,6 +119,25 @@ const HoaDonTable = ({ hoaDonList, onEdit, onDelete }) => {
                     onClick={() => onDelete(hoaDon.maHoaDon)} // Xóa hóa đơn
                   >
                     <DeleteOutlineIcon />
+                  </IconButton>
+                  <IconButton
+                    color="secondary"
+                    onClick={() => {
+                      getData(hoaDon);
+                      exportHoaDonPDF(
+                        donHang,
+                        hoaDon,
+                        chiTietDonHang,
+                        khuyenMaiList,
+                        () => {
+                          console.log(
+                            "Đóng dialog hoặc thực hiện hành động khác."
+                          );
+                        }
+                      );
+                    }} // Xóa hóa đơn
+                  >
+                    <PictureAsPdfIcon />
                   </IconButton>
                 </TableCell>
               </TableRow>

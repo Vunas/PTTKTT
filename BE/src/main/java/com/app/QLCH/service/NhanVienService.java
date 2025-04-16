@@ -27,6 +27,10 @@ public class NhanVienService {
         return null; // Trả về null nếu nhân viên đã bị xóa
     }
 
+    public NhanVien getNhanVienByEmail(String email) {
+        return nhanVienRepository.findByEmailAndTrangThai(email,1);
+    }
+
     // Thêm hoặc cập nhật nhân viên
     public NhanVien saveNhanVien(NhanVien nhanVien) {
         return nhanVienRepository.save(nhanVien);

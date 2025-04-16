@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import dayjs from "dayjs";
 import {
   Dialog,
@@ -29,6 +30,8 @@ import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import DeleteIcon from "@mui/icons-material/Delete";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add"; // Import AddIcon
+import fetchDataById from "../../utils/FetchDataByID";
+import exportHoaDonPDF from "../../Hook/ExportHoaDonPDF";
 const DonHangDialog = ({
   open,
   onClose,
@@ -37,9 +40,12 @@ const DonHangDialog = ({
   donHang,
   chiTietDonHang,
   khachHangList,
+  KhuyenMaiList,
   sanPhamList,
   setSanPhamList,
   setSnackbar,
+  isExport,
+  setTitle,
 }) => {
   const [newDonHang, setNewDonHang] = useState({
     maDonHang: "",
@@ -52,13 +58,55 @@ const DonHangDialog = ({
     ghiChu: "",
   });
   const [newChiTietDonHang, setNewChiTietDonHang] = useState([]);
+  const [newTongTien, setTongTien] = useState([]);
+  const [newHoaDon, setNewHoaDon] = useState({
+    maHoaDon: "", // Có thể tự động tạo hoặc nhập
+    maDonHang: "", // Liên kết với đơn hàng
+    maNhanVien: "", // Lấy từ thông tin đăng nhập hoặc cho phép chọn
+    maKhachHang: "", // Lấy từ đơn hàng
+    maKhuyenMai: "",
+    ngayXuatHoaDon: dayjs().format("YYYY-MM-DDTHH:mm"),
+    tongTien: 0, // Sẽ được tính toán
+    phuongThucThanhToan: "", // Lấy từ đơn hàng
+    ghiChu: "", // Có thể thêm ghi chú riêng cho hóa đơn
+  });
 
   const [errors, setErrors] = useState({});
+  // const [hoaDon, setHoaDon] = useState({ khuyenmai: 0 }); // State quản lý thông tin hóa đơn tạm thời
 
   useEffect(() => {
+    const fetchNhanVien = async () => {
+      if (donHang && isExport) {
+        try {
+          const nhanVien = await getNhanVien(); // ✅ Chờ dữ liệu trả về đúng cách
+          console.log(nhanVien);
+          setNewHoaDon((prevValues) => ({
+            ...prevValues,
+            maNhanVien: nhanVien.maNhanVien,
+            tenNhanVien: nhanVien.hoTen,
+            maDonHang: donHang.maDonHang,
+            maKhachHang: donHang.maKhachHang, // Lấy maKhachHang từ đơn hàng
+            maKhuyenMai: ""
+          }));
+          setTongTien(newDonHang.tongGia);
+          setTitle("Xuất Hóa đơn");
+        } catch (error) {
+          console.error("Lỗi khi lấy nhân viên:", error);
+        }
+      }
+    };
+
+    fetchNhanVien();
+
     if (donHang) {
       setNewDonHang(donHang);
       setNewChiTietDonHang(chiTietDonHang);
+      setNewHoaDon((prevHoaDon) => ({
+        ...prevHoaDon,
+        maDonHang: donHang.maDonHang,
+        maKhachHang: donHang.maKhachHang,
+        phuongThucThanhToan: donHang.phuongThucThanhToan, // Sao chép phương thức thanh toán
+      }));
     } else {
       handleAddNewOrder();
       setNewDonHang((prevValues) => ({
@@ -66,8 +114,44 @@ const DonHangDialog = ({
         ngayDat: dayjs().format("YYYY-MM-DDTHH:mm"),
       }));
     }
+
     setErrors({});
-  }, [donHang, chiTietDonHang]);
+  }, [donHang, chiTietDonHang, isExport, setTitle]);
+
+  useEffect(() => {
+    const calculateTongTienHoaDon = () => {
+      const tongGiaDonHang = newDonHang.tongGia || 0;
+      let khuyenMaiValue = 0;
+  
+      const khuyenmai = KhuyenMaiList.find(km => km.maKhuyenMai === newHoaDon.maKhuyenMai);
+      console.log(khuyenmai)
+      // console.log(khuyenmai.giaTriKhuyenMai)
+      if ( !newHoaDon.maKhuyenMai ) return;
+      if (khuyenmai.loaiKhuyenMai !== 3) {
+        khuyenMaiValue = khuyenmai.loaiKhuyenMai === 1
+          ? (newDonHang.tongGia * khuyenmai.giaTriKhuyenMai) / 100
+          : khuyenmai.giaTriKhuyenMai;
+      }
+      console.log(khuyenMaiValue)
+      setTongTien(tongGiaDonHang - khuyenMaiValue)
+    };
+  
+    calculateTongTienHoaDon();
+  }, [newDonHang.tongGia, newHoaDon, KhuyenMaiList]);
+
+  const getNhanVien = async () => {
+    const taiKhoan = JSON.parse(localStorage.getItem("taiKhoan"));
+    try {
+      const data = await fetchDataById(
+        "http://localhost:8080/api/nhanvien/email",
+        taiKhoan.email
+      );
+      return data; // ✅ Đảm bảo trả về dữ liệu nhân viên, không phải Promise
+    } catch (error) {
+      console.error("Lỗi khi gọi API nhân viên:", error);
+      return null;
+    }
+  };
 
   const handleAddNewOrder = () => {
     setNewDonHang({
@@ -91,6 +175,25 @@ const DonHangDialog = ({
       [name]: value,
     }));
     validateField(name, value);
+  };
+
+  const handleChangeHoaDon = (e) => {
+    const { name, value } = e.target;
+    setNewHoaDon((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+    validateField(name, value);
+    // if (name === "maKhuyenMai") {
+    //   // Tìm khuyến mãi và cập nhật state hoaDon.khuyenmai
+    //   const selectedKhuyenMai = KhuyenMaiList.find(
+    //     (km) => km.maKhuyenMai === value
+    //   );
+    //   setHoaDon((prevHoaDon) => ({
+    //     ...prevHoaDon,
+    //     khuyenmai: selectedKhuyenMai ? selectedKhuyenMai.giaTri : 0,
+    //   }));
+    // }
   };
 
   const validateField = (field, value) => {
@@ -310,10 +413,10 @@ const DonHangDialog = ({
       return;
     }
 
-    if (newChiTietDonHang["tongGia"] <= 0) {
+    if (newChiTietDonHang.length === 0) {
       setSnackbar({
         open: true,
-        message: "Vui lòng chọn thực đơn!",
+        message: "Vui lòng chọn sản phẩm cho đơn hàng!",
         type: "error",
       });
       return;
@@ -322,18 +425,21 @@ const DonHangDialog = ({
     const updatedSanPhamList = sanPhamList.map((sp) => {
       return {
         ...sp,
-        soLuong: sp.deltaSoLuong || 0,
+        soLuong: sp.soLuong - (sp.deltaSoLuong || 0), // Cập nhật số lượng cuối cùng
         deltaSoLuong: undefined,
       };
     });
 
     console.log(updatedSanPhamList);
+    console.log(chiTietDonHang);
+    console.log(newHoaDon);
 
-    if (title === "Sửa Đơn Hàng") {
+    if (title === "Sửa Đơn Hàng" || isExport) {
       onSave({
         donHang: newDonHang,
         chiTietDonHang: newChiTietDonHang,
         sanPhamList: updatedSanPhamList,
+        hoaDon: newHoaDon,
       });
     } else {
       onSave(newDonHang, newChiTietDonHang, updatedSanPhamList);
@@ -342,15 +448,20 @@ const DonHangDialog = ({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="xl" fullWidth>
-      <Typography variant="h5" align="center" style={{ paddingTop: '16px' }}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth={isExport ? "lg" : "xl"}
+      fullWidth
+    >
+      <Typography variant="h5" align="center" style={{ paddingTop: "16px" }}>
         {title}
       </Typography>
 
       <DialogContent>
         <Grid container spacing={2}>
           {/* Phần 1: Ô nhập liệu */}
-          <Grid item xs={12} md={2}>
+          <Grid item xs={12} md={isExport ? 4 : 2}>
             <Card>
               <CardContent>
                 <Typography variant="h6">Thông Tin Đơn Hàng</Typography>
@@ -378,6 +489,20 @@ const DonHangDialog = ({
                     ))}
                   </Select>
                 </FormControl>
+
+                {isExport && (
+                  <TextField
+                    label="Mã Nhân Viên"
+                    name="maNhanVien"
+                    fullWidth
+                    margin="dense"
+                    value={newHoaDon.maNhanVien}
+                    onChange={handleChangeHoaDon}
+                    error={!!errors.maNhanVien}
+                    helperText={errors.maNhanVien}
+                    disabled
+                  />
+                )}
 
                 <TextField
                   label="Ngày Đặt"
@@ -417,6 +542,45 @@ const DonHangDialog = ({
                   value={newDonHang.tongGia}
                   disabled
                 />
+
+                {isExport && (
+                  <FormControl
+                    fullWidth
+                    margin="dense"
+                    error={!!errors.maKhuyenMai}
+                  >
+                    <InputLabel>Khuyến mãi</InputLabel>
+                    <Select
+                      name="maKhuyenMai"
+                      value={newHoaDon.maKhuyenMai || ""}
+                      onChange={handleChangeHoaDon}
+                    >
+                      <MenuItem value="">Chọn Khuyến mãi</MenuItem>
+                      {KhuyenMaiList.map((khuyenmai) => (
+                        <MenuItem
+                          key={khuyenmai.maKhuyenMai}
+                          value={khuyenmai.maKhuyenMai}
+                        >
+                          {khuyenmai.maKhuyenMai} {khuyenmai.tenKhuyenMai}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                )}
+
+                {isExport && (
+                  <TextField
+                    label="Tổng Tiền"
+                    name="tongTien"
+                    fullWidth
+                    margin="dense"
+                    value={newTongTien}
+                    // onChange={handleChangeHoaDon}
+                    error={!!errors.tongTien}
+                    helperText={errors.tongTien}
+                    disabled
+                  />
+                )}
 
                 <FormControl
                   fullWidth
@@ -459,61 +623,78 @@ const DonHangDialog = ({
           </Grid>
 
           {/* Phần 2: Table sản phẩm để chọn */}
-          <Grid item xs={12} md={5}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">Danh Sách Sản Phẩm</Typography>
-                <Divider style={{ marginBottom: "16px" }} />
+          {!isExport && (
+            <Grid item xs={12} md={5}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6">Danh Sách Sản Phẩm</Typography>
+                  <Divider style={{ marginBottom: "16px" }} />
 
-                <TableContainer component={Paper} style={{ maxHeight: 600 }}>
-                  <Table stickyHeader>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Mã SP</TableCell>
-                        <TableCell>Ảnh</TableCell>
-                        <TableCell>Tên Sản Phẩm</TableCell>
-                        <TableCell>Đơn Giá</TableCell>
-                        <TableCell />
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {sanPhamList.map((sanPham) => (
-                        <TableRow key={sanPham.maSanPham}>
-                          <TableCell>{sanPham.maSanPham}</TableCell>
-                          <TableCell>
-                            {sanPham.hinhAnh ? (
-                              <img
-                                src={sanPham.hinhAnh}
-                                alt={sanPham.tenSanPham}
-                                style={{ width: 80, height: 88 }}
-                              />
-                            ) : (
-                              "Không có ảnh"
-                            )}
-                          </TableCell>
-                          <TableCell>{sanPham.tenSanPham}</TableCell>
-                          <TableCell>{sanPham.giaBan}</TableCell>
-                          <TableCell>
-                            <IconButton
-                              color="primary"
-                              onClick={() => handleAddSanPham(sanPham)}
-                            >
-                              <AddShoppingCartIcon />
-                            </IconButton>
-                          </TableCell>
+                  <TableContainer component={Paper} style={{ maxHeight: 600 }}>
+                    <Table stickyHeader>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Mã SP</TableCell>
+                          <TableCell>Ảnh</TableCell>
+                          <TableCell>Tên Sản Phẩm</TableCell>
+                          <TableCell>Đơn Giá</TableCell>
+                          <TableCell />
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </CardContent>
-            </Card>
-          </Grid>
+                      </TableHead>
+                      <TableBody>
+                        {sanPhamList.map((sanPham) => (
+                          <TableRow key={sanPham.maSanPham}>
+                            <TableCell>{sanPham.maSanPham}</TableCell>
+                            <TableCell>
+                              {sanPham.hinhAnh ? (
+                                <img
+                                  src={sanPham.hinhAnh}
+                                  alt={sanPham.tenSanPham}
+                                  style={{ width: 80, height: 88 }}
+                                />
+                              ) : (
+                                "Không có ảnh"
+                              )}
+                            </TableCell>
+                            <TableCell>{sanPham.tenSanPham}</TableCell>
+                            <TableCell>{sanPham.giaBan}</TableCell>
+                            <TableCell>
+                              <IconButton
+                                color="primary"
+                                onClick={() => handleAddSanPham(sanPham)}
+                              >
+                                <AddShoppingCartIcon />
+                              </IconButton>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </CardContent>
+              </Card>
+            </Grid>
+          )}
 
           {/* Phần 3: Table hiển thị sản phẩm đã chọn */}
-          <Grid item xs={12} md={5}>
+          <Grid item xs={12} md={isExport ? 8 : 5}>
             <Card>
-              <CardContent>
+              <CardContent style={isExport ? { minHeight: "890px" } : {}}>
+                {isExport && (
+                  <TextField
+                    label="Ngày Xuất Hóa Đơn"
+                    name="ngayXuatHoaDon"
+                    type="datetime-local"
+                    fullWidth
+                    margin="dense"
+                    InputLabelProps={{ shrink: true }}
+                    value={newHoaDon.ngayXuatHoaDon}
+                    onChange={handleChangeHoaDon}
+                    error={!!errors.ngayXuatHoaDon}
+                    helperText={errors.ngayXuatHoaDon}
+                    disabled
+                  />
+                )}
                 <Typography variant="h6">Sản Phẩm Đã Chọn</Typography>
                 <Divider style={{ marginBottom: "16px" }} />
 
@@ -626,8 +807,30 @@ const DonHangDialog = ({
         <Button onClick={onClose} color="secondary">
           Hủy
         </Button>
+        {isExport && (
+          <Button
+            onClick={() =>
+              exportHoaDonPDF(
+                newDonHang,
+                newHoaDon,
+                newChiTietDonHang,
+                KhuyenMaiList,
+                newTongTien,
+                () => {
+                  console.log("Đóng dialog hoặc thực hiện hành động khác.");
+                }
+              )
+            }
+            color="primary"
+          >
+            Xuất Hóa Đơn PDF{" "}
+            <IconButton>
+              <PictureAsPdfIcon />
+            </IconButton>
+          </Button>
+        )}
         <Button onClick={handleSave} variant="contained" color="primary">
-          {donHang ? "Lưu Thay Đổi" : "Thêm"}
+          {donHang ? (isExport ? "Xuất hóa đơn" : "Lưu Thay Đổi") : "Thêm"}
         </Button>
       </DialogActions>
     </Dialog>

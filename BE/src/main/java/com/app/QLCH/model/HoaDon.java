@@ -16,7 +16,7 @@ public class HoaDon {
     @Column(nullable = false)
     private Integer maDonHang; // Mã đơn hàng liên kết
 
-    @Column(nullable = true)
+    @Column
     private Integer maKhuyenMai; // Mã khuyến mãi áp dụng nếu có
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -24,7 +24,7 @@ public class HoaDon {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
     private Date ngayXuatHoaDon;
 
-    @Column(nullable = false)
+    @Column()
     private Double tongTien; // Tổng tiền sau khi áp dụng khuyến mãi
 
     @Column(columnDefinition = "TINYINT(1) DEFAULT 1")
@@ -33,6 +33,10 @@ public class HoaDon {
     @ManyToOne
     @JoinColumn(name = "maDonHang", referencedColumnName = "maDonHang", insertable = false, updatable = false)
     private DonHang donHang;
+
+    @ManyToOne
+    @JoinColumn(name = "maKhuyenMai", referencedColumnName = "maKhuyenMai", insertable = false, updatable = false)
+    private KhuyenMai khuyenMai;
 
     @Column(nullable = false)
     private Integer maNhanVien; // Mã nhân viên liên kết

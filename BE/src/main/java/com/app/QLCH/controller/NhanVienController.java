@@ -32,6 +32,21 @@ public class NhanVienController {
         }
     }
 
+    @GetMapping("/email/{email}")
+    public ResponseEntity<?> getNhanVienByEmail(@PathVariable String email) {
+        try {
+            NhanVien nhanVien = nhanVienService.getNhanVienByEmail(email);
+            if (nhanVien != null) {
+                return ResponseEntity.ok(nhanVien);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy nhân viên với email: " + email);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Có lỗi xảy ra khi tìm nhân viên theo email.");
+        }
+    }
+
     // API thêm thông tin nhân viên
     @PostMapping
     public ResponseEntity<?> saveNhanVien(@RequestBody NhanVien nhanVien) {
@@ -46,7 +61,7 @@ public class NhanVienController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Số điện thoại đã tồn tại!");
             }
 
-            // Lưu nhân viên nếu không có lỗi    
+            // Lưu nhân viên nếu không có lỗi
             return ResponseEntity.ok(nhanVienService.saveNhanVien(nhanVien));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra khi lưu nhân viên.");
@@ -63,12 +78,14 @@ public class NhanVienController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy nhân viên với ID: " + id);
             }
 
-            if (!existingNhanVien.getEmail().equals(nhanVien.getEmail()) && nhanVienService.existsByEmail(nhanVien.getEmail())) {
+            if (!existingNhanVien.getEmail().equals(nhanVien.getEmail())
+                    && nhanVienService.existsByEmail(nhanVien.getEmail())) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email đã tồn tại!");
             }
 
             // Kiểm tra trùng số điện thoại
-            if (!existingNhanVien.getSoDienThoai().equals(nhanVien.getSoDienThoai()) &&nhanVienService.existsBySoDienThoai(nhanVien.getSoDienThoai())) {
+            if (!existingNhanVien.getSoDienThoai().equals(nhanVien.getSoDienThoai())
+                    && nhanVienService.existsBySoDienThoai(nhanVien.getSoDienThoai())) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Số điện thoại đã tồn tại!");
             }
 
