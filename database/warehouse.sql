@@ -39,7 +39,7 @@ CREATE TABLE ChiTietPhieuNhap (
    CONSTRAINT lienKetPhieuNhap FOREIGN KEY (MaPhieuNhap)
       REFERENCES PhieuNhap(Id),
 
-   CONSTRAINT lienKetNguyenLieu FOREIGN KEY (MaNguyenLieu)
+   CONSTRAINT lienKetNguyenLieuNhap FOREIGN KEY (MaNguyenLieu)
       REFERENCES NguyenLieu(MaNguyenLieu)
 );
 
@@ -50,7 +50,7 @@ CREATE TABLE PhieuXuat(
    fileChungTu VARCHAR(255),
    ghiChu TEXT,
    thoiGianTao DATETIME,
-   nguoiXuat INT,  -- Khóa ngoại tham chiếu MaNhanVien
+   nguoiXuat INT  -- Khóa ngoại tham chiếu MaNhanVien
 );
 
 CREATE TABLE ChiTietPhieuXuat(
@@ -62,6 +62,6 @@ CREATE TABLE ChiTietPhieuXuat(
    CONSTRAINT lienKetPhieuXuat FOREIGN KEY (MaPhieuXuat)
       REFERENCES PhieuXuat(Id),
 
-   CONSTRAINT lienKetNguyenLieu FOREIGN KEY (MaNguyenLieu)
+   CONSTRAINT lienKetNguyenLieuXuat FOREIGN KEY (MaNguyenLieu)
       REFERENCES NguyenLieu(MaNguyenLieu)  
 );

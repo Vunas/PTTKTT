@@ -1,7 +1,6 @@
 package com.app.QLCH.controller;
 
 import com.app.QLCH.model.ChiTietPhieuXuat;
-import com.app.QLCH.model.PhieuNhap;
 import com.app.QLCH.model.PhieuXuat;
 import com.app.QLCH.service.ChiTietPhieuXuatService;
 import com.app.QLCH.service.PhieuXuatService;

@@ -48,6 +48,31 @@ public class LoginController {
         }
     }
 
+    @PostMapping("/login-customer-account")
+    public ResponseEntity<?> accountCustomerLogin(@RequestBody Map<String, String> request) {
+        String username = request.get("username");
+        String password = request.get("password");
+
+        try {
+            TaiKhoan taiKhoan = taiKhoanService.getTaiKhoanByTenDangNhap(username);
+            if (taiKhoan != null) {
+                if (password.equals(taiKhoan.getMatKhau())) {
+                    if (taiKhoan.getMaPhanQuyen() != 2) {
+                        return ResponseEntity.ok(taiKhoan);
+                    } else {
+                        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Tài khoản không có quyền admin");
+                    }
+                } else {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Mật khẩu không chính xác");
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tên tài khoản không tồn tại");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi: " + e.getMessage());
+        }
+    }
+
     // Đăng nhập bằng Google cho admin
     @PostMapping("/login-admin-google")
     public ResponseEntity<?> googleAdminLogin(@RequestBody Map<String, String> request) {
