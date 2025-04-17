@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import { Snackbar, Alert } from "@mui/material";
+import { Link, useNavigate } from "react-router-dom"; //  dùng hook navigate
 
-const clientId = "1041605160701-9q21rn06djjtsdlck5ks2mur96eckti0.apps.googleusercontent.com"; // Thay bằng client ID của bạn
+const clientId = "1041605160701-9q21rn06djjtsdlck5ks2mur96eckti0.apps.googleusercontent.com";
 
 const LoginKhachHang = ({ setIsLoggedIn }) => {
-  const [maTaiKhoan, setUserId] = useState("");
   const [tenTaiKhoan, setUsername] = useState("");
   const [matKhau, setPassword] = useState("");
   const [snackbar, setSnackbar] = useState({
@@ -14,6 +14,8 @@ const LoginKhachHang = ({ setIsLoggedIn }) => {
     message: "",
     severity: "info",
   });
+
+  const navigate = useNavigate(); //  hook để chuyển trang
 
   useEffect(() => {
     const user = localStorage.getItem("khachHang");
@@ -31,18 +33,18 @@ const LoginKhachHang = ({ setIsLoggedIn }) => {
     e.preventDefault();
     try {
       const response = await axios.post("http://localhost:8080/api/login-customer-account", {
-        maTaiKhoan,
-        tenTaiKhoan,
-        matKhau,
+        username: tenTaiKhoan,
+        password: matKhau,
       });
       if (response.status === 200) {
-        localStorage.setItem("khachHang", JSON.stringify(response.data));
+        localStorage.setItem("taiKhoan", JSON.stringify(response.data));
         setSnackbar({
           open: true,
           message: "Đăng nhập thành công!",
           severity: "success",
         });
         setIsLoggedIn(true);
+        navigate("/"); //  điều hướng sau khi đăng nhập
       }
     } catch (error) {
       setSnackbar({
@@ -73,7 +75,12 @@ const LoginKhachHang = ({ setIsLoggedIn }) => {
           message: "Đăng nhập Google thành công!",
           severity: "success",
         });
+
+        setTimeout(() => {
         setIsLoggedIn(true);
+        navigate("/"); // Điều hướng sau khi 2 giây
+      }, 2000); // chuyển hướng về trang chính
+      
       }
     } catch (error) {
       setSnackbar({
@@ -102,25 +109,29 @@ const LoginKhachHang = ({ setIsLoggedIn }) => {
             </div>
             <div>
               <input
-                type="matKhau"
+                type="password"
                 placeholder="Mật khẩu"
                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={matKhau}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition">
+            <button type="submit" className="w-full px-3 py-2 text-sm font-semibold text-black rounded-md shadow-sm bg-yellow hover:bg-black/80 hover:text-white">
               Đăng nhập
             </button>
           </form>
-          <div className="my-4 text-gray-500">Hoặc</div>
+          <div className="my-2 text-gray-500">Hoặc</div>
           <GoogleLogin
-            onSuccess={(credentialResponse) => handleGoogleLogin(credentialResponse)}
+            onSuccess={handleGoogleLogin}
             onError={() =>
               setSnackbar({ open: true, message: "Lỗi đăng nhập Google.", severity: "error" })
             }
           />
-          <p className="text-gray-500 mt-4 text-sm">Nếu gặp vấn đề khi đăng nhập, hãy liên hệ với bộ phận hỗ trợ.</p>
+          <div className="mt-8">
+            <Link className="text-gray-500 mt-4 text-sm" to="/SignUp">
+              Chưa có tài khoản? Đăng ký
+            </Link>
+          </div>
         </div>
 
         <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={handleCloseSnackbar}>

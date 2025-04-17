@@ -100,11 +100,11 @@ const Navbar = () => {
                   onClick={handleAvatarClick}
                 />
                 <span className="text-sm font-medium text-gray-700">
-                  Xin chào, {userInfo?.tenDangNhap || "User"}
+                  {userInfo?.tenDangNhap || "User"}
                 </span>
                 <button
                   onClick={handleLogout}
-                  className="px-3 py-2 text-sm font-semibold text-black rounded-md shadow-sm bg-yellow hover:bg-black/80 hover:text-white"
+                  className="ml-10 px-3 py-2 text-sm font-semibold text-black rounded-md shadow-sm bg-yellow hover:bg-black/80 hover:text-white"
                 >
                   Đăng xuất
                 </button>
@@ -163,13 +163,19 @@ const Navbar = () => {
                   ) : (
                     <div className="mt-4 space-y-1 text-center">
                       <Link
-                        to="/account"
+                        to="/setAccount"
                         className="flex items-center p-3 -m-3 text-sm font-semibold rounded-md hover:bg-gray-50"
                       >
                         <span className="ml-3 text-base font-medium text-gray-900">Chỉnh sửa tài khoản</span>
                       </Link>
                       <Link
-                        to="/transactions"
+                        to="/setPassword"
+                        className="flex items-center p-3 -m-3 text-sm font-semibold rounded-md hover:bg-gray-50"
+                      >
+                        <span className="ml-3 text-base font-medium text-gray-900">Sửa mật khẩu</span>
+                      </Link>
+                      <Link
+                        to="/transaction"
                         className="flex items-center p-3 -m-3 text-sm font-semibold rounded-md hover:bg-gray-50"
                       >
                         <span className="ml-3 text-base font-medium text-gray-900">Lịch sử giao dịch</span>
@@ -197,6 +203,11 @@ const Navbar = () => {
 										Chỉnh sửa tài khoản
 									</Link>
 								</li>
+                <li>
+                  <Link to="/setPassword" className="block py-2 text-gray-700 hover:bg-gray-100">
+										Sửa mật khẩu
+									</Link>
+                </li>
 								<li>
 									<Link to="/transaction" className="block py-2 text-gray-700 hover:bg-gray-100">
 										Lịch sử giao dịch

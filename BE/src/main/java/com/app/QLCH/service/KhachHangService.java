@@ -7,6 +7,7 @@ import com.app.QLCH.model.KhachHang;
 import com.app.QLCH.repository.KhachHangRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class KhachHangService {
@@ -64,4 +65,13 @@ public class KhachHangService {
     public boolean existsBySoDienThoai(String soDienThoai) {
         return khachHangRepository.existsBySoDienThoai(soDienThoai);
     }
+
+    public Optional<KhachHang> findByEmail(String email) {
+        return khachHangRepository.findByEmail(email);
+    }
+
+    public Optional<KhachHang> findBySoDienThoai(String soDienThoai) {
+        return khachHangRepository.findBySoDienThoai(soDienThoai);
+    }
+
 }

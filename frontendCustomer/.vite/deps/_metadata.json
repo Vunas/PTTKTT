@@ -2,7 +2,99 @@
   "hash": "ac15d85b",
   "configHash": "faa7610c",
   "lockfileHash": "c8cfbc8a",
-  "browserHash": "dd432111",
-  "optimized": {},
-  "chunks": {}
+  "browserHash": "0d5bf974",
+  "optimized": {
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "28f7f7ff",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "98c99dda",
+      "needsInterop": true
+    },
+    "react-redux": {
+      "src": "../../node_modules/react-redux/dist/react-redux.mjs",
+      "file": "react-redux.js",
+      "fileHash": "dbee1d8d",
+      "needsInterop": false
+    },
+    "@reduxjs/toolkit": {
+      "src": "../../node_modules/@reduxjs/toolkit/dist/redux-toolkit.modern.mjs",
+      "file": "@reduxjs_toolkit.js",
+      "fileHash": "efbf6cf4",
+      "needsInterop": false
+    },
+    "react-router-dom": {
+      "src": "../../node_modules/react-router-dom/dist/index.js",
+      "file": "react-router-dom.js",
+      "fileHash": "78bd4361",
+      "needsInterop": false
+    },
+    "lucide-react": {
+      "src": "../../node_modules/lucide-react/dist/esm/lucide-react.js",
+      "file": "lucide-react.js",
+      "fileHash": "762d63e8",
+      "needsInterop": false
+    },
+    "react-spinners": {
+      "src": "../../node_modules/react-spinners/esm/index.js",
+      "file": "react-spinners.js",
+      "fileHash": "0009779f",
+      "needsInterop": false
+    },
+    "react-custom-scrollbars-2": {
+      "src": "../../node_modules/react-custom-scrollbars-2/lib/index.js",
+      "file": "react-custom-scrollbars-2.js",
+      "fileHash": "251abd98",
+      "needsInterop": true
+    },
+    "@react-oauth/google": {
+      "src": "../../../node_modules/@react-oauth/google/dist/index.esm.js",
+      "file": "@react-oauth_google.js",
+      "fileHash": "6a699161",
+      "needsInterop": false
+    },
+    "axios": {
+      "src": "../../node_modules/axios/index.js",
+      "file": "axios.js",
+      "fileHash": "168babfc",
+      "needsInterop": false
+    },
+    "@mui/material": {
+      "src": "../../node_modules/@mui/material/esm/index.js",
+      "file": "@mui_material.js",
+      "fileHash": "a6dc6eb6",
+      "needsInterop": false
+    },
+    "react-icons/fa": {
+      "src": "../../node_modules/react-icons/fa/index.esm.js",
+      "file": "react-icons_fa.js",
+      "fileHash": "18123d58",
+      "needsInterop": false
+    },
+    "react-hot-toast": {
+      "src": "../../node_modules/react-hot-toast/dist/index.mjs",
+      "file": "react-hot-toast.js",
+      "fileHash": "89df83ef",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-A7CSRMTG": {
+      "file": "chunk-A7CSRMTG.js"
+    },
+    "chunk-FJ6XD5FS": {
+      "file": "chunk-FJ6XD5FS.js"
+    },
+    "chunk-TXWKGKUG": {
+      "file": "chunk-TXWKGKUG.js"
+    },
+    "chunk-DC5AMYBS": {
+      "file": "chunk-DC5AMYBS.js"
+    }
+  }
 }

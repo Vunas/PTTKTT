@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.app.QLCH.model.TaiKhoan;
+import com.app.QLCH.request.DoiMatKhauRequest;
 import com.app.QLCH.service.TaiKhoanService;
 import com.app.QLCH.utils.HashUtil;
 
@@ -58,6 +59,40 @@ public class TaiKhoanController {
                     .body("Có lỗi xảy ra khi thêm tài khoản.");
         }
     }
+
+    @PutMapping("/set-password/{id}")
+    public ResponseEntity<?> updatePassword(@PathVariable Integer id, @RequestBody DoiMatKhauRequest request) {
+        try {
+            TaiKhoan existingTaiKhoan = taiKhoanService.getTaiKhoanById(id);
+            if (existingTaiKhoan == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Không tìm thấy tài khoản với ID: " + id);
+            }
+
+            // So sánh mật khẩu cũ (mã hóa)
+            String hashedOldPassword = HashUtil.hashString(request.getMatKhauCu());
+            if (!existingTaiKhoan.getMatKhau().equals(hashedOldPassword)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Mật khẩu cũ không đúng.");
+            }
+
+            // Kiểm tra mật khẩu mới rỗng
+            if (request.getMatKhauMoi() == null || request.getMatKhauMoi().isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Mật khẩu mới không được để trống.");
+            }
+
+            // Mã hóa mật khẩu mới
+            existingTaiKhoan.setMatKhau(HashUtil.hashString(request.getMatKhauMoi()));
+            taiKhoanService.saveTaiKhoan(existingTaiKhoan);
+
+            return ResponseEntity.ok("Cập nhật mật khẩu thành công!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Có lỗi xảy ra khi cập nhật mật khẩu.");
+        }
+    }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateTaiKhoan(@PathVariable Integer id, @RequestBody TaiKhoan taiKhoan) {

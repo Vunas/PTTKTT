@@ -1,11 +1,22 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../redux/slices/CartSlice";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const FoodCard = ({ id, name, price, desc, img, handleToast }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
 
   const handleAddToCart = () => {
+    const user = localStorage.getItem("taiKhoan");
+
+    if (!user) {
+      // Nếu chưa đăng nhập → điều hướng đến trang đăng nhập
+      navigate("/signIn");
+      return;
+    }
+
     dispatch(addToCart({ id, name, price, img, qty: 1 }));
     handleToast(name);
   };
@@ -33,7 +44,13 @@ const FoodCard = ({ id, name, price, desc, img, handleToast }) => {
 
       <p className="text-sm font-normal text-gray-700">{displayDesc}...</p>
 
-      <div className="flex justify-end">
+      <div className="flex between gap-4">
+        <button
+          onClick={() => navigate(`/product/${id}`)}
+          className="px-3 py-1 text-sm text-white rounded-lg bg-yellow hover:text-black"
+        >
+          Xem chi tiết
+        </button>
         <button
           onClick={handleAddToCart}
           className="px-3 py-1 text-sm text-white rounded-lg bg-yellow hover:text-black"

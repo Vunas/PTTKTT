@@ -1,20 +1,24 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Scrollbars } from "react-custom-scrollbars-2";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import CartItems from "../components/CartItems"; // Đảm bảo đã import CartItems
+
 import { useSelector } from "react-redux";
 
-import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
-import CartItems from "../components/CartItems";
-
 const Cart = () => {
-  const cartItems = useSelector((state) => state.cart.cart);
+  // Lấy trực tiếp cartItems từ Redux store và đảm bảo nó là một mảng
+  const cartItems = useSelector((state) => state.cart.cart) || [];
+  console.log(cartItems)
+  // Kiểm tra nếu cartItems là một mảng hợp lệ
+  if (!Array.isArray(cartItems)) {
+    console.error("cartItems không phải là một mảng:", cartItems);
+    return <div>Lỗi khi tải giỏ hàng.</div>;
+  }
 
   // Tính tổng tiền
-  const totalPrice = cartItems.reduce(
-    (total, item) => total + item.qty * item.price,
-    0
-  );
+  const totalPrice = cartItems.reduce((total, item) => total + item.price * item.qty, 0);
 
   // Format tiền
   const formattedTotal = new Intl.NumberFormat("vi-VN", {
@@ -65,7 +69,7 @@ const Cart = () => {
             </p>
           </div>
           <div className="flex justify-end space-x-4">
-            <Link to={"/menu"}>
+            <Link to="/menu">
               <button
                 type="button"
                 className="px-3 py-2 text-sm font-semibold text-black border border-black rounded-md shadow-sm"
@@ -73,7 +77,7 @@ const Cart = () => {
                 Quay lại mua hàng
               </button>
             </Link>
-            <Link to={"/success"}>
+            <Link to="/transaction">
               <button
                 type="button"
                 className="px-3 py-2 text-sm font-semibold text-black rounded-md shadow-sm bg-yellow hover:bg-black hover:text-white"

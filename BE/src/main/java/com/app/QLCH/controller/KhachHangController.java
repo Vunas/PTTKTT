@@ -4,7 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
+
 import com.app.QLCH.model.KhachHang;
 import com.app.QLCH.service.KhachHangService;
 
@@ -32,25 +36,58 @@ public class KhachHangController {
         }
     }
 
+    @GetMapping("/exists")
+    public ResponseEntity<?> checkExists(@RequestParam(required = false) String email,
+                                         @RequestParam(required = false) String soDienThoai) {
+        boolean exists = false;
+
+        if (email != null && khachHangService.existsByEmail(email)) {
+            exists = true;
+        }
+
+        if (soDienThoai != null && khachHangService.existsBySoDienThoai(soDienThoai)) {
+            exists = true;
+        }
+
+        return ResponseEntity.ok(exists);
+    }
+
+    @GetMapping("/find")
+    public ResponseEntity<?> findByEmailOrPhone(@RequestParam(required = false) String email,
+                                                @RequestParam(required = false) String soDienThoai) {
+        Optional<KhachHang> result = Optional.empty();
+
+        if (email != null) {
+            result = khachHangService.findByEmail(email);
+        }
+
+        if (result.isEmpty() && soDienThoai != null) {
+            result = khachHangService.findBySoDienThoai(soDienThoai);
+        }
+
+        return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     // API thêm hoặc cập nhật thông tin khách hàng
     @PostMapping
     public ResponseEntity<?> saveKhachHang(@RequestBody KhachHang khachHang) {
-        try {
-            // Kiểm tra trùng email
-            if (khachHangService.existsByEmail(khachHang.getEmail())) {
+    try {
+        if (khachHangService.existsByEmail(khachHang.getEmail())) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email đã tồn tại!");
             }
 
-            // Kiểm tra trùng số điện thoại
-            if (khachHangService.existsBySoDienThoai(khachHang.getSoDienThoai())) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Số điện thoại đã tồn tại!");
-            }
-
-            // Lưu khách hàng nếu không có lỗi
-            return ResponseEntity.ok(khachHangService.saveKhachHang(khachHang));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra khi lưu khách hàng.");
+        if (khachHangService.existsBySoDienThoai(khachHang.getSoDienThoai())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Số điện thoại đã tồn tại!");
         }
+
+        if (khachHang.getNgayTao() == null) {
+            khachHang.setNgayTao(new Timestamp(System.currentTimeMillis()));
+        }
+
+        return ResponseEntity.ok(khachHangService.saveKhachHang(khachHang));
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra khi lưu khách hàng.");
+    }
     }
 
     // API cập nhật thông tin khách hàng

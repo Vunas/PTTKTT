@@ -30,7 +30,7 @@ const SetPassword = () => {
       return;
     }
 
-    const khachHang = JSON.parse(localStorage.getItem("khachHang"));
+    const khachHang = JSON.parse(localStorage.getItem("taiKhoan"));
     if (!khachHang) {
       setSnackbar({
         open: true,
@@ -41,7 +41,11 @@ const SetPassword = () => {
     }
 
     try {
-      const response = await axios.put("http://localhost:8080/api/khachhang/update-password", {
+      console.log(currentPassword);
+      console.log(newPassword);
+      console.log(khachHang.maTaiKhoan);
+
+      const response = await axios.put(`http://localhost:8080/api/taikhoan/set-password/${khachHang.maTaiKhoan}`, {
         maTaiKhoan: khachHang.maTaiKhoan,
         matKhauCu: currentPassword,
         matKhauMoi: newPassword,
@@ -102,7 +106,7 @@ const SetPassword = () => {
               required
             />
           </div>
-          <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition">
+          <button type="submit" className="w-full px-3 py-2 text-sm font-semibold text-black rounded-md shadow-sm bg-yellow hover:bg-black/80 hover:text-white">
             Cập nhật
           </button>
         </form>

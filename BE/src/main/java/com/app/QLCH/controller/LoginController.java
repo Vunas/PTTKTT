@@ -56,7 +56,9 @@ public class LoginController {
         try {
             TaiKhoan taiKhoan = taiKhoanService.getTaiKhoanByTenDangNhap(username);
             if (taiKhoan != null) {
-                if (password.equals(taiKhoan.getMatKhau())) {
+                
+                String hashedPassword = HashUtil.hashString(password);
+                if (hashedPassword.equals(taiKhoan.getMatKhau())) {
                     if (taiKhoan.getMaPhanQuyen() != 2) {
                         return ResponseEntity.ok(taiKhoan);
                     } else {
@@ -83,7 +85,7 @@ public class LoginController {
             if (idToken != null) {
                 String email = idToken.getPayload().getEmail();
                 TaiKhoan taiKhoan = taiKhoanService.getTaiKhoanByemail(email);
-
+                
                 if (taiKhoan != null && taiKhoan.getMaPhanQuyen() == 2) { // Quyền admin
                     return ResponseEntity.ok(taiKhoan);
                 } else {
@@ -107,7 +109,8 @@ public class LoginController {
         try {
             TaiKhoan taiKhoan = taiKhoanService.getTaiKhoanByTenDangNhap(username);
             if (taiKhoan != null) {
-                if (HashUtil.verifyHash(password, taiKhoan.getMatKhau())) {
+                String hashedPassword = HashUtil.hashString(password);
+                if (hashedPassword.equals(taiKhoan.getMatKhau())) {
                     if (taiKhoan.getMaPhanQuyen() != 1) {
                         return ResponseEntity.ok(taiKhoan);
                     } else {

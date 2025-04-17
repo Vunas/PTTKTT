@@ -44,7 +44,7 @@ const FoodItems = () => {
   return (
     <>
       <Toaster position="top-center" reverseOrder={false} />
-      <div className="py-5">
+      <div className="py-24">
         <span className="flex items-center justify-center lg:w-full lg:my-14">
           <h1 className="text-2xl font-bold lg:text-5xl">
             Khám phá <span className="font-serif text-yellow">món ngon</span> hôm nay
