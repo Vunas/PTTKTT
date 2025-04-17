@@ -1,6 +1,12 @@
 import axios from "axios";
 
-const filterData = async (url, filterParams, searchKeyword, setList, setError) => {
+const filterData = async (
+  url,
+  filterParams,
+  searchKeyword,
+  setList,
+  setError
+) => {
   try {
     const response = await axios.get(url, { params: filterParams });
     let filteredList = response.data;
@@ -8,8 +14,9 @@ const filterData = async (url, filterParams, searchKeyword, setList, setError) =
     if (searchKeyword.trim()) {
       const lowerKeyword = searchKeyword.toLowerCase();
       filteredList = filteredList.filter((item) =>
-        Object.values(item).some((value) =>
-          value.toString().toLowerCase().includes(lowerKeyword)
+        Object.values(item).some(
+          (value) =>
+            value && value.toString().toLowerCase().includes(lowerKeyword)
         )
       );
     }

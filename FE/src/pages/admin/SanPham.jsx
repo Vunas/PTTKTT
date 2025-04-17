@@ -57,23 +57,35 @@ const SanPham = () => {
     handleFilter();
   }, [handleFilter]);
 
-  const handleAdd = (newData) => {
-    addItem(
+  const handleAdd = async (newData) => {
+    await addItem(
       "http://localhost:8080/api/sanpham",
       newData,
       setSanPhamList,
       setSnackbar
     );
+    await fetchData(
+      "http://localhost:8080/api/sanpham",
+      setSanPhamList,
+      setLoading,
+      setError
+    );
   };
 
-  const handleEdit = (id, updatedData) => {
-    editItem(
+  const handleEdit = async (id, updatedData) => {
+    await editItem(
       "http://localhost:8080/api/sanpham",
       id,
       updatedData,
       setSanPhamList,
       setSnackbar,
       "maSanPham"
+    );
+    await fetchData(
+      "http://localhost:8080/api/sanpham",
+      setSanPhamList,
+      setLoading,
+      setError
     );
   };
 
@@ -145,7 +157,7 @@ const SanPham = () => {
         onClose={handleDialogClose}
         onSave={
           editSanPham
-            ? (data) => handleEdit(editSanPham.maSanPham, data)
+            ? (data) => handleEdit(data.sanPham.maSanPham, data)
             : handleAdd
         }
         sanPham={editSanPham}

@@ -135,6 +135,13 @@ const Sidebar = () => {
             to="/admin/phanquyen"
             active={location.pathname === "/admin/phanquyen"}
           />
+          <SidebarItem
+            isOpen={isOpen}
+            icon={<Security />}
+            label="Thống Kê"
+            to="/admin/thongke"
+            active={location.pathname === "/admin/thongke"}
+          />
         </ul>
 
         {/* Footer Sidebar */}

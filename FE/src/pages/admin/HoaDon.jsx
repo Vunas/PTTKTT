@@ -132,11 +132,11 @@ const HoaDon = () => {
   return (
     <div>
       <CommonToolbar
-        onAdd={() => {
-          setDialogOpen(true);
-          setEditHoaDon(null);
-          setTitle("Thêm Hóa Đơn");
-        }}
+        // onAdd={() => {
+        //   setDialogOpen(true);
+        //   setEditHoaDon(null);
+        //   setTitle("Thêm Hóa Đơn");
+        // }}
         onSearch={(keyword) => setSearch(keyword.trim())}
         onExport={handleExport}
       />

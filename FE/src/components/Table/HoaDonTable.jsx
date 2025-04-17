@@ -129,6 +129,7 @@ console.log(chiTietDonHang)
                         hoaDon,
                         chiTietDonHang,
                         khuyenMaiList,
+                        hoaDon.tongTien,
                         () => {
                           console.log(
                             "Đóng dialog hoặc thực hiện hành động khác."

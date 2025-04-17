@@ -6,6 +6,10 @@ import {
   DialogActions,
   TextField,
   Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 
 const HoaDonDialog = ({ open, onClose, onSave, title, hoaDon }) => {
@@ -45,6 +49,20 @@ const HoaDonDialog = ({ open, onClose, onSave, title, hoaDon }) => {
     validateField(name, value); // Kiểm tra giá trị khi người dùng nhập
   };
 
+  const handleDonHangChange = (e) => {
+    const { name, value } = e.target;
+
+    setNewHoaDon((prevValues) => ({
+      ...prevValues,
+      donHang: {
+        ...prevValues.donHang,
+        [name]: value,
+      },
+    }));
+
+    validateField(name, value);
+  };
+
   const validateField = (field, value) => {
     let errorMessage = "";
     if (!value) {
@@ -61,7 +79,12 @@ const HoaDonDialog = ({ open, onClose, onSave, title, hoaDon }) => {
   };
 
   const handleSave = () => {
-    const requiredFields = ["maDonHang", "ngayXuatHoaDon", "tongTien", "maNhanVien"];
+    const requiredFields = [
+      "maDonHang",
+      "ngayXuatHoaDon",
+      "tongTien",
+      "maNhanVien",
+    ];
     const newErrors = {};
 
     requiredFields.forEach((field) => {
@@ -114,11 +137,45 @@ const HoaDonDialog = ({ open, onClose, onSave, title, hoaDon }) => {
           helperText={errors.maDonHang}
         />
         <TextField
+          label="Mã Khách Hàng"
+          name="maKhachHang"
+          fullWidth
+          margin="dense"
+          value={newHoaDon.donHang?.maKhachHang || ""}
+          disabled
+        />
+        <FormControl
+          fullWidth
+          margin="dense"
+          error={!!errors.trangThaiGiaoHang}
+        >
+          <InputLabel>Trạng Thái Giao Hàng</InputLabel>
+          <Select
+            name="trangThaiGiaoHang"
+            value={newHoaDon.donHang?.trangThaiGiaoHang || "Đã đặt"}
+            onChange={handleDonHangChange}
+          >
+            <MenuItem value="Đã đặt">Đã Đặt</MenuItem>
+            <MenuItem value="Đã xác nhận">Đã Xác Nhận</MenuItem>
+            <MenuItem value="Đang giao">Đang Giao</MenuItem>
+            <MenuItem value="Đã giao">Đã Giao</MenuItem>
+            <MenuItem value="Đã hủy">Đã Hủy</MenuItem>
+          </Select>
+        </FormControl>
+        <TextField
+          label="Tổng giá"
+          name="tongGia"
+          fullWidth
+          margin="dense"
+          value={newHoaDon.donHang?.tongGia || ""}
+          disabled
+        />
+        <TextField
           label="Mã Khuyến Mãi"
           name="maKhuyenMai"
           fullWidth
           margin="dense"
-          value={newHoaDon.maKhuyenMai}
+          value={newHoaDon.maKhuyenMai || ""}
           onChange={handleChange}
         />
         <TextField
@@ -152,6 +209,22 @@ const HoaDonDialog = ({ open, onClose, onSave, title, hoaDon }) => {
           onChange={handleChange}
           error={!!errors.maNhanVien}
           helperText={errors.maNhanVien}
+        />
+        <TextField
+          label="Địa Chỉ"
+          name="diachi"
+          fullWidth
+          margin="dense"
+          value={newHoaDon.donHang?.diachi || ""}
+          onChange={handleDonHangChange}
+        />
+        <TextField
+          label="Ghi Chú"
+          name="ghichu"
+          fullWidth
+          margin="dense"
+          value={newHoaDon.donHang?.ghiChu || ""}
+          onChange={handleDonHangChange}
         />
       </DialogContent>
       <DialogActions>

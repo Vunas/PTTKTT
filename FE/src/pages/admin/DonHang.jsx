@@ -234,6 +234,7 @@ const DonHang = () => {
         setError,
       );
 
+      console.log(updatedHoaDon);
       if (isExport){
         addHoaDon(
            "http://localhost:8080/api/hoadon",
@@ -337,8 +338,8 @@ const DonHang = () => {
         chiTietDonHang={currentChiTietDonHang}
         title={title}
         khachHangList={khachHangList}
-        sanPhamList={dialogSanPhamList} // Sử dụng danh sách sản phẩm riêng cho dialog
-        setSanPhamList={setDialogSanPhamList} // Cập nhật danh sách sản phẩm riêng cho dialog
+        sanPhamList={dialogSanPhamList} 
+        setSanPhamList={setDialogSanPhamList}
         setSnackbar={setSnackbar}
         isExport={isExport}
         KhuyenMaiList={KhuyenMaiList}

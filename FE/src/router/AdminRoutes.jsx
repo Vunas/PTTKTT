@@ -13,6 +13,7 @@ import KhoHang from "../pages/admin/KhoHang";
 import DonHang from "../pages/admin/DonHang";
 import KhuyenMai from "../pages/admin/KhuyenMai";
 import HoaDon from "../pages/admin/HoaDon";
+import ThongKe from "../pages/admin/ThongKe";
 
 const AdminRoutes = () => {
   return (
@@ -35,6 +36,7 @@ const AdminRoutes = () => {
           <Route path="khachhang" element={<KhachHang />} />
           <Route path="taikhoan" element={<TaiKhoan />} />
           <Route path="phanquyen" element={<PhanQuyen />} />
+          <Route path="thongke" element={<ThongKe />} />
         </Routes>
       </div>
     </div>
