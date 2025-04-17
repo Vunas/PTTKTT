@@ -57,7 +57,7 @@ const Team = () => {
                         <h1 className="text-xl font-semibold text-white">
                            Mark Cook
                         </h1>
-                        <h6 className="text-base text-white">Assistant cock</h6>
+                        <h6 className="text-base text-white">Assistant</h6>
                      </div>
                   </div>
                </div>

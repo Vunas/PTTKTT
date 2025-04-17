@@ -18,7 +18,7 @@ const LoginKhachHang = ({ setIsLoggedIn }) => {
   const navigate = useNavigate(); //  hook để chuyển trang
 
   useEffect(() => {
-    const user = localStorage.getItem("khachHang");
+    const user = localStorage.getItem("taiKhoan");
     if (user) {
       setIsLoggedIn(true);
     }

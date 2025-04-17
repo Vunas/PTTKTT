@@ -48,7 +48,7 @@ const FoodDetails = () => {
   if (!product) return <div className="text-center mt-10">Đang tải sản phẩm...</div>;
 
   return (
-    <div>
+    <div className="pt-28">
       <Navbar />
       <div className="max-w-5xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-lg flex flex-col md:flex-row gap-8">
         <div className="flex-1 flex justify-center items-center">

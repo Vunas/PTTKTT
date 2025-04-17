@@ -96,7 +96,7 @@ const Navbar = () => {
                 <img
                   src={avatar}
                   alt="avatar"
-                  className="w-8 h-8 rounded-full border-2 border-yellow-500 object-cover cursor-pointer"
+                  className="w-6 h-6 rounded-full border-2 border-yellow-500 object-cover cursor-pointer"
                   onClick={handleAvatarClick}
                 />
                 <span className="text-sm font-medium text-gray-700">
@@ -168,14 +168,22 @@ const Navbar = () => {
                       >
                         <span className="ml-3 text-base font-medium text-gray-900">Chỉnh sửa tài khoản</span>
                       </Link>
+
                       <Link
                         to="/setPassword"
                         className="flex items-center p-3 -m-3 text-sm font-semibold rounded-md hover:bg-gray-50"
                       >
                         <span className="ml-3 text-base font-medium text-gray-900">Sửa mật khẩu</span>
                       </Link>
+
                       <Link
-                        to="/transaction"
+                        to="/orders"
+                        className="flex items-center p-3 -m-3 text-sm font-semibold rounded-md hover:bg-gray-50"
+                      >
+                        <span className="ml-3 text-base font-medium text-gray-900">Xem đơn hàng</span>
+                      </Link>
+                      <Link
+                        to="/history"
                         className="flex items-center p-3 -m-3 text-sm font-semibold rounded-md hover:bg-gray-50"
                       >
                         <span className="ml-3 text-base font-medium text-gray-900">Lịch sử giao dịch</span>
@@ -206,6 +214,11 @@ const Navbar = () => {
                 <li>
                   <Link to="/setPassword" className="block py-2 text-gray-700 hover:bg-gray-100">
 										Sửa mật khẩu
+									</Link>
+                </li>
+                <li>
+                  <Link to="/orders" className="block py-2 text-gray-700 hover:bg-gray-100">
+										Xem đơn hàng
 									</Link>
                 </li>
 								<li>

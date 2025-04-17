@@ -17,6 +17,8 @@ import SetPassword from "./pages/SetPassword";
 import SignUp from "./pages/SignUp";
 import FoodDetails from "./components/FoodDetails";
 import Transaction from "./pages/Transaction";
+import Order from "./components/Order";
+import OrderDetails from "./components/OrderDetails";
 
 const App = () => {
    const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -32,6 +34,7 @@ const App = () => {
             <Route exact path="/setAccount" element={<SetAccount/>} />
             <Route exact path="/setPassword" element={<SetPassword/>}></Route>
             <Route path="/product/:id" element={<FoodDetails/>} />
+            <Route path="/orders" element={<Order/>}/>
             <Route exact path="/transaction" element={<Transaction/>}/>
             <Route exact path="/*" element={<Error />} />
             <Route

@@ -69,6 +69,19 @@ public class DonHangController {
         }
     }
 
+    @PutMapping("/huydon/{id}")
+    public ResponseEntity<?> huyDonHang(@PathVariable Integer id) {
+        DonHang donHang = donHangService.getDonHangById(id);
+        if (donHang == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy đơn hàng.");
+        }
+
+        donHang.setTrangThai(0); // Hủy đơn
+        donHangService.saveDonHang(donHang);
+        
+        return ResponseEntity.ok("Hủy đơn hàng thành công.");
+    }
+
 
     @GetMapping("/filter")
     public List<DonHang> filterDonHang(

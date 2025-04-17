@@ -3,11 +3,20 @@ import { useSelector } from "react-redux";
 import Navbar from "../components/Navbar"; // Đảm bảo đã import Navbar
 import { ToastContainer, toast } from "react-toastify"; // Nếu cần thông báo
 import { Navigate, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { clearCart } from "../redux/slices/cartSlice";
 
 const Transaction = () => {
   // Lấy trực tiếp dữ liệu cart từ store
   const cartItems = useSelector((state) => state.cart.cart) || [];
   const navigate = useNavigate();
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+  const [currentUsername, setCurrentUsername] = useState("");
+  
+  const [userInfo, setUserInfo] = useState(() => {
+      const user = localStorage.getItem("taiKhoan");
+      return user ? JSON.parse(user) : null;
+  });
 
   const totalPrice = cartItems.reduce((total, item) => total + item.price * item.qty, 0);
 
@@ -15,14 +24,16 @@ const Transaction = () => {
     hoTen: "",
     gioiTinh: "",
     soDienThoai: "",
-    email: "",
     diaChi: "",
-    paymentMethod: "cash",
+    paymentMethod: "Tiền mặt",
+    ghiChu: "",
   });
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
+  
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,14 +42,14 @@ const Transaction = () => {
       hoTen: form.hoTen,
       gioiTinh: form.gioiTinh,
       soDienThoai: form.soDienThoai,
-      email: form.email,
+      email: userInfo.email,
       diaChi: form.diaChi,
       trangThai: 1,
       ngayTao: new Date().toISOString().split("T")[0]
     };
   
     try {
-      //  Kiểm tra khách hàng đã tồn tại
+      // 1. Kiểm tra hoặc tạo khách hàng
       const checkRes = await fetch(
         `http://localhost:8080/api/khachhang/find?email=${form.email}&soDienThoai=${form.soDienThoai}`
       );
@@ -57,37 +68,59 @@ const Transaction = () => {
         if (!resKhachHang.ok) throw new Error("Không thể tạo khách hàng");
   
         khachHangData = await resKhachHang.json();
+        localStorage.setItem("khachHang", JSON.stringify(khachHangData));
       }
   
-      //  Tạo đơn hàng
-      const hoaDonData = {
+      // 2. Tạo đơn hàng
+      const donHangData = {
         maKhachHang: khachHangData.maKhachHang,
-        ngayDat: new Date().toISOString(),
+        ngayDat: new Date().toISOString().slice(0, 16),
+        trangThaiGiaoHang: "Đã đặt",
+        tongGia: totalPrice,
+        diaChiGiaoHang: form.diaChi,
+        phuongThucThanhToan: form.paymentMethod,
+        ghiChu: form.ghiChu || "",
         trangThai: 1
       };
   
-      const resHoaDon = await fetch("http://localhost:8080/api/hoadon", {
+      const resDonHang = await fetch("http://localhost:8080/api/donhang", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(hoaDonData),
+        body: JSON.stringify(donHangData),
       });
   
-      if (!resHoaDon.ok) throw new Error("Không thể tạo đơn hàng");
+      if (!resDonHang.ok) throw new Error("Không thể tạo đơn hàng");
   
-      const hoaDon = await resDonHang.json();
-      const maHoaDonMoi = hoaDon.maHoaDon;
+      const donHang = await resDonHang.json();
+      const maDonHangMoi = donHang.maDonHang;
   
-      //  Tiếp tục các bước
-      await handleCreateHoaDon(maHoaDonMoi, totalPrice, null);
-      await handleCreateChiTietHoaDonBulk(maHoaDonMoi);
+      // 3. Tạo danh sách chi tiết đơn hàng
+      const chiTietList = cartItems.map(item => ({
+        maDonHang: maDonHangMoi,
+        maSanPham: item.id,
+        soLuong: item.qty,
+        donGia: item.price,
+        thanhTien: item.qty * item.price,
+        trangThai: 1
+      }));
+
+      const resChiTiet = await fetch("http://localhost:8080/api/chitietdonhang/bulk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(chiTietList),
+      });
   
+      if (!resChiTiet.ok) throw new Error("Không thể tạo chi tiết đơn hàng");
       toast.success("Đặt hàng thành công!", { position: "top-right", autoClose: 2000 });
+      dispatch(clearCart());
+      setButtonDisabled(true);
       setTimeout(() => navigate("/"), 2000);
+
     } catch (error) {
       console.error("Lỗi submit:", error);
       toast.error("Lỗi xử lý đơn hàng: " + error.message, { position: "top-right" });
     }
-  };
+  };  
   
 
   return (
@@ -148,7 +181,8 @@ const Transaction = () => {
             id="email"
             name="email"
             type="email"
-            value={form.email}
+            value={userInfo.email}
+            disabled
             onChange={handleChange}
             className="border border-gray-300 rounded-md p-2"
             required
@@ -168,6 +202,20 @@ const Transaction = () => {
           />
         </div>
 
+        <div className="flex flex-col md:col-span-2">
+          <label htmlFor="ghiChu" className="font-medium text-sm mb-1">Ghi chú</label>
+          <input
+            id="ghiChu"
+            name="ghiChu"
+            type="text"
+            value={form.ghiChu}
+            onChange={handleChange}
+            className="border border-gray-300 rounded-md p-2"
+            required
+          />
+        </div>
+
+
         {/* Chọn phương thức thanh toán */}
         <div className="flex flex-col md:col-span-2">
           <label htmlFor="paymentMethod" className="font-medium text-sm mb-1">Phương thức thanh toán</label>
@@ -178,8 +226,9 @@ const Transaction = () => {
             onChange={handleChange}
             className="border border-gray-300 rounded-md p-2"
           >
-            <option value="cash">Thanh toán khi nhận hàng</option>
-            <option value="online">Thanh toán trực tuyến</option>
+            <option value="Tiền mặt">Thanh toán khi nhận hàng</option>
+            <option value="Thẻ ngân hàng">Thanh toán thẻ ngân hàng</option>
+            <option value="Ví điện tử">Thanh toán ví điện tử</option>
           </select>
         </div>
 
@@ -208,12 +257,14 @@ const Transaction = () => {
 
         {/* Submit button */}
         <div className="md:col-span-2 flex justify-center">
-          <button
-            type="submit"
-            className="bg-yellow text-white py-2 px-6 rounded-lg"
-          >
-            Xác nhận đơn hàng
-          </button>
+          {!buttonDisabled && (
+        <button
+          type="submit"
+          className="bg-yellow text-white py-2 px-6 rounded-lg"
+        >
+          Xác nhận đơn hàng
+        </button>
+      )}
         </div>
       </form>
 
