@@ -20,6 +20,7 @@
       "dayjs": "^1.11.13",
       "lucide-react": "^0.302.0",
       "react": "^18.2.0",
+      "react-confirm-alert": "^3.0.6",
       "react-custom-scrollbars-2": "^4.5.0",
       "react-dom": "^18.2.0",
       "react-hot-toast": "^2.4.1",

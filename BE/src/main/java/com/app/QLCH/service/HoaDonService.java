@@ -40,6 +40,10 @@ public class HoaDonService {
         }
     }
 
+    public List<HoaDon> getHoaDonByMaKhachHang(Integer maKhachHang) {
+        return hoaDonRepository.findByDonHang_MaKhachHang(maKhachHang);
+    }
+
     // Lọc danh sách hóa đơn dựa trên nhiều tiêu chí
     public List<HoaDon> filterHoaDon(LocalDate ngayBatDau, LocalDate ngayKetThuc, Double minTongTien,
             Double maxTongTien, Integer maKhuyenMai, Integer maNhanVien) {

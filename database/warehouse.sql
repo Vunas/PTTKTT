@@ -50,11 +50,7 @@ CREATE TABLE PhieuXuat(
    fileChungTu VARCHAR(255),
    ghiChu TEXT,
    thoiGianTao DATETIME,
-<<<<<<< HEAD
    nguoiXuat INT  -- Khóa ngoại tham chiếu MaNhanVien
-=======
-   nguoiXuat INT,  -- Khóa ngoại tham chiếu MaNhanVien
->>>>>>> 16aaeee (Merge branch 'main' of https://github.com:q)
 );
 
 CREATE TABLE ChiTietPhieuXuat(
@@ -66,10 +62,6 @@ CREATE TABLE ChiTietPhieuXuat(
    CONSTRAINT lienKetPhieuXuat FOREIGN KEY (MaPhieuXuat)
       REFERENCES PhieuXuat(Id),
 
-<<<<<<< HEAD
    CONSTRAINT lienKetNguyenLieuXuat FOREIGN KEY (MaNguyenLieu)
-=======
-   CONSTRAINT lienKetNguyenLieu FOREIGN KEY (MaNguyenLieu)
->>>>>>> 16aaeee (Merge branch 'main' of https://github.com:q)
       REFERENCES NguyenLieu(MaNguyenLieu)  
 );

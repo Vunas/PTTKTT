@@ -6,14 +6,12 @@ const Team = () => {
          <div className="px-4 py-5 mx-auto max-w-7xl lg:px-10">
             <div className="max-w-3xl mx-auto text-center">
                <h2 className="text-3xl font-bold leading-tight text-black sm:text-4xl lg:text-5xl lg:leading-tight">
-                  People who made it{" "}
-                  <span className="font-serif text-yellow">successful</span>
+                  Những người đã làm nên{" "}
+                  <span className="font-serif text-yellow">thành công</span>
                </h2>
                <p className="max-w-2xl mx-auto mt-4 text-xl text-gray-600">
-                  Behind the success of our website is a dynamic team of
-                  dedicated individuals. It's the passion, expertise, and
-                  collaborative spirit of every person in our group that has
-                  shaped this success story.
+                  Đằng sau sự thành công của website là một đội ngũ năng động gồm những cá nhân tận tâm.
+                  Chính niềm đam mê, chuyên môn và tinh thần hợp tác của từng thành viên đã tạo nên câu chuyện thành công này.
                </p>
             </div>
             <br />
@@ -36,7 +34,7 @@ const Team = () => {
                         <h1 className="text-xl font-semibold text-white">
                            John Doe
                         </h1>
-                        <h6 className="text-base text-white">Master Chef</h6>
+                        <h6 className="text-base text-white">Bếp trưởng</h6>
                      </div>
                   </div>
                </div>
@@ -57,7 +55,7 @@ const Team = () => {
                         <h1 className="text-xl font-semibold text-white">
                            Mark Cook
                         </h1>
-                        <h6 className="text-base text-white">Assistant</h6>
+                        <h6 className="text-base text-white">Phụ bếp</h6>
                      </div>
                   </div>
                </div>
@@ -78,7 +76,7 @@ const Team = () => {
                         <h1 className="text-xl font-semibold text-white">
                            Kitty
                         </h1>
-                        <h6 className="text-base text-white">Cook</h6>
+                        <h6 className="text-base text-white">Đầu bếp</h6>
                      </div>
                   </div>
                </div>

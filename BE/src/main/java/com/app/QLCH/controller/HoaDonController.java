@@ -44,6 +44,12 @@ public class HoaDonController {
         }
     }
 
+    @GetMapping("/khach-hang/{maKhachHang}")
+    public ResponseEntity<List<HoaDon>> getHoaDonByMaKhachHang(@PathVariable Integer maKhachHang) {
+        List<HoaDon> hoaDons = hoaDonService.getHoaDonByMaKhachHang(maKhachHang);
+        return ResponseEntity.ok(hoaDons);
+    }
+
     // API cập nhật thông tin hóa đơn
     @PutMapping("/{id}")
     public ResponseEntity<?> updateHoaDon(@PathVariable Integer id, @RequestBody HoaDon hoaDon) {

@@ -88,7 +88,7 @@ const Navbar = () => {
                   type="button"
                   className="w-full px-3 py-2 text-sm font-semibold text-black rounded-md shadow-sm bg-yellow hover:bg-black/80 hover:text-white"
                 >
-                  Sign in
+                  Đăng nhập
                 </button>
               </Link>
             ) : (
@@ -157,7 +157,7 @@ const Navbar = () => {
                         type="button"
                         className="w-full px-3 py-2 mt-4 text-sm font-semibold text-black rounded-md shadow-sm bg-yellow hover:bg-black/80 hover:text-white"
                       >
-                        Sign in
+                        Đăng nhập
                       </button>
                     </Link>
                   ) : (
@@ -183,7 +183,7 @@ const Navbar = () => {
                         <span className="ml-3 text-base font-medium text-gray-900">Xem đơn hàng</span>
                       </Link>
                       <Link
-                        to="/history"
+                        to="/receipts"
                         className="flex items-center p-3 -m-3 text-sm font-semibold rounded-md hover:bg-gray-50"
                       >
                         <span className="ml-3 text-base font-medium text-gray-900">Lịch sử giao dịch</span>
@@ -204,7 +204,7 @@ const Navbar = () => {
 
 					{/* Dropdown menu for account settings */}
 					{isDropdownOpen && (
-						<div className="absolute top-16 right-10 bg-white shadow-lg p-4 rounded-md w-48 z-50">
+						<div className="absolute top-16 right-52 bg-white shadow-lg p-4 rounded-md w-48 z-50">
 							<ul>
 								<li>
 									<Link to="/setAccount" className="block py-2 text-gray-700 hover:bg-gray-100">
@@ -222,7 +222,7 @@ const Navbar = () => {
 									</Link>
                 </li>
 								<li>
-									<Link to="/transaction" className="block py-2 text-gray-700 hover:bg-gray-100">
+									<Link to="/receipts" className="block py-2 text-gray-700 hover:bg-gray-100">
 										Lịch sử giao dịch
 									</Link>
 								</li>

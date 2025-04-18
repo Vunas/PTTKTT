@@ -18,6 +18,9 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
     // Kiểm tra hóa đơn dựa trên mã đơn hàng
     Boolean existsByMaDonHang(Integer maDonHang);
 
+    // Lấy hóa đơn theo mã khách hàng (thông qua DonHang)
+    List<HoaDon> findByDonHang_MaKhachHang(Integer maKhachHang);
+
     // Tìm hóa đơn theo mã nhân viên
     List<HoaDon> findByMaNhanVien(Integer maNhanVien);
 
