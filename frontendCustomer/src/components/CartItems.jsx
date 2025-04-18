@@ -7,7 +7,7 @@ import {
   removeFromCart,
   incrementQty,
   decrementQty,
-} from "../redux/slices/CartSlice";
+} from "../redux/slices/CartSlice"; // báo lỗi nhưng vẫn chạy được, đừng xóa
 
 const CartItems = ({ id, img, name, price, qty }) => {
   const dispatch = useDispatch();

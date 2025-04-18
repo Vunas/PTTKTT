@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { addToCart } from "../redux/slices/CartSlice";
+import { addToCart } from "../redux/slices/CartSlice"; // báo lỗi nhưng vẫn chạy được, đừng xóa
 import Navbar from "./Navbar";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

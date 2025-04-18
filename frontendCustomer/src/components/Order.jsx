@@ -20,6 +20,25 @@ const Orders = () => {
 		setSelectedOrder(null);
 	};
 
+	const handleCancelOrder = async (orderId) => {
+		if (!window.confirm("Bạn có chắc muốn hủy đơn hàng này?")) return;
+	
+		try {
+			await axios.put(`http://localhost:8080/api/donhang/huydon/${orderId}`);
+			alert("Hủy đơn thành công!");
+			// Cập nhật danh sách đơn hàng sau khi hủy
+			setOrders(prev =>
+				prev.map(order =>
+					order.maDonHang === orderId
+						? { ...order, trangThai: 0 }
+						: order
+				)
+			);
+		} catch (err) {
+			alert("Hủy đơn thất bại.");
+		}
+	};
+
   // Lấy thông tin khách hàng từ localStorage
   const user = JSON.parse(localStorage.getItem("khachHang"));
 
@@ -115,12 +134,12 @@ const Orders = () => {
 					>
 						Xem chi tiết
 					</button>
-					<Link
-					to={`/orders/${order.maDonHang}`}
+					<button
+						onClick={() => handleCancelOrder(order.maDonHang)}
 						className="mt-4 px-3 py-1 text-sm justify-end inline-block bg-yellow hover:bg-yellow-600 text-black hover:text-white font-semibold rounded-lg transition duration-300"
 					>
 						Hủy đơn
-					</Link>
+					</button>
 					</div>
         </div>
       ))}
