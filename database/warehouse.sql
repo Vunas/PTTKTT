@@ -50,7 +50,10 @@ CREATE TABLE PhieuXuat(
    fileChungTu VARCHAR(255),
    ghiChu TEXT,
    thoiGianTao DATETIME,
-   nguoiXuat INT,  -- Khóa ngoại tham chiếu MaNhanVien
+   nguoiXuat INT, -- Khóa ngoại tham chiếu MaNhanVien
+
+   CONSTRAINT fk_NguoiXuat FOREIGN KEY (nguoiXuat)
+      REFERENCES NhanVien(MaNhanVien)
 );
 
 CREATE TABLE ChiTietPhieuXuat(
@@ -59,9 +62,9 @@ CREATE TABLE ChiTietPhieuXuat(
    maNguyenLieu INT NOT NULL,                                  -- FK tới bảng NguyenLieu
    soLuong INT NOT NULL,                                       -- Số lượng nguyên liệu nhập
 
-   CONSTRAINT lienKetPhieuXuat FOREIGN KEY (MaPhieuXuat)
-      REFERENCES PhieuXuat(Id),
+CONSTRAINT fk_PhieuXuat FOREIGN KEY (maPhieuXuat)
+   REFERENCES PhieuXuat(Id),
 
-   CONSTRAINT lienKetNguyenLieu FOREIGN KEY (MaNguyenLieu)
-      REFERENCES NguyenLieu(MaNguyenLieu)  
+CONSTRAINT fk_NguyenLieu FOREIGN KEY (maNguyenLieu)
+   REFERENCES NguyenLieu(MaNguyenLieu)
 );
