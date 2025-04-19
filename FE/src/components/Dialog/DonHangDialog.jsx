@@ -116,7 +116,7 @@ const DonHangDialog = ({
     }
 
     setErrors({});
-  }, [donHang, chiTietDonHang, isExport, setTitle, newDonHang.tongGia]);
+  }, [donHang, chiTietDonHang, isExport, setTitle]);
 
   useEffect(() => {
     const calculateTongTienHoaDon = () => {
