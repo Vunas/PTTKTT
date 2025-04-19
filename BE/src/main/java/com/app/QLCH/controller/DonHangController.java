@@ -38,6 +38,8 @@ public class DonHangController {
     // API thêm mới đơn hàng
     @PostMapping
     public ResponseEntity<?> saveDonHang(@RequestBody DonHang donHang) {
+        System.out.println("loi o dayyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
+        System.out.println(donHang);
         try {
             return ResponseEntity.ok(donHangService.saveDonHang(donHang));
         } catch (Exception e) {

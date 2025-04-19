@@ -57,6 +57,7 @@ public class ChiTietNguyenLieuSanPhamService {
                             NguyenLieu nguyenLieuCopy = new NguyenLieu();
                             nguyenLieuCopy.setMaNguyenLieu(chiTiet.getNguyenLieu().getMaNguyenLieu());
                             nguyenLieuCopy.setTen(chiTiet.getNguyenLieu().getTen());
+                            nguyenLieuCopy.setHinhAnh(chiTiet.getNguyenLieu().getHinhAnh());
                             nguyenLieuCopy.setSoLuong(
                                     (int) Math.round(chiTiet.getSoLuongNguyenLieu() * sanPham.getSoLuong()));
                             return nguyenLieuCopy;

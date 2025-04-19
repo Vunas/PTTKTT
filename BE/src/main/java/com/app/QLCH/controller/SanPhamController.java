@@ -107,7 +107,9 @@ public class SanPhamController {
     public ResponseEntity<?> validateAndUpdateSanPhamBulk(@RequestBody List<SanPham> sanPhamList) {
         List<SanPham> sanPhamListDeFault = sanPhamService.getAllSanPham();
         System.out.println("Hàm validate và cập nhật số lượng sản phẩm được gọi");
-
+        System.out.println(sanPhamList);
+        System.out.println("aaaaaaaaaaaaaaaaaaa");
+        System.out.println(sanPhamListDeFault);
         try {
 
             for (SanPham sanPham : sanPhamList) {

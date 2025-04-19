@@ -15,6 +15,8 @@ import {
   Alert,
 } from "@mui/material";
 import NhapSanPhamDialog from "./NhapSanPhamDialog";
+import { Grid } from "@mui/material";
+import exportPhieuCheBienPDF from "../../Hook/ExportPhieuCheBienPDF";
 
 export default function PhieuCheBienDialog({ open, onClose, cheBien }) {
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -42,6 +44,7 @@ export default function PhieuCheBienDialog({ open, onClose, cheBien }) {
               (chiTiet) => ({
                 maSanPham: chiTiet.sanPham.maSanPham, // Đảm bảo có maSanPham
                 tenSanPham: chiTiet.sanPham.tenSanPham, // Đảm bảo có tenSanPham
+                hinhAnh: chiTiet.sanPham.hinhAnh,
                 soLuong: chiTiet.soLuongSanPham,
               })
             );
@@ -127,76 +130,121 @@ export default function PhieuCheBienDialog({ open, onClose, cheBien }) {
   };
 
   const handleProductSelect = (products) => {
-    // Cập nhật danh sách sản phẩm đã chọn, đảm bảo không có sản phẩm trùng lặp
-    const uniqueProducts = products.filter(
-      (newProduct) =>
-        !selectedProducts.some(
-          (existingProduct) =>
-            existingProduct.maSanPham === newProduct.maSanPham
-        )
+    // Tạo một Set chứa maSanPham của các sản phẩm vừa được chọn
+    const selectedMaSanPhams = new Set(products.map((p) => p.maSanPham));
+
+    // Lọc ra những sản phẩm đã chọn trước đó mà vẫn còn trong danh sách mới
+    const updatedProducts = selectedProducts.filter((p) =>
+      selectedMaSanPhams.has(p.maSanPham)
     );
-    setSelectedProducts([...selectedProducts, ...uniqueProducts]);
+
+    // Thêm hoặc cập nhật số lượng cho các sản phẩm mới
+    products.forEach((newProduct) => {
+      const existingIndex = updatedProducts.findIndex(
+        (p) => p.maSanPham === newProduct.maSanPham
+      );
+
+      if (existingIndex > -1) {
+        // Cập nhật số lượng nếu sản phẩm đã tồn tại
+        updatedProducts[existingIndex].soLuong = newProduct.soLuong;
+      } else {
+        // Thêm sản phẩm mới nếu chưa tồn tại
+        updatedProducts.push(newProduct);
+      }
+    });
+
+    setSelectedProducts(updatedProducts);
+  };
+
+  const handleExportPDF = () => {
+    exportPhieuCheBienPDF(newCheBien, selectedProducts, ingredientList);
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>
         {cheBien ? "Xem Phiếu Chế Biến" : "Tạo Phiếu Chế Biến"}
       </DialogTitle>
       <DialogContent dividers>
-        {cheBien === null && (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setProductDialogOpen(true)}
-            sx={{ mb: 2 }}
-          >
-            Chọn Sản Phẩm
-          </Button>
-        )}
-
-        {selectedProducts.length > 0 && (
-          <Table sx={{ mb: 2 }}>
-            <TableHead>
-              <TableRow>
-                <TableCell>Tên Sản Phẩm</TableCell>
-                <TableCell>Số Lượng</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {selectedProducts.map((product) => (
-                <TableRow key={product.maSanPham}>
-                  <TableCell>{product.tenSanPham}</TableCell>
-                  <TableCell>{product.soLuong}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        )}
-
-        {ingredientList.length > 0 && (
-          <>
-            <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
-              Danh Sách Nguyên Liệu
+        <Grid container spacing={2}>
+          {/* Phần 1: Sản phẩm đã chọn */}
+          <Grid item xs={6}>
+            {cheBien === null && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => setProductDialogOpen(true)}
+                sx={{ mb: 2 }}
+              >
+                Chọn Sản Phẩm
+              </Button>
+            )}
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Sản Phẩm Đã Chọn
             </Typography>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Tên Nguyên Liệu</TableCell>
-                  <TableCell>Số Lượng Cần</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {ingredientList.map((ingredient) => (
-                  <TableRow key={ingredient.maNguyenLieu}>
-                    <TableCell>{ingredient.ten}</TableCell>
-                    <TableCell>{ingredient.soLuong}</TableCell>
+            {selectedProducts.length > 0 && (
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Tên Sản Phẩm</TableCell>
+                    <TableCell>Hình Ảnh</TableCell>
+                    <TableCell>Số Lượng</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </>
-        )}
+                </TableHead>
+                <TableBody>
+                  {selectedProducts.map((product) => (
+                    <TableRow key={product.maSanPham}>
+                      <TableCell>{product.tenSanPham}</TableCell>
+                      <TableCell>
+                        <img
+                          src={product.hinhAnh}
+                          alt={product.ten}
+                          style={{ width: 80, height: 88 }}
+                        />
+                      </TableCell>
+                      <TableCell>{product.soLuong}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </Grid>
+
+          {/* Phần 2: Nguyên liệu cần */}
+          <Grid item xs={6}>
+            <br />
+            <br />
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Danh Sách Nguyên Liệu Cần
+            </Typography>
+            {ingredientList.length > 0 && (
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Tên Nguyên Liệu</TableCell>
+                    <TableCell>Hình Ảnh</TableCell>
+                    <TableCell>Số Lượng Cần</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {ingredientList.map((ingredient) => (
+                    <TableRow key={ingredient.maNguyenLieu}>
+                      <TableCell>{ingredient.ten}</TableCell>
+                      <TableCell>
+                        <img
+                          src={ingredient.hinhAnh}
+                          alt={ingredient.ten}
+                          style={{ width: 80, height: 88 }}
+                        />
+                      </TableCell>
+                      <TableCell>{ingredient.soLuong}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </Grid>
+        </Grid>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} variant="outlined">
@@ -207,6 +255,16 @@ export default function PhieuCheBienDialog({ open, onClose, cheBien }) {
             Xác nhận
           </Button>
         )}
+        {(cheBien || selectedProducts.length > 0) &&
+          ingredientList.length > 0 && (
+            <Button
+              onClick={handleExportPDF}
+              variant="contained"
+              color="secondary"
+            >
+              Xuất PDF
+            </Button>
+          )}
       </DialogActions>
 
       <Snackbar

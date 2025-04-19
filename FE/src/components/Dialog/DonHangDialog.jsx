@@ -412,7 +412,7 @@ const DonHangDialog = ({
 
     const updatedSanPhamList = sanPhamList.map((sp) => ({
       ...sp,
-      soLuong: Math.max(0, sp.soLuong - (sp.deltaSoLuong || 0)), // Đảm bảo không bị giá trị âm
+      soLuong: sp.deltaSoLuong || 0, 
       deltaSoLuong: undefined,
     }));
 
@@ -467,7 +467,7 @@ const DonHangDialog = ({
                   <InputLabel>Khách Hàng</InputLabel>
                   <Select
                     name="maKhachHang"
-                    value={newDonHang.maKhachHang}
+                    value={newDonHang.maKhachHang? newDonHang.maKhachHang : ""}
                     onChange={handleChange}
                   >
                     <MenuItem value="">Chọn Khách Hàng</MenuItem>

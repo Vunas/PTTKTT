@@ -33,8 +33,19 @@ const NhapSanPhamDialog = ({ open, onClose, onConfirm, defaultSelected }) => {
 
   // Đồng bộ sản phẩm đã chọn nếu có
   useEffect(() => {
-    const selectedIds = defaultSelected.map((item) => item.maSanPham);
-    setSelected(selectedIds);
+    if (defaultSelected && defaultSelected.length > 0) {
+      const selectedIds = defaultSelected.map((item) => item.maSanPham);
+      setSelected(selectedIds);
+      // Cập nhật luôn quantities ban đầu nếu có
+      const initialQuantities = {};
+      defaultSelected.forEach((item) => {
+        initialQuantities[item.maSanPham] = item.soLuong || 1;
+      });
+      setQuantities(initialQuantities);
+    } else {
+      setSelected([]);
+      setQuantities({});
+    }
   }, [defaultSelected]);
 
   const handleToggle = (maSanPham) => {
@@ -43,16 +54,15 @@ const NhapSanPhamDialog = ({ open, onClose, onConfirm, defaultSelected }) => {
         ? prev.filter((id) => id !== maSanPham)
         : [...prev, maSanPham];
 
-      // Nếu thêm mới thì set số lượng mặc định là 1
-      if (!prev.includes(maSanPham)) {
-        setQuantities((prevQty) => ({ ...prevQty, [maSanPham]: 1 }));
-      } else {
-        setQuantities((prevQty) => {
-          const newQty = { ...prevQty };
-          delete newQty[maSanPham];
-          return newQty;
-        });
-      }
+      setQuantities((prevQty) => {
+        const newQty = { ...prevQty };
+        if (!prev.includes(maSanPham)) {
+          newQty[maSanPham] = 1; // Set số lượng mặc định khi chọn
+        } else {
+          delete newQty[maSanPham]; // Xóa số lượng khi bỏ chọn
+        }
+        return newQty;
+      });
 
       return newSelected;
     });
