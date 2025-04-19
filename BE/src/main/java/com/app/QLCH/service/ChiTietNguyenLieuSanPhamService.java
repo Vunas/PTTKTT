@@ -53,10 +53,13 @@ public class ChiTietNguyenLieuSanPhamService {
         return sanPhamList.stream()
                 .flatMap(sanPham -> repository.findBySanPhamMaSanPham(sanPham.getMaSanPham()).stream()
                         .map(chiTiet -> {
-                            NguyenLieu nguyenLieu = chiTiet.getNguyenLieu();
-                            // Nhân số lượng nguyên liệu theo số lượng sản phẩm trong đối tượng SanPham
-                            nguyenLieu.setSoLuong((int) Math.round(chiTiet.getSoLuongNguyenLieu() * sanPham.getSoLuong()));
-                            return nguyenLieu;
+                            // Tạo một bản sao mới thay vì sửa đổi trực tiếp đối tượng gốc
+                            NguyenLieu nguyenLieuCopy = new NguyenLieu();
+                            nguyenLieuCopy.setMaNguyenLieu(chiTiet.getNguyenLieu().getMaNguyenLieu());
+                            nguyenLieuCopy.setTen(chiTiet.getNguyenLieu().getTen());
+                            nguyenLieuCopy.setSoLuong(
+                                    (int) Math.round(chiTiet.getSoLuongNguyenLieu() * sanPham.getSoLuong()));
+                            return nguyenLieuCopy;
                         }))
                 .collect(Collectors.toList());
     }

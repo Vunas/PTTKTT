@@ -59,39 +59,55 @@ public class CheBienController {
     // API thêm hoặc cập nhật CheBien kèm danh sách ChiTietCheBien
     @PostMapping
     public ResponseEntity<?> saveCheBien(@RequestBody CheBienDTO cheBienDTO) {
-        CheBien savedCheBien = cheBienService.saveCheBien(cheBienDTO.getCheBien());
         List<SanPham> sanPhamList = new ArrayList<>();
 
         // Thu thập danh sách sản phẩm từ chi tiết chế biến
         for (ChiTietCheBien chiTietCheBien : cheBienDTO.getChiTietCheBienList()) {
-            SanPham sanPham = sanPhamService.getSanPhamById(chiTietCheBien.getSanPham().getMaSanPham());
+            SanPham sanPham = sanPhamService.getSanPhamById(chiTietCheBien.getSanPham().getMaSanPham());  
             if (sanPham == null) {
                 return ResponseEntity.badRequest()
                         .body("Không tìm thấy sản phẩm có mã: " + chiTietCheBien.getSanPham().getMaSanPham());
             }
+            sanPham.setSoLuong(chiTietCheBien.getSoLuongSanPham());
             sanPhamList.add(sanPham);
         }
 
         // Lấy danh sách nguyên liệu cần dùng (đã chứa số lượng cần)
+        System.out.println("batdauuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
+        List<NguyenLieu> nguyenLieuListDefault = nguyenLieuService.getAllNguyenLieu();
+        System.out.println(nguyenLieuListDefault);
         List<NguyenLieu> nguyenLieuList = chiTietNguyenLieuSanPhamService.findNguyenLieuBySanPham(sanPhamList);
+        System.out.println(nguyenLieuList);
+        System.out.println("casssssssssssss");
+        
 
         // Kiểm tra số lượng nguyên liệu có đủ không
-        for (NguyenLieu nguyenLieu : nguyenLieuList) {
-            // Không tính lại số lượng mà sử dụng số lượng đã có từ danh sách nguyên liệu
-            if (nguyenLieu.getSoLuong() < nguyenLieu.getSoLuong()) {
-                return ResponseEntity.badRequest().body("Nguyên liệu không đủ: " + nguyenLieu.getTen());
+        for (NguyenLieu nLieu : nguyenLieuListDefault) {
+            for (NguyenLieu nguyenLieu : nguyenLieuList) {
+                if (nLieu.getMaNguyenLieu() == nguyenLieu.getMaNguyenLieu()) {
+                    System.out.println(nLieu);
+                    System.out.println(nguyenLieu);
+                    if (nLieu.getSoLuong() < nguyenLieu.getSoLuong()) {
+                        return ResponseEntity.badRequest().body("Nguyên liệu không đủ: " + nguyenLieu.getTen());
+                    }
+                    break;
+                }
             }
         }
 
-        // Nếu đủ, cập nhật số lượng nguyên liệu
-        for (NguyenLieu nguyenLieu : nguyenLieuList) {
-            int soLuongCan = nguyenLieu.getSoLuong(); // Sử dụng số lượng đã có từ danh sách
-            int soLuongMoi = nguyenLieu.getSoLuong() - soLuongCan;
+        System.out.println("daaaaaaaaaaaaaaaaa");
 
-            // Đảm bảo số lượng không bị âm
-            nguyenLieu.setSoLuong(Math.max(soLuongMoi, 0));
-            nguyenLieuService.saveNguyenLieu(nguyenLieu);
+        for (NguyenLieu nLieu : nguyenLieuListDefault) {
+            for (NguyenLieu nguyenLieu : nguyenLieuList) {
+                if (nLieu.getMaNguyenLieu() == nguyenLieu.getMaNguyenLieu()) {
+                    nLieu.setSoLuong(nLieu.getSoLuong() - nguyenLieu.getSoLuong());
+                    nguyenLieuService.saveNguyenLieu(nLieu);
+                    break;
+                }
+            }
         }
+
+        CheBien savedCheBien = cheBienService.saveCheBien(cheBienDTO.getCheBien());
 
         // Cập nhật số lượng sản phẩm mới
         for (ChiTietCheBien chiTiet : cheBienDTO.getChiTietCheBienList()) {
