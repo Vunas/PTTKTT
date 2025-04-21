@@ -52,13 +52,13 @@ CREATE TABLE NhanVien (
 
 INSERT INTO NhanVien (HoTen, GioiTinh, SoDienThoai, Email, DiaChi, ChucVu) 
 VALUES
-    ('Le Van C', 'Nam', '0987654321', 'c.le@example.com', '789 Đường PQR, Đà Nẵng', 'Nhân viên giao hàng'),
+    ('Le Van C', 'Nam', '0987654321', 'vuh265@gmail.com.le@example.com', '789 Đường PQR, Đà Nẵng', 'Nhân viên giao hàng'),
     ('Pham Thi D', 'Nữ', '0971234567', 'd.pham@example.com', '321 Đường LMN, TP.HCM', 'Quản lý'),
-    ('Do Quoc H', 'Nam', '0998765432', 'h.do@example.com', '123 Đường ABC, Hà Nội', 'Nhân viên kho'),
-    ('Tran Thi E', 'Nữ', '0965432109', 'e.tran@example.com', '456 Đường XYZ, Cần Thơ', 'Nhân viên bán hàng'),
-    ('Nguyen Van F', 'Nam', '0943216789', 'f.nguyen@example.com', '888 Đường JKL, Hải Phòng', 'Nhân viên chăm sóc khách hàng'),
-    ('Bui Thi G', 'Nữ', '0932143657', 'g.bui@example.com', '101 Đường TUV, Huế', 'Kế toán');
-    
+    ('Nguyen Van E', 'Nam', '0901234567', 'e.nguyen@example.com', '456 Đường XYZ, Hà Nội', 'Nhân viên kho'),
+    ('Tran Thi F', 'Nữ', '0937654321', 'f.tran@example.com', '123 Đường ABC, Cần Thơ', 'Kế toán'),
+    ('Hoang Van G', 'Nam', '0918888888', 'g.hoang@example.com', '654 Đường TUV, Huế', 'Bảo vệ'),
+    ('Bui Thi H', 'Nữ', '0929999999', 'h.bui@example.com', '987 Đường QRS, Vũng Tàu', 'Nhân viên bán hàng');
+
 -- Tạo bảng KhachHang
 CREATE TABLE KhachHang (
     maKhachHang INT PRIMARY KEY AUTO_INCREMENT,
@@ -288,7 +288,7 @@ CREATE TABLE KhuyenMai (
     LoaiKhuyenMai INT NOT NULL, -- 1: phần trăm giảm, 2: giá cố định giảm, 3: quà tặng
     NgayBatDau DATE NOT NULL,
     NgayKetThuc DATE NOT NULL,
-    TrangThai TINYINT DEFAULT 1,
+    TrangThai TINYINT DEFAULT 1
 );
 
 INSERT INTO KhuyenMai (TenKhuyenMai, MoTa, GiaTriKhuyenMai, LoaiKhuyenMai, NgayBatDau, NgayKetThuc, TrangThai)
@@ -323,6 +323,97 @@ INSERT INTO HoaDon (maDonHang, maKhuyenMai, tongTien, maNhanVien) VALUES
     (3, 2, 85000.00, 3), 
     (4, NULL, 150000.00, 4), 
     (5, 3, 100000.00, 5);
+
+CREATE TABLE PhieuNhap (
+   id BIGINT AUTO_INCREMENT PRIMARY KEY,
+   maPhieu VARCHAR(50) UNIQUE,
+   tenPhieu VARCHAR(255) NOT NULL,
+   fileChungTu VARCHAR(255),
+   nhaCungCap INT NOT NULL,  -- Khóa ngoại tham chiếu MaNhaCungCap
+   ghiChu TEXT,
+   trangThai VARCHAR(50) NOT NULL DEFAULT 'DAT_HANG',
+   thoiGianTao DATETIME,
+   thoiGianCapNhat DATETIME,
+   thoiGianHuy DATETIME,
+   nguoiNhap INT,  -- Khóa ngoại tham chiếu MaNhanVien
+   nguoiHuy INT,  -- Khóa ngoại tham chiếu MaNhanVien
+
+   CONSTRAINT lienKetNhaCungCap FOREIGN KEY (nhaCungCap)
+      REFERENCES NhaCungCap(maNhaCungCap)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE,
+
+   CONSTRAINT lienKetNguoiTao FOREIGN KEY (nguoiNhap)
+      REFERENCES NhanVien(MaNhanVien)
+      ON DELETE SET NULL
+      ON UPDATE CASCADE,
+
+   CONSTRAINT lienKetNguoiHuy FOREIGN KEY (nguoiHuy)
+      REFERENCES NhanVien(MaNhanVien)
+      ON DELETE SET NULL
+      ON UPDATE CASCADE
+
+);
+
+CREATE TABLE ChiTietPhieuNhap (
+   id INT PRIMARY KEY AUTO_INCREMENT,                          -- Mã chi tiết tự động tăng
+   maPhieuNhap BIGINT NOT NULL,                                -- FK tới bảng PhieuNhap
+   maNguyenLieu INT NOT NULL,                                  -- FK tới bảng NguyenLieu
+   soLuong INT NOT NULL,                                       -- Số lượng nguyên liệu nhập
+   giaNhap DOUBLE NOT NULL,                                    -- Giá nhập tại thời điểm này
+
+   CONSTRAINT lienKetPhieuNhap FOREIGN KEY (MaPhieuNhap)
+      REFERENCES PhieuNhap(Id),
+
+   CONSTRAINT lienKetNguyenLieu FOREIGN KEY (MaNguyenLieu)
+      REFERENCES NguyenLieu(MaNguyenLieu)
+);
+
+CREATE TABLE PhieuXuat(
+   id BIGINT AUTO_INCREMENT PRIMARY KEY,
+   maPhieu VARCHAR(50) UNIQUE,
+   tenPhieu VARCHAR(255) NOT NULL,
+   fileChungTu VARCHAR(255),
+   ghiChu TEXT,
+   thoiGianTao DATETIME,
+   nguoiXuat INT, -- Khóa ngoại tham chiếu MaNhanVien
+
+   CONSTRAINT fk_NguoiXuat FOREIGN KEY (nguoiXuat)
+      REFERENCES NhanVien(MaNhanVien)
+);
+
+CREATE TABLE ChiTietPhieuXuat(
+   id INT PRIMARY KEY AUTO_INCREMENT,                          -- Mã chi tiết tự động tăng
+   maPhieuXuat BIGINT NOT NULL,                                -- FK tới bảng PhieuXuat
+   maNguyenLieu INT NOT NULL,                                  -- FK tới bảng NguyenLieu
+   soLuong INT NOT NULL,                                       -- Số lượng nguyên liệu nhập
+
+CONSTRAINT fk_PhieuXuat FOREIGN KEY (maPhieuXuat)
+   REFERENCES PhieuXuat(Id),
+
+CONSTRAINT fk_NguyenLieu FOREIGN KEY (maNguyenLieu)
+   REFERENCES NguyenLieu(MaNguyenLieu)
+);
+
+CREATE TABLE CheBien (
+    MaCheBien INT PRIMARY KEY AUTO_INCREMENT,  -- Mã chế biến tự động tăng
+    NgayCheBien DATETIME DEFAULT CURRENT_TIMESTAMP, -- Ngày chế biến
+    NguoiCheBien INT NOT NULL, -- Nhân viên thực hiện chế biến (FK tới bảng NhanVien)
+    TrangThai TINYINT DEFAULT 1, -- Trạng thái (1: hoạt động, 0: đã xóa mềm)
+
+    CONSTRAINT fk_NguoiCheBien FOREIGN KEY (NguoiCheBien) REFERENCES NhanVien(MaNhanVien)
+);
+
+CREATE TABLE ChiTietCheBien (
+    MaChiTiet INT PRIMARY KEY AUTO_INCREMENT, -- Mã chi tiết chế biến tự động tăng
+    MaCheBien INT NOT NULL, -- Liên kết với bảng CheBien
+    MaSanPham INT NOT NULL, -- Mã sản phẩm liên quan đến chế biến
+    SoLuongSanPham INT NOT NULL, -- Số lượng sản phẩm được chế biến
+    TrangThai TINYINT DEFAULT 1, -- Trạng thái (1: hoạt động, 0: đã xóa mềm)
+
+    CONSTRAINT fk_CheBien FOREIGN KEY (MaCheBien) REFERENCES CheBien(MaCheBien),
+    CONSTRAINT fk_SanPham FOREIGN KEY (MaSanPham) REFERENCES SanPham(MaSanPham)
+);
 
 
 

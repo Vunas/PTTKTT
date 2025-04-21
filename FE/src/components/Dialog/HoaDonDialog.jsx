@@ -6,14 +6,25 @@ import {
   DialogActions,
   TextField,
   Button,
+  Grid,
+  Typography,
+  Divider,
+  Table,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Paper,
 } from "@mui/material";
+import dayjs from "dayjs";
 
-const HoaDonDialog = ({ open, onClose, onSave, title, hoaDon }) => {
+const HoaDonDialog = ({ open, onClose, onSave, title, hoaDon, chiTietDonHang }) => {
   const [newHoaDon, setNewHoaDon] = useState({
     maHoaDon: "",
     maDonHang: "",
     maKhuyenMai: "",
-    ngayXuatHoaDon: "",
+    ngayXuatHoaDon: dayjs().format("YYYY-MM-DDTHH:mm"),
     tongTien: "",
     maNhanVien: "",
   });
@@ -22,18 +33,18 @@ const HoaDonDialog = ({ open, onClose, onSave, title, hoaDon }) => {
 
   useEffect(() => {
     if (hoaDon) {
-      setNewHoaDon(hoaDon); // Đổ dữ liệu khi sửa
+      setNewHoaDon(hoaDon);
     } else {
       setNewHoaDon({
         maHoaDon: "",
         maDonHang: "",
         maKhuyenMai: "",
-        ngayXuatHoaDon: new Date().toISOString().slice(0, 16), // Lấy ngày hiện tại
+        ngayXuatHoaDon: dayjs().format("YYYY-MM-DDTHH:mm"),
         tongTien: "",
         maNhanVien: "",
-      }); // Reset khi thêm mới
+      });
     }
-    setErrors({}); // Reset lỗi
+    setErrors({});
   }, [hoaDon]);
 
   const handleChange = (e) => {
@@ -42,22 +53,7 @@ const HoaDonDialog = ({ open, onClose, onSave, title, hoaDon }) => {
       ...prevValues,
       [name]: value,
     }));
-    validateField(name, value); // Kiểm tra giá trị khi người dùng nhập
-  };
-
-  const validateField = (field, value) => {
-    let errorMessage = "";
-    if (!value) {
-      errorMessage = "Trường này không được để trống";
-    }
-    if (field === "tongTien" && value && isNaN(value)) {
-      errorMessage = "Tổng tiền phải là số hợp lệ";
-    }
-
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      [field]: errorMessage,
-    }));
+    validateField(name, value);
   };
 
   const handleSave = () => {
@@ -82,77 +78,144 @@ const HoaDonDialog = ({ open, onClose, onSave, title, hoaDon }) => {
       maHoaDon: "",
       maDonHang: "",
       maKhuyenMai: "",
-      ngayXuatHoaDon: new Date().toISOString().slice(0, 16),
+      ngayXuatHoaDon: dayjs().format("YYYY-MM-DDTHH:mm"),
       tongTien: "",
       maNhanVien: "",
     });
     onClose();
   };
 
+  const validateField = (field, value) => {
+    let errorMessage = "";
+    if (!value) {
+      errorMessage = "Trường này không được để trống";
+    }
+    if (field === "tongTien" && value && isNaN(value)) {
+      errorMessage = "Tổng tiền phải là số hợp lệ";
+    }
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [field]: errorMessage,
+    }));
+  };
+
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        {hoaDon && (
-          <TextField
-            label="Mã Hóa Đơn"
-            name="maHoaDon"
-            fullWidth
-            margin="dense"
-            value={newHoaDon.maHoaDon}
-            disabled
-          />
-        )}
-        <TextField
-          label="Mã Đơn Hàng"
-          name="maDonHang"
-          fullWidth
-          margin="dense"
-          value={newHoaDon.maDonHang}
-          onChange={handleChange}
-          error={!!errors.maDonHang}
-          helperText={errors.maDonHang}
-        />
-        <TextField
-          label="Mã Khuyến Mãi"
-          name="maKhuyenMai"
-          fullWidth
-          margin="dense"
-          value={newHoaDon.maKhuyenMai}
-          onChange={handleChange}
-        />
-        <TextField
-          label="Ngày Xuất Hóa Đơn"
-          name="ngayXuatHoaDon"
-          type="datetime-local"
-          fullWidth
-          margin="dense"
-          InputLabelProps={{ shrink: true }}
-          value={newHoaDon.ngayXuatHoaDon}
-          onChange={handleChange}
-          error={!!errors.ngayXuatHoaDon}
-          helperText={errors.ngayXuatHoaDon}
-        />
-        <TextField
-          label="Tổng Tiền"
-          name="tongTien"
-          fullWidth
-          margin="dense"
-          value={newHoaDon.tongTien}
-          onChange={handleChange}
-          error={!!errors.tongTien}
-          helperText={errors.tongTien}
-        />
-        <TextField
-          label="Mã Nhân Viên"
-          name="maNhanVien"
-          fullWidth
-          margin="dense"
-          value={newHoaDon.maNhanVien}
-          onChange={handleChange}
-          error={!!errors.maNhanVien}
-          helperText={errors.maNhanVien}
-        />
+        <Grid container spacing={2}>
+          {/* Phần thông tin hóa đơn */}
+          <Grid item xs={12} md={6}>
+            <Typography variant="h6" gutterBottom>
+              Thông Tin Hóa Đơn
+            </Typography>
+            <Divider />
+            {hoaDon && (
+              <TextField
+                label="Mã Hóa Đơn"
+                name="maHoaDon"
+                fullWidth
+                margin="dense"
+                value={newHoaDon.maHoaDon}
+                disabled
+              />
+            )}
+            <TextField
+              label="Mã Đơn Hàng"
+              name="maDonHang"
+              fullWidth
+              margin="dense"
+              value={newHoaDon.maDonHang}
+              onChange={handleChange}
+              error={!!errors.maDonHang}
+              helperText={errors.maDonHang}
+            />
+            <TextField
+              label="Mã Khuyến Mãi"
+              name="maKhuyenMai"
+              fullWidth
+              margin="dense"
+              value={newHoaDon.maKhuyenMai || ""}
+              onChange={handleChange}
+            />
+            <TextField
+              label="Ngày Xuất Hóa Đơn"
+              name="ngayXuatHoaDon"
+              type="datetime-local"
+              fullWidth
+              margin="dense"
+              InputLabelProps={{ shrink: true }}
+              value={newHoaDon.ngayXuatHoaDon}
+              onChange={handleChange}
+              error={!!errors.ngayXuatHoaDon}
+              helperText={errors.ngayXuatHoaDon}
+            />
+            <TextField
+              label="Tổng Tiền"
+              name="tongTien"
+              fullWidth
+              margin="dense"
+              value={newHoaDon.tongTien}
+              onChange={handleChange}
+              error={!!errors.tongTien}
+              helperText={errors.tongTien}
+            />
+            <TextField
+              label="Mã Nhân Viên"
+              name="maNhanVien"
+              fullWidth
+              margin="dense"
+              value={newHoaDon.maNhanVien}
+              onChange={handleChange}
+              error={!!errors.maNhanVien}
+              helperText={errors.maNhanVien}
+            />
+          </Grid>
+
+          {/* Phần danh sách chi tiết đơn hàng */}
+          <Grid item xs={12} md={6}>
+            <Typography variant="h6" gutterBottom>
+              Chi Tiết Đơn Hàng
+            </Typography>
+            <Divider />
+            {chiTietDonHang && chiTietDonHang.length > 0 ? (
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Tên Sản Phẩm</TableCell>
+                      <TableCell>Hình Ảnh</TableCell>
+                      <TableCell align="center">Số Lượng</TableCell>
+                      <TableCell align="center">Đơn Giá</TableCell>
+                      <TableCell align="center">Thành Tiền</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {chiTietDonHang.map((item) => (
+                      <TableRow key={item.maSanPham}>
+                        <TableCell component="th" scope="row">
+                          {item.sanPham?.tenSanPham}
+                        </TableCell>
+                        <TableCell>
+                        <img
+                          src={item.sanPham?.hinhAnh}
+                          alt={item.sanPham?.ten}
+                          style={{ width: 80, height: 88 }}
+                        />
+                        </TableCell>
+                        <TableCell align="center">{item.soLuong}</TableCell>
+                        <TableCell align="center">{item.donGia}</TableCell>
+                        <TableCell align="center">{item.thanhTien}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            ) : (
+              <Typography variant="subtitle2">Không có chi tiết đơn hàng.</Typography>
+            )}
+          </Grid>
+        </Grid>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="secondary">

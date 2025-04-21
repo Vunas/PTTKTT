@@ -64,6 +64,7 @@ const DonHangTable = ({ donHangList, getChiTietDonHang,chiTietDonHang, onEdit, o
 
   // Hàm mở rộng/thu gọn dòng
   const handleExpandClick = async (maDonHang) => {
+    console.log(donHangList)
     if (expandedRow === maDonHang) {
       setExpandedRow(null);
     } else {

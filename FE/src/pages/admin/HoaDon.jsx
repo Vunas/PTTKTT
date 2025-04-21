@@ -14,6 +14,7 @@ import { exportExcel } from "../../utils/ExcelJS"; // Xuất file Excel
 
 const HoaDon = () => {
   const [hoaDonList, setHoaDonList] = useState([]);
+  const [chiTietDonHang, setChiTietDonHang] = useState([]);
   const [khuyenMaiList, setKhuyenMaiList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -61,6 +62,19 @@ const HoaDon = () => {
       setError
     );
   }, [filterParams, search]);
+
+  const fetchChiTietDonHang = async (maDonHang) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/chitietdonhang/donhang/${maDonHang}`
+      );
+      const data = await response.json();
+      setChiTietDonHang(data);
+    } catch (error) {
+      console.error("Lỗi khi lấy chi tiết đơn hàng:", error);
+      setChiTietDonHang([]); // Đảm bảo state không bị treo lỗi
+    }
+  };
 
   // Gọi lại filter khi có thay đổi
   useEffect(() => {
@@ -132,11 +146,11 @@ const HoaDon = () => {
   return (
     <div>
       <CommonToolbar
-        onAdd={() => {
-          setDialogOpen(true);
-          setEditHoaDon(null);
-          setTitle("Thêm Hóa Đơn");
-        }}
+        // onAdd={() => {
+        //   setDialogOpen(true);
+        //   setEditHoaDon(null);
+        //   setTitle("Thêm Hóa Đơn");
+        // }}
         onSearch={(keyword) => setSearch(keyword.trim())}
         onExport={handleExport}
       />
@@ -153,6 +167,7 @@ const HoaDon = () => {
           setTitle("Sửa Hóa Đơn");
           setEditHoaDon(hoaDon);
           setDialogOpen(true);
+          fetchChiTietDonHang(hoaDon.maDonHang)
         }}
         onDelete={handleDelete}
       />
@@ -167,6 +182,7 @@ const HoaDon = () => {
         }
         hoaDon={editHoaDon}
         title={title}
+        chiTietDonHang={chiTietDonHang}
       />
 
       <Snackbar

@@ -5,7 +5,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+
+import com.app.QLCH.DTO.SanPhamWithDetails;
+import com.app.QLCH.model.ChiTietNguyenLieuSanPham;
 import com.app.QLCH.model.SanPham;
+import com.app.QLCH.service.ChiTietNguyenLieuSanPhamService;
 import com.app.QLCH.service.SanPhamService;
 
 @RestController
@@ -15,73 +19,97 @@ public class SanPhamController {
     @Autowired
     private SanPhamService sanPhamService;
 
-    // API lấy danh sách tất cả sản phẩm
+    @Autowired
+    private ChiTietNguyenLieuSanPhamService chiTietService;
+
+    // Lấy danh sách sản phẩm kèm nguyên liệu
     @GetMapping
     public List<SanPham> getAllSanPham() {
         return sanPhamService.getAllSanPham();
     }
 
-    // API lấy thông tin sản phẩm theo ID
+    // Lấy sản phẩm theo ID kèm nguyên liệu
     @GetMapping("/{id}")
     public ResponseEntity<?> getSanPhamById(@PathVariable Integer id) {
         try {
             SanPham sanPham = sanPhamService.getSanPhamById(id);
+            List<ChiTietNguyenLieuSanPham> chiTietNguyenLieu = chiTietService.findBySanPham(id);
+
             if (sanPham != null) {
-                return ResponseEntity.ok(sanPham);
+                return ResponseEntity.ok(new SanPhamWithDetails(sanPham, chiTietNguyenLieu));
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy sản phẩm với ID: " + id);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Không tìm thấy sản phẩm với ID: " + id);
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra.");
         }
     }
 
-    // API thêm sản phẩm mới
+    // Thêm sản phẩm mới kèm chi tiết nguyên liệu
     @PostMapping
-    public ResponseEntity<?> saveSanPham(@RequestBody SanPham sanPham) {
+    public ResponseEntity<?> saveSanPhamWithDetails(@RequestBody SanPhamWithDetails payload) {
         try {
-            // Kiểm tra trùng tên sản phẩm
-            if (sanPhamService.existsByTenSanPham(sanPham.getTenSanPham())) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Sản phẩm với tên này đã tồn tại!");
+            // Kiểm tra nếu danh sách nguyên liệu rỗng
+            if (payload.getChiTietNguyenLieu() == null || payload.getChiTietNguyenLieu().isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Danh sách nguyên liệu không được trống.");
             }
 
-            // Lưu sản phẩm nếu không có lỗi
-            return ResponseEntity.ok(sanPhamService.saveSanPham(sanPham));
+            // Lưu sản phẩm
+            SanPham savedSanPham = sanPhamService.saveSanPham(payload.getSanPham());
+
+            // Lưu danh sách nguyên liệu liên quan
+            for (ChiTietNguyenLieuSanPham chiTiet : payload.getChiTietNguyenLieu()) {
+                chiTiet.setSanPham(savedSanPham);
+                chiTietService.saveChiTiet(chiTiet);
+            }
+
+            return ResponseEntity.ok(savedSanPham);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra khi thêm sản phẩm.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Có lỗi khi thêm sản phẩm: " + e.getMessage());
         }
     }
 
-    // API cập nhật thông tin sản phẩm
+    // Cập nhật sản phẩm và chi tiết nguyên liệu
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateSanPham(@PathVariable Integer id, @RequestBody SanPham sanPham) {
+    public ResponseEntity<?> updateSanPhamWithDetails(@PathVariable Integer id,
+                                                      @RequestBody SanPhamWithDetails payload) {
         try {
-            // Kiểm tra xem sản phẩm có tồn tại hay không
             SanPham existingSanPham = sanPhamService.getSanPhamById(id);
             if (existingSanPham == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy sản phẩm với ID: " + id);
-            }
-
-            // Kiểm tra trùng tên nếu khác tên ban đầu
-            if (!existingSanPham.getTenSanPham().equals(sanPham.getTenSanPham())
-                    && sanPhamService.existsByTenSanPham(sanPham.getTenSanPham())) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Sản phẩm với tên này đã tồn tại!");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Không tìm thấy sản phẩm với ID: " + id);
             }
 
             // Cập nhật thông tin sản phẩm
-            sanPham.setMaSanPham(id); // Giữ nguyên ID
-            sanPhamService.saveSanPham(sanPham);
-            return ResponseEntity.ok("Cập nhật sản phẩm thành công!");
+            SanPham newSanPham = payload.getSanPham();
+            newSanPham.setMaSanPham(id);
+            sanPhamService.saveSanPham(newSanPham);
+
+            // Xóa chi tiết nguyên liệu cũ và cập nhật mới
+            chiTietService.deleteBySanPhamId(id);
+            for (ChiTietNguyenLieuSanPham chiTiet : payload.getChiTietNguyenLieu()) {
+                chiTiet.setSanPham(newSanPham);
+                chiTietService.saveChiTiet(chiTiet);
+            }
+
+            return ResponseEntity.ok(newSanPham);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra khi cập nhật sản phẩm.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Có lỗi khi cập nhật sản phẩm: " + e.getMessage());
         }
     }
 
+    // Cập nhật số lượng sản phẩm
     @PutMapping("/bulk")
     public ResponseEntity<?> validateAndUpdateSanPhamBulk(@RequestBody List<SanPham> sanPhamList) {
         List<SanPham> sanPhamListDeFault = sanPhamService.getAllSanPham();
         System.out.println("Hàm validate và cập nhật số lượng sản phẩm được gọi");
-
+        System.out.println(sanPhamList);
+        System.out.println("aaaaaaaaaaaaaaaaaaa");
+        System.out.println(sanPhamListDeFault);
         try {
 
             for (SanPham sanPham : sanPhamList) {
@@ -120,18 +148,21 @@ public class SanPhamController {
         }
     }
 
-    // API xóa sản phẩm (đánh dấu trạng thái không hoạt động)
+
+    // Xóa sản phẩm và nguyên liệu liên quan
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteSanPhamById(@PathVariable Integer id) {
         try {
+            // Xóa toàn bộ nguyên liệu liên quan trước khi xóa sản phẩm
+            chiTietService.deleteBySanPhamId(id);
             sanPhamService.deleteSanPhamById(id);
-            return ResponseEntity.ok("Xóa sản phẩm thành công!");
+            return ResponseEntity.ok("Xóa sản phẩm và nguyên liệu thành công!");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra khi xóa sản phẩm.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Có lỗi khi xóa sản phẩm.");
         }
     }
 
-    // API lọc sản phẩm với nhiều tiêu chí
     @GetMapping("/filter")
     public List<SanPham> filterSanPham(
             @RequestParam(required = false) String tenSanPham,

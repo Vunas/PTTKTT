@@ -53,4 +53,24 @@ public class NguyenLieuService {
     public boolean existsByTen(String ten) {
         return nguyenLieuRepository.existsByTen(ten);
     }
+
+    public void updateNguyenLieu(Integer maNguyenLieu, Integer soLuongDaDung) {
+        // Tìm nguyên liệu trong kho
+        NguyenLieu existingNguyenLieu = nguyenLieuRepository.findById(maNguyenLieu).orElse(null);
+    
+        if (existingNguyenLieu == null) {
+            throw new RuntimeException("Nguyên liệu không tồn tại!");
+        }
+    
+        // Kiểm tra số lượng hợp lệ
+        if (existingNguyenLieu.getSoLuong() < soLuongDaDung) {
+            throw new RuntimeException("Số lượng nguyên liệu không đủ!");
+        }
+    
+        // Cập nhật số lượng nguyên liệu
+        existingNguyenLieu.setSoLuong(existingNguyenLieu.getSoLuong() - soLuongDaDung);
+    
+        // Lưu vào cơ sở dữ liệu
+        nguyenLieuRepository.save(existingNguyenLieu);
+    }
 }

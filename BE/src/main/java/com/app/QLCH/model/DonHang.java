@@ -14,7 +14,7 @@ public class DonHang {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer maDonHang;
 
-    @Column(name = "maKhachHang", nullable = false)
+    @Column(name = "maKhachHang")
     private Integer maKhachHang;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -31,8 +31,8 @@ public class DonHang {
     @Column(name = "diaChiGiaoHang", length = 255)
     private String diaChiGiaoHang;
 
-    @Column(name = "phuongThucThanhToan", nullable = false, length = 50)
-    private String phuongThucThanhToan;
+    @Column(name = "phuongThucThanhToan", length = 50)
+    private String phuongThucThanhToan = "Tiền mặt";
 
     @Column(name = "ghiChu", columnDefinition = "TEXT")
     private String ghiChu; // Thêm columnDefinition để khớp với kiểu TEXT của SQL

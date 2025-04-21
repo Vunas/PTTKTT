@@ -50,13 +50,6 @@ const DonHang = () => {
   // Fetch dữ liệu đơn hàng và khách hàng lần đầu
   useEffect(() => {
     fetchData(
-      "http://localhost:8080/api/donhang",
-      setDonHangList,
-      setLoadingDonHang,
-      setError
-    );
-    setLoadingDonHang(false);
-    fetchData(
       "http://localhost:8080/api/khachhang",
       setKhachHangList,
       setLoadingKhachHang,
@@ -74,6 +67,13 @@ const DonHang = () => {
       setLoadingDonHang,
       setError
     );
+    fetchData(
+      "http://localhost:8080/api/donhang",
+      setDonHangList,
+      setLoadingDonHang,
+      setError
+    );
+    setLoadingDonHang(false);
   }, []);
 
   useEffect(() => {
@@ -152,14 +152,14 @@ const DonHang = () => {
         setError
       );
       setSanPhamList(newSanPhamList);
-
+      console.log('loinataa')
 
       const addedDonHang = await addList(
         "http://localhost:8080/api/donhang",
         newDonHang,
         setError
       );
-
+      console.log("loi kiaaa")
       // Sau khi thêm xong `DonHang`, lấy mã đơn hàng vừa tạo và thêm `ChiTietDonHang`
       await addList(
         "http://localhost:8080/api/chitietdonhang/bulk",
@@ -234,6 +234,7 @@ const DonHang = () => {
         setError,
       );
 
+      console.log(updatedHoaDon);
       if (isExport){
         addHoaDon(
            "http://localhost:8080/api/hoadon",
@@ -337,8 +338,8 @@ const DonHang = () => {
         chiTietDonHang={currentChiTietDonHang}
         title={title}
         khachHangList={khachHangList}
-        sanPhamList={dialogSanPhamList} // Sử dụng danh sách sản phẩm riêng cho dialog
-        setSanPhamList={setDialogSanPhamList} // Cập nhật danh sách sản phẩm riêng cho dialog
+        sanPhamList={dialogSanPhamList} 
+        setSanPhamList={setDialogSanPhamList}
         setSnackbar={setSnackbar}
         isExport={isExport}
         KhuyenMaiList={KhuyenMaiList}

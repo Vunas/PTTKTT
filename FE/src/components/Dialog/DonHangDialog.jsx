@@ -86,7 +86,7 @@ const DonHangDialog = ({
             tenNhanVien: nhanVien.hoTen,
             maDonHang: donHang.maDonHang,
             maKhachHang: donHang.maKhachHang, // Lấy maKhachHang từ đơn hàng
-            maKhuyenMai: ""
+            maKhuyenMai: "",
           }));
           setTongTien(newDonHang.tongGia);
           setTitle("Xuất Hóa đơn");
@@ -122,20 +122,23 @@ const DonHangDialog = ({
     const calculateTongTienHoaDon = () => {
       const tongGiaDonHang = newDonHang.tongGia || 0;
       let khuyenMaiValue = 0;
-  
-      const khuyenmai = KhuyenMaiList.find(km => km.maKhuyenMai === newHoaDon.maKhuyenMai);
-      console.log(khuyenmai)
+
+      const khuyenmai = KhuyenMaiList.find(
+        (km) => km.maKhuyenMai === newHoaDon.maKhuyenMai
+      );
+      console.log(khuyenmai);
       // console.log(khuyenmai.giaTriKhuyenMai)
-      if ( !newHoaDon.maKhuyenMai ) return;
+      if (!newHoaDon.maKhuyenMai) return;
       if (khuyenmai.loaiKhuyenMai !== 3) {
-        khuyenMaiValue = khuyenmai.loaiKhuyenMai === 1
-          ? (newDonHang.tongGia * khuyenmai.giaTriKhuyenMai) / 100
-          : khuyenmai.giaTriKhuyenMai;
+        khuyenMaiValue =
+          khuyenmai.loaiKhuyenMai === 1
+            ? (newDonHang.tongGia * khuyenmai.giaTriKhuyenMai) / 100
+            : khuyenmai.giaTriKhuyenMai;
       }
-      console.log(khuyenMaiValue)
-      setTongTien(tongGiaDonHang - khuyenMaiValue)
+      console.log(khuyenMaiValue);
+      setTongTien(tongGiaDonHang - khuyenMaiValue);
     };
-  
+
     calculateTongTienHoaDon();
   }, [newDonHang.tongGia, newHoaDon, KhuyenMaiList]);
 
@@ -184,16 +187,6 @@ const DonHangDialog = ({
       [name]: value,
     }));
     validateField(name, value);
-    // if (name === "maKhuyenMai") {
-    //   // Tìm khuyến mãi và cập nhật state hoaDon.khuyenmai
-    //   const selectedKhuyenMai = KhuyenMaiList.find(
-    //     (km) => km.maKhuyenMai === value
-    //   );
-    //   setHoaDon((prevHoaDon) => ({
-    //     ...prevHoaDon,
-    //     khuyenmai: selectedKhuyenMai ? selectedKhuyenMai.giaTri : 0,
-    //   }));
-    // }
   };
 
   const validateField = (field, value) => {
@@ -388,12 +381,7 @@ const DonHangDialog = ({
   };
 
   const handleSave = () => {
-    const requiredFields = [
-      "maKhachHang",
-      "ngayDat",
-      "trangThaiGiaoHang",
-      "phuongThucThanhToan",
-    ];
+    const requiredFields = ["ngayDat", "trangThaiGiaoHang"];
     const newErrors = {};
 
     requiredFields.forEach((field) => {
@@ -402,14 +390,14 @@ const DonHangDialog = ({
       }
     });
 
-    if (Object.values(newErrors).length > 0) {
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       setSnackbar({
         open: true,
         message: "Vui lòng nhập đầy đủ thông tin!",
         type: "error",
       });
-      setErrors(newErrors);
-      console.log(errors);
+      console.log(newErrors); // Sửa lỗi: phải log newErrors
       return;
     }
 
@@ -422,28 +410,32 @@ const DonHangDialog = ({
       return;
     }
 
-    const updatedSanPhamList = sanPhamList.map((sp) => {
-      return {
-        ...sp,
-        soLuong: sp.soLuong - (sp.deltaSoLuong || 0), // Cập nhật số lượng cuối cùng
-        deltaSoLuong: undefined,
-      };
-    });
+    const updatedSanPhamList = sanPhamList.map((sp) => ({
+      ...sp,
+      soLuong: sp.deltaSoLuong || 0, 
+      deltaSoLuong: undefined,
+    }));
 
     console.log(updatedSanPhamList);
-    console.log(chiTietDonHang);
+    console.log(newChiTietDonHang);
     console.log(newHoaDon);
+
+    const updatedHoaDon = {
+      ...newHoaDon,
+      tongTien: newTongTien,
+    };
 
     if (title === "Sửa Đơn Hàng" || isExport) {
       onSave({
         donHang: newDonHang,
         chiTietDonHang: newChiTietDonHang,
         sanPhamList: updatedSanPhamList,
-        hoaDon: newHoaDon,
+        hoaDon: updatedHoaDon,
       });
     } else {
       onSave(newDonHang, newChiTietDonHang, updatedSanPhamList);
     }
+
     onClose();
   };
 
@@ -475,7 +467,7 @@ const DonHangDialog = ({
                   <InputLabel>Khách Hàng</InputLabel>
                   <Select
                     name="maKhachHang"
-                    value={newDonHang.maKhachHang}
+                    value={newDonHang.maKhachHang? newDonHang.maKhachHang : ""}
                     onChange={handleChange}
                   >
                     <MenuItem value="">Chọn Khách Hàng</MenuItem>
@@ -590,7 +582,7 @@ const DonHangDialog = ({
                   <InputLabel>Phương Thức Thanh Toán</InputLabel>
                   <Select
                     name="phuongThucThanhToan"
-                    value={newDonHang.phuongThucThanhToan}
+                    value={newDonHang.phuongThucThanhToan ?? "Tiền mặt"} 
                     onChange={handleChange}
                   >
                     <MenuItem value="Tiền mặt">Tiền Mặt</MenuItem>
@@ -823,10 +815,7 @@ const DonHangDialog = ({
             }
             color="primary"
           >
-            Xuất Hóa Đơn PDF{" "}
-            <IconButton>
-              <PictureAsPdfIcon />
-            </IconButton>
+            Xuất Hóa Đơn PDF <PictureAsPdfIcon />
           </Button>
         )}
         <Button onClick={handleSave} variant="contained" color="primary">

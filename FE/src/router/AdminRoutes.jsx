@@ -13,6 +13,10 @@ import KhoHang from "../pages/admin/KhoHang";
 import DonHang from "../pages/admin/DonHang";
 import KhuyenMai from "../pages/admin/KhuyenMai";
 import HoaDon from "../pages/admin/HoaDon";
+import ThongKe from "../pages/admin/ThongKe";
+import PhieuCheBien from "../pages/admin/CheBien";
+import XuatKho from "../pages/warehouse/XuatKho";
+import NhapKho from "../pages/warehouse/NhapKho";
 
 const AdminRoutes = () => {
   return (
@@ -24,6 +28,9 @@ const AdminRoutes = () => {
       <div className="flex-1 p-4">
         <Routes>
           <Route path="dashboard" element={<Dashboard />} />
+          <Route path="chebien" element={<PhieuCheBien />} />
+          <Route path="nhapkho" element={<NhapKho />} />
+          <Route path="xuatkho" element={<XuatKho />} />
           <Route path="khuyenmai" element={<KhuyenMai />} />
           <Route path="donhang" element={<DonHang />} />
           <Route path="hoadon" element={<HoaDon />} />
@@ -35,6 +42,7 @@ const AdminRoutes = () => {
           <Route path="khachhang" element={<KhachHang />} />
           <Route path="taikhoan" element={<TaiKhoan />} />
           <Route path="phanquyen" element={<PhanQuyen />} />
+          <Route path="thongke" element={<ThongKe />} />
         </Routes>
       </div>
     </div>

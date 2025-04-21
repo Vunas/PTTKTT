@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.app.QLCH.model.DonHang;
 import com.app.QLCH.model.HoaDon;
+import com.app.QLCH.service.DonHangService;
 import com.app.QLCH.service.HoaDonService;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -17,6 +19,9 @@ public class HoaDonController {
 
     @Autowired
     private HoaDonService hoaDonService;
+    
+    @Autowired
+    private DonHangService donHangService;
 
     // API lấy danh sách tất cả hóa đơn
     @GetMapping
@@ -38,6 +43,9 @@ public class HoaDonController {
     @PostMapping
     public ResponseEntity<?> saveHoaDon(@RequestBody HoaDon hoaDon) {
         try {
+            DonHang donHang = donHangService.getDonHangById(hoaDon.getMaDonHang());
+            donHang.setTrangThai(2);
+            donHangService.saveDonHang(donHang);
             return ResponseEntity.ok(hoaDonService.saveHoaDon(hoaDon));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra khi lưu hóa đơn.");
@@ -52,6 +60,7 @@ public class HoaDonController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy hóa đơn với ID: " + id);
         }
         hoaDon.setMaHoaDon(id); // Giữ nguyên ID
+        donHangService.saveDonHang(hoaDon.getDonHang());
         hoaDonService.saveHoaDon(hoaDon);
         return ResponseEntity.ok("Cập nhật thông tin hóa đơn thành công!");
     }
