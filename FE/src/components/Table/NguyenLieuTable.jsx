@@ -12,7 +12,7 @@ import {
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import CreateIcon from "@mui/icons-material/Create";
 
-const NguyenLieuTable = ({ nguyenLieuList, onEdit, onDelete }) => {
+const NguyenLieuTable = ({ nguyenLieuList, onEdit, onDelete, quyen }) => {
   const [sortField, setSortField] = useState("");
   const [sortOrder, setSortOrder] = useState("asc"); // "asc" hoặc "desc"
 
@@ -39,7 +39,10 @@ const NguyenLieuTable = ({ nguyenLieuList, onEdit, onDelete }) => {
       <Table stickyHeader>
         <TableHead>
           <TableRow>
-            <TableCell align="center" onClick={() => handleSort("maNguyenLieu")}>
+            <TableCell
+              align="center"
+              onClick={() => handleSort("maNguyenLieu")}
+            >
               <strong>
                 Mã NL{" "}
                 {sortField === "maNguyenLieu" &&
@@ -102,18 +105,22 @@ const NguyenLieuTable = ({ nguyenLieuList, onEdit, onDelete }) => {
                 <TableCell align="center">{nguyenLieu.giaNhap}</TableCell>
                 <TableCell align="center">{nguyenLieu.soLuong}</TableCell>
                 <TableCell align="center">
-                  <IconButton
-                    color="primary"
-                    onClick={() => onEdit(nguyenLieu)} // Chỉ hiển thị icon
-                  >
-                    <CreateIcon />
-                  </IconButton>
-                  <IconButton
-                    color="secondary"
-                    onClick={() => onDelete(nguyenLieu.maNguyenLieu)} // Chỉ hiển thị icon
-                  >
-                    <DeleteOutlineIcon />
-                  </IconButton>
+                  {quyen?.fix && (
+                    <IconButton
+                      color="primary"
+                      onClick={() => onEdit(nguyenLieu)} // Chỉ hiển thị icon
+                    >
+                      <CreateIcon />
+                    </IconButton>
+                  )}
+                  {quyen?.delete && (
+                    <IconButton
+                      color="secondary"
+                      onClick={() => onDelete(nguyenLieu.maNguyenLieu)} // Chỉ hiển thị icon
+                    >
+                      <DeleteOutlineIcon />
+                    </IconButton>
+                  )}
                 </TableCell>
               </TableRow>
             ))

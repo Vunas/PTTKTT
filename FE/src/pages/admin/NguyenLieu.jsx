@@ -12,7 +12,7 @@ import NguyenLieuFilter from "../../components/Filter/NguyenLieuFilter";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 
-const NguyenLieu = () => {
+const NguyenLieu = ({quyen}) => {
   const [nguyenLieuList, setNguyenLieuList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -124,6 +124,7 @@ const NguyenLieu = () => {
         }}
         onSearch={(keyword) => setSearch(keyword.trim())}
         onExport={handleExport}
+        quyenThem={quyen?.create}
       />
 
       <NguyenLieuFilter
@@ -139,6 +140,7 @@ const NguyenLieu = () => {
           setDialogOpen(true);
         }}
         onDelete={handleDelete}
+        quyen={quyen}
       />
 
       <NguyenLieuDialog

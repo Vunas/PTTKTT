@@ -18,31 +18,61 @@ import PhieuCheBien from "../pages/admin/CheBien";
 import XuatKho from "../pages/warehouse/XuatKho";
 import NhapKho from "../pages/warehouse/NhapKho";
 
-const AdminRoutes = () => {
+const AdminRoutes = ({ danhSachQuyen, snackBarLogin, setSnackbarLogin }) => {
   return (
     <div className="flex">
       {/* Sidebar */}
-      <Sidebar />
+      <Sidebar danhSachQuyen={danhSachQuyen} />
 
       {/* Nội dung chính */}
       <div className="flex-1 p-4">
         <Routes>
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="chebien" element={<PhieuCheBien />} />
-          <Route path="nhapkho" element={<NhapKho />} />
-          <Route path="xuatkho" element={<XuatKho />} />
-          <Route path="khuyenmai" element={<KhuyenMai />} />
-          <Route path="donhang" element={<DonHang />} />
-          <Route path="hoadon" element={<HoaDon />} />
-          <Route path="khohang" element={<KhoHang />} />
-          <Route path="nhacungcap" element={<NhaCungCap />} />
-          <Route path="sanpham" element={<SanPham />} />
-          <Route path="nguyenlieu" element={<NguyenLieu />} />
-          <Route path="nhanvien" element={<NhanVien />} />
-          <Route path="khachhang" element={<KhachHang />} />
-          <Route path="taikhoan" element={<TaiKhoan />} />
-          <Route path="phanquyen" element={<PhanQuyen />} />
-          <Route path="thongke" element={<ThongKe />} />
+          <Route path="dashboard" element={<Dashboard snackBarLogin={snackBarLogin} setSnackbarLogin={setSnackbarLogin} />} />
+          {danhSachQuyen?.CheBien?.access && (
+            <Route path="chebien" element={<PhieuCheBien quyen={danhSachQuyen?.CheBien}/>} />
+          )}
+          {danhSachQuyen?.NhapKho?.access && (
+            <Route path="nhapkho" element={<NhapKho />} />
+          )}
+          {danhSachQuyen?.XuatKho?.access && (
+            <Route path="xuatkho" element={<XuatKho />} />
+          )}
+          {danhSachQuyen?.KhuyenMai?.access && (
+            <Route path="khuyenmai" element={<KhuyenMai quyen={danhSachQuyen?.KhuyenMai} />} />
+          )}
+          {danhSachQuyen?.DonHang?.access && (
+            <Route path="donhang" element={<DonHang quyen={danhSachQuyen?.DonHang} />} />
+          )}
+          {danhSachQuyen?.HoaDon?.access && (
+            <Route path="hoadon" element={<HoaDon quyen={danhSachQuyen?.HoaDon} />} />
+          )}
+          {danhSachQuyen?.KhoHang?.access && (
+            <Route path="khohang" element={<KhoHang quyen={danhSachQuyen?.KhoHang} />} />
+          )}
+          {danhSachQuyen?.NhaCungCap?.access && (
+            <Route path="nhacungcap" element={<NhaCungCap quyen={danhSachQuyen?.NhaCungCap} />} />
+          )}
+          {danhSachQuyen?.SanPham?.access && (
+            <Route path="sanpham" element={<SanPham quyen={danhSachQuyen?.SanPham}/>} />
+          )}
+          {danhSachQuyen?.NguyenLieu?.access && (
+            <Route path="nguyenlieu" element={<NguyenLieu quyen={danhSachQuyen?.NguyenLieu} />} />
+          )}
+          {danhSachQuyen?.NhanVien?.access && (
+            <Route path="nhanvien" element={<NhanVien quyen={danhSachQuyen?.NhanVien} />} />
+          )}
+          {danhSachQuyen?.KhachHang?.access && (
+            <Route path="khachhang" element={<KhachHang quyen={danhSachQuyen?.KhachHang}/>} />
+          )}
+          {danhSachQuyen?.TaiKhoan?.access && (
+            <Route path="taikhoan" element={<TaiKhoan quyen={danhSachQuyen?.TaiKhoan}/>} />
+          )}
+          {danhSachQuyen?.PhanQuyen?.access && (
+            <Route path="phanquyen" element={<PhanQuyen quyen={danhSachQuyen?.PhanQuyen} />} />
+          )}
+          {danhSachQuyen?.ThongKe?.access && (
+            <Route path="thongke" element={<ThongKe />} />
+          )}
         </Routes>
       </div>
     </div>

@@ -12,7 +12,13 @@ import {
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import CreateIcon from "@mui/icons-material/Create";
 
-const PhanQuyenTable = ({ phanQuyenList, onEdit, onDelete, setSelectedQuyen }) => {
+const PhanQuyenTable = ({
+  phanQuyenList,
+  onEdit,
+  onDelete,
+  setSelectedQuyen,
+  quyen,
+}) => {
   const [sortField, setSortField] = useState("");
   const [sortOrder, setSortOrder] = useState("asc"); // "asc" hoặc "desc"
 
@@ -37,7 +43,7 @@ const PhanQuyenTable = ({ phanQuyenList, onEdit, onDelete, setSelectedQuyen }) =
       sx={{ maxHeight: 600 }}
     >
       <Table stickyHeader>
-        <TableHead >
+        <TableHead>
           {/* Thanh tiêu đề với màu nền khác biệt */}
           <TableRow>
             <TableCell align="center" onClick={() => handleSort("maPhanQuyen")}>
@@ -60,25 +66,30 @@ const PhanQuyenTable = ({ phanQuyenList, onEdit, onDelete, setSelectedQuyen }) =
         </TableHead>
         <TableBody>
           {phanQuyenList.length > 0 ? (
-            phanQuyenList.map((phanQuyen,index) => (
-              <TableRow key={index}
-              onClick={() => setSelectedQuyen(phanQuyen)} // Cập nhật quyền được chọn
-                >
+            phanQuyenList.map((phanQuyen, index) => (
+              <TableRow
+                key={index}
+                onClick={() => setSelectedQuyen(phanQuyen)} // Cập nhật quyền được chọn
+              >
                 <TableCell align="center">{phanQuyen.maPhanQuyen}</TableCell>
                 <TableCell align="center">{phanQuyen.tenQuyen}</TableCell>
                 <TableCell align="center">
-                  <IconButton
-                    color="primary"
-                    onClick={() => onEdit(phanQuyen)} // Chỉ hiển thị icon
-                  >
-                    <CreateIcon />
-                  </IconButton>
-                  <IconButton
-                    color="secondary"
-                    onClick={() => onDelete(phanQuyen.maPhanQuyen)} // Chỉ hiển thị icon
-                  >
-                    <DeleteOutlineIcon />
-                  </IconButton>
+                  {quyen?.fix && (
+                    <IconButton
+                      color="primary"
+                      onClick={() => onEdit(phanQuyen)} // Chỉ hiển thị icon
+                    >
+                      <CreateIcon />
+                    </IconButton>
+                  )}
+                  {quyen?.delete && (
+                    <IconButton
+                      color="secondary"
+                      onClick={() => onDelete(phanQuyen.maPhanQuyen)} // Chỉ hiển thị icon
+                    >
+                      <DeleteOutlineIcon />
+                    </IconButton>
+                  )}
                 </TableCell>
               </TableRow>
             ))

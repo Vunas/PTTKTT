@@ -4,11 +4,11 @@ import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
 import DownloadIcon from "@mui/icons-material/Download";
 
-const CommonToolBar = ({ onAdd, onSearch, onExport }) => {
+const CommonToolBar = ({ onAdd, onSearch, onExport, quyenThem }) => {
   return (
     <div style={{ padding: "16px", backgroundColor: "#f5f5f5", borderRadius: "8px", marginBottom: "16px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-        <Button
+        {quyenThem && ( <Button
           variant="contained"
           color="primary"
           startIcon={<AddIcon />}
@@ -16,6 +16,7 @@ const CommonToolBar = ({ onAdd, onSearch, onExport }) => {
         >
           Thêm
         </Button>
+        )}
         <div style={{ display: "flex", justifyContent: "center", flexGrow: 1 }}>
           <TextField
             placeholder="Tìm kiếm..."

@@ -11,7 +11,7 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import QuyenDetails from "../../components/Details/PhanQuyenDetail";
 
-const PhanQuyen = () => {
+const PhanQuyen = ({quyen}) => {
   const [phanQuyenList, setPhanQuyenList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -114,6 +114,7 @@ const PhanQuyen = () => {
         }}
         onSearch={(keyword) => handleSearch(keyword.trim())}
         onExport={handleExport}
+        quyenThem={quyen?.create}
       />
 
       <div className="flex w-full space-x-4 p-4">
@@ -128,6 +129,7 @@ const PhanQuyen = () => {
             }}
             onDelete={handleDelete}
             setSelectedQuyen={setSelectedQuyen}
+            quyen={quyen}
           />
         </div>
 

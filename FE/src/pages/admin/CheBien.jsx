@@ -1,10 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardContent, Table, TableBody, TableCell, TableHead, TableRow, Button, Input, IconButton } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Button,
+  Input,
+  IconButton,
+} from "@mui/material";
 import PhieuCheBienDialog from "../../components/Dialog/PhieuCheBienDialog";
 import dayjs from "dayjs";
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
-const PhieuCheBien = () => {
+const PhieuCheBien = ({ quyen }) => {
   const [cheBienReceipts, setCheBienReceipts] = useState([]);
   const [filteredReceipts, setFilteredReceipts] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
@@ -21,14 +32,18 @@ const PhieuCheBien = () => {
         setCheBienReceipts(data);
         setFilteredReceipts(data);
       })
-      .catch((error) => console.error("Lỗi khi lấy danh sách phiếu chế biến:", error));
+      .catch((error) =>
+        console.error("Lỗi khi lấy danh sách phiếu chế biến:", error)
+      );
   };
 
   const handleSearchReceipts = (e) => {
     const query = e.target.value.toLowerCase();
     setFilteredReceipts(
       cheBienReceipts.filter(
-        (receipt) => receipt.maCheBien.toString().includes(query) || receipt.nguoiCheBien?.hoTen?.toLowerCase().includes(query)
+        (receipt) =>
+          receipt.maCheBien.toString().includes(query) ||
+          receipt.nguoiCheBien?.hoTen?.toLowerCase().includes(query)
       )
     );
   };
@@ -58,12 +73,22 @@ const PhieuCheBien = () => {
           className="w-96"
           onChange={handleSearchReceipts}
         />
-        <Button variant="contained" color="primary" onClick={handleAddReceipt}>
-          Thêm phiếu chế biến
-        </Button>
+        {quyen?.create && (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleAddReceipt}
+          >
+            Thêm phiếu chế biến
+          </Button>
+        )}
       </div>
 
-      <PhieuCheBienDialog open={openDialog} onClose={handleCloseDialog} cheBien={selectedReceipt} />
+      <PhieuCheBienDialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        cheBien={selectedReceipt}
+      />
 
       <Card className="mt-4">
         <CardContent className="overflow-x-auto">
@@ -80,7 +105,9 @@ const PhieuCheBien = () => {
             <TableBody>
               {filteredReceipts.map((phieu) => (
                 <TableRow key={phieu.maCheBien}>
-                  <TableCell>{dayjs(phieu.ngayCheBien).format("DD/MM/YYYY HH:mm")}</TableCell>
+                  <TableCell>
+                    {dayjs(phieu.ngayCheBien).format("DD/MM/YYYY HH:mm")}
+                  </TableCell>
                   <TableCell>{phieu.maCheBien}</TableCell>
                   <TableCell>{phieu.nguoiCheBien?.hoTen || "N/A"}</TableCell>
                   <TableCell>
@@ -89,7 +116,12 @@ const PhieuCheBien = () => {
                     </span>
                   </TableCell>
                   <TableCell>
-                    <IconButton variant="outlined" size="small" color="primary" onClick={() => handleEditReceipt(phieu)}>
+                    <IconButton
+                      variant="outlined"
+                      size="small"
+                      color="primary"
+                      onClick={() => handleEditReceipt(phieu)}
+                    >
                       <VisibilityIcon />
                     </IconButton>
                   </TableCell>

@@ -14,7 +14,13 @@ import CreateIcon from "@mui/icons-material/Create";
 import LockIcon from "@mui/icons-material/Lock"; // Icon Khóa
 import LockOpenIcon from "@mui/icons-material/LockOpen"; // Icon Mở Khóa
 
-const TaiKhoanTable = ({ taiKhoanList, onEdit, onDelete, onToggleLock }) => {
+const TaiKhoanTable = ({
+  taiKhoanList,
+  onEdit,
+  onDelete,
+  onToggleLock,
+  quyen,
+}) => {
   const [sortField, setSortField] = useState("");
   const [sortOrder, setSortOrder] = useState("asc"); // "asc" hoặc "desc"
 
@@ -42,14 +48,20 @@ const TaiKhoanTable = ({ taiKhoanList, onEdit, onDelete, onToggleLock }) => {
         <Table stickyHeader>
           <TableHead>
             <TableRow>
-              <TableCell align="center" onClick={() => handleSort("maTaiKhoan")}>
+              <TableCell
+                align="center"
+                onClick={() => handleSort("maTaiKhoan")}
+              >
                 <strong>
                   Mã tài khoản{" "}
                   {sortField === "maTaiKhoan" &&
                     (sortOrder === "asc" ? "▲" : "▼")}
                 </strong>
               </TableCell>
-              <TableCell align="center" onClick={() => handleSort("tenDangNhap")}>
+              <TableCell
+                align="center"
+                onClick={() => handleSort("tenDangNhap")}
+              >
                 <strong>
                   Tên đăng nhập{" "}
                   {sortField === "tenDangNhap" &&
@@ -62,7 +74,10 @@ const TaiKhoanTable = ({ taiKhoanList, onEdit, onDelete, onToggleLock }) => {
                   {sortField === "email" && (sortOrder === "asc" ? "▲" : "▼")}
                 </strong>
               </TableCell>
-              <TableCell align="center" onClick={() => handleSort("maPhanQuyen")}>
+              <TableCell
+                align="center"
+                onClick={() => handleSort("maPhanQuyen")}
+              >
                 <strong>
                   Phân quyền{" "}
                   {sortField === "maPhanQuyen" &&
@@ -103,24 +118,34 @@ const TaiKhoanTable = ({ taiKhoanList, onEdit, onDelete, onToggleLock }) => {
                     )}
                   </TableCell>
                   <TableCell align="center">
-                    <IconButton
-                      color="primary"
-                      onClick={() => onEdit(taiKhoan)} // Chỉnh sửa tài khoản
-                    >
-                      <CreateIcon />
-                    </IconButton>
-                    <IconButton
-                      color="secondary"
-                      onClick={() => onDelete(taiKhoan.maTaiKhoan)} // Xóa tài khoản
-                    >
-                      <DeleteOutlineIcon />
-                    </IconButton>
-                    <IconButton
-                      color={taiKhoan.trangThai === 1 ? "success" : "error"}
-                      onClick={() => onToggleLock(taiKhoan.maTaiKhoan)} // Khóa/Mở tài khoản
-                    >
-                      {taiKhoan.trangThai === 1 ? <LockOpenIcon /> : <LockIcon />}
-                    </IconButton>
+                    {quyen?.fix && (
+                      <IconButton
+                        color="primary"
+                        onClick={() => onEdit(taiKhoan)} // Chỉnh sửa tài khoản
+                      >
+                        <CreateIcon />
+                      </IconButton>
+                    )}
+                    {quyen?.delete && (
+                      <IconButton
+                        color="secondary"
+                        onClick={() => onDelete(taiKhoan.maTaiKhoan)} // Xóa tài khoản
+                      >
+                        <DeleteOutlineIcon />
+                      </IconButton>
+                    )}
+                    {quyen?.fix && (
+                      <IconButton
+                        color={taiKhoan.trangThai === 1 ? "success" : "error"}
+                        onClick={() => onToggleLock(taiKhoan.maTaiKhoan)} // Khóa/Mở tài khoản
+                      >
+                        {taiKhoan.trangThai === 1 ? (
+                          <LockOpenIcon />
+                        ) : (
+                          <LockIcon />
+                        )}
+                      </IconButton>
+                    )}
                   </TableCell>
                 </TableRow>
               ))

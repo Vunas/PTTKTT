@@ -12,7 +12,7 @@ import NhanVienFilter from "../../components/Filter/NhanVienFilter"; // Bá»™ lá»
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 
-const NhanVien = () => {
+const NhanVien = ({quyen}) => {
   const [nhanVienList, setNhanVienList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -135,6 +135,7 @@ const NhanVien = () => {
         }}
         onSearch={(keyword) => setSearch(keyword.trim())}
         onExport={handleExport}
+        quyenThem={quyen?.create}
       />
 
       <NhanVienFilter
@@ -150,6 +151,7 @@ const NhanVien = () => {
           setDialogOpen(true);
         }}
         onDelete={handleDelete}
+        quyen={quyen}
       />
 
       <NhanVienDialog

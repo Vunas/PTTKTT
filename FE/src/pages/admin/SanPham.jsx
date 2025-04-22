@@ -12,7 +12,7 @@ import SanPhamFilter from "../../components/Filter/SanPhamFilter";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 
-const SanPham = () => {
+const SanPham = ({quyen}) => {
   const [sanPhamList, setSanPhamList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -135,6 +135,7 @@ const SanPham = () => {
         }}
         onSearch={(keyword) => setSearch(keyword.trim())}
         onExport={handleExport}
+        quyenThem={quyen?.create}
       />
 
       <SanPhamFilter
@@ -150,6 +151,7 @@ const SanPham = () => {
           setDialogOpen(true);
         }}
         onDelete={handleDelete}
+        quyen={quyen}
       />
 
       <SanPhamDialog

@@ -13,8 +13,7 @@ import Alert from "@mui/material/Alert"; // Alert thông báo
 import { exportExcel } from "../../utils/ExcelJS"; // Xuất file Excel
 import axios from "axios";
 
-
-const DonHang = () => {
+const DonHang = ({ quyen }) => {
   const [donHangList, setDonHangList] = useState([]);
   const [khachHangList, setKhachHangList] = useState([]);
   const [KhuyenMaiList, setKhuyenMaiList] = useState([]);
@@ -49,31 +48,21 @@ const DonHang = () => {
 
   // Fetch dữ liệu đơn hàng và khách hàng lần đầu
   useEffect(() => {
-    fetchData(
-      "http://localhost:8080/api/khachhang",
-      setKhachHangList,
-      setLoadingKhachHang,
-      setError
-    );
-    fetchData(
-      "http://localhost:8080/api/sanpham",
-      setSanPhamList,
-      setLoadingSanPham,
-      setError
-    );
-    fetchData(
-      "http://localhost:8080/api/khuyenmai",
-      setKhuyenMaiList,
-      setLoadingDonHang,
-      setError
-    );
-    fetchData(
-      "http://localhost:8080/api/donhang",
-      setDonHangList,
-      setLoadingDonHang,
-      setError
-    );
-    setLoadingDonHang(false);
+    const fetchAllData = async () => {
+      try {
+        await fetchData("http://localhost:8080/api/khachhang", setKhachHangList, setLoadingKhachHang, setError);
+        await fetchData("http://localhost:8080/api/sanpham", setSanPhamList, setLoadingSanPham, setError);
+        await fetchData("http://localhost:8080/api/khuyenmai", setKhuyenMaiList, setLoadingDonHang, setError);
+        await fetchData("http://localhost:8080/api/donhang", setDonHangList, setLoadingDonHang, setError);
+        
+      } catch (error) {
+        console.error("Lỗi khi tải dữ liệu:", error);
+      } finally {
+        setLoadingDonHang(false);
+      }
+    };
+  
+    fetchAllData();
   }, []);
 
   useEffect(() => {
@@ -110,7 +99,6 @@ const DonHang = () => {
     }
   };
 
-
   const handleRefresh = () => {
     // Reset tất cả các filter về mặc định
     setFilterParams({
@@ -142,7 +130,11 @@ const DonHang = () => {
   }, [handleFilter]);
 
   // Xử lý thêm đơn hàng
-  const handleAdd = async (newDonHang, newChiTietDonHang, updatedSanPhamList) => {
+  const handleAdd = async (
+    newDonHang,
+    newChiTietDonHang,
+    updatedSanPhamList
+  ) => {
     console.log(updatedSanPhamList);
     try {
       // Cập nhật lại danh sách sản phẩm sau khi thêm đơn hàng
@@ -152,14 +144,13 @@ const DonHang = () => {
         setError
       );
       setSanPhamList(newSanPhamList);
-      console.log('loinataa')
 
       const addedDonHang = await addList(
         "http://localhost:8080/api/donhang",
         newDonHang,
         setError
       );
-      console.log("loi kiaaa")
+      console.log("loi kiaaa");
       // Sau khi thêm xong `DonHang`, lấy mã đơn hàng vừa tạo và thêm `ChiTietDonHang`
       await addList(
         "http://localhost:8080/api/chitietdonhang/bulk",
@@ -179,7 +170,6 @@ const DonHang = () => {
       );
 
       setSnackbar({ open: true, message: "Thêm thành công!", type: "success" });
-
     } catch (error) {
       console.error("Lỗi khi thêm đơn hàng hoặc chi tiết:", error);
       setSnackbar({
@@ -202,7 +192,13 @@ const DonHang = () => {
   };
 
   // Xử lý sửa đơn hàng
-  const handleEdit = async (id, updatedDonHang, updatedChiTietDonHang, updatedSanPhamList, updatedHoaDon) => {
+  const handleEdit = async (
+    id,
+    updatedDonHang,
+    updatedChiTietDonHang,
+    updatedSanPhamList,
+    updatedHoaDon
+  ) => {
     console.log(updatedSanPhamList);
     try {
       setLoadingDonHang(true);
@@ -221,7 +217,7 @@ const DonHang = () => {
       await editList(
         `http://localhost:8080/api/donhang/${id}`,
         updatedDonHang,
-        setError,
+        setError
       );
 
       // Cập nhật danh sách ChiTietDonHang liên quan đến DonHang
@@ -231,26 +227,27 @@ const DonHang = () => {
           ...item,
           maDonHang: updatedDonHang.maDonHang, // Đảm bảo mã đơn hàng được gán chính xác
         })),
-        setError,
+        setError
       );
 
       console.log(updatedHoaDon);
-      if (isExport){
-        addHoaDon(
-           "http://localhost:8080/api/hoadon",
-           updatedHoaDon,
-        )
+      if (isExport) {
+        addHoaDon("http://localhost:8080/api/hoadon", updatedHoaDon);
       }
 
       // Refetch danh sách đơn hàng
-      fetchData(
+      await fetchData(
         "http://localhost:8080/api/donhang",
         setDonHangList,
         setLoadingDonHang,
         setError
       );
       setLoadingDonHang(false);
-      setSnackbar({ open: true, message: "Cập nhật thành công!", type: "success" });
+      setSnackbar({
+        open: true,
+        message: "Cập nhật thành công!",
+        type: "success",
+      });
     } catch (error) {
       console.error("Lỗi khi chỉnh sửa đơn hàng hoặc chi tiết:", error);
       setSnackbar({
@@ -302,10 +299,11 @@ const DonHang = () => {
       <CommonToolbar
         onAdd={() => {
           setExport(false);
-          handleOpenDialog()}
-          }
+          handleOpenDialog();
+        }}
         onSearch={(keyword) => setSearch(keyword.trim())}
         onExport={handleExport}
+        quyenThem={quyen?.create}
       />
 
       <DonHangFilter
@@ -324,6 +322,7 @@ const DonHang = () => {
         getChiTietDonHang={getChiTietDonHang}
         chiTietDonHang={expandedChiTiet}
         setExport={setExport}
+        quyen={quyen}
       />
 
       <DonHangDialog
@@ -331,14 +330,22 @@ const DonHang = () => {
         onClose={handleDialogClose}
         onSave={
           editDonHang
-            ? (data) => handleEdit(editDonHang.maDonHang, data.donHang, data.chiTietDonHang, data.sanPhamList, data.hoaDon)
-            : (donHangData, chiTietData, sanPhamData) => handleAdd(donHangData, chiTietData, sanPhamData)
+            ? (data) =>
+                handleEdit(
+                  editDonHang.maDonHang,
+                  data.donHang,
+                  data.chiTietDonHang,
+                  data.sanPhamList,
+                  data.hoaDon
+                )
+            : (donHangData, chiTietData, sanPhamData) =>
+                handleAdd(donHangData, chiTietData, sanPhamData)
         }
         donHang={editDonHang}
         chiTietDonHang={currentChiTietDonHang}
         title={title}
         khachHangList={khachHangList}
-        sanPhamList={dialogSanPhamList} 
+        sanPhamList={dialogSanPhamList}
         setSanPhamList={setDialogSanPhamList}
         setSnackbar={setSnackbar}
         isExport={isExport}

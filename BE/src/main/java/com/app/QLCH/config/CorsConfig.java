@@ -11,11 +11,9 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(@NonNull CorsRegistry registry) {
         registry.addMapping("/**") // Áp dụng cho tất cả các endpoint
-                .allowedOrigins("http://localhost:5173") // Domain được phép truy cập
+                .allowedOrigins("http://localhost:5173", "http://localhost:5174") // Domain được phép truy cập
                 .allowedMethods("GET", "POST", "PUT", "DELETE") // Các phương thức HTTP được phép
                 .allowedHeaders("*") // Cho phép tất cả các headers
                 .allowCredentials(true); // Cho phép gửi cookie qua CORS
     }
 }
-
-

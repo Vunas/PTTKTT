@@ -13,7 +13,7 @@ import Alert from "@mui/material/Alert"; // Alert thông báo
 import { exportExcel } from "../../utils/ExcelJS"; // Xuất file Excel
 import axios from "axios";
 
-const KhuyenMai = () => {
+const KhuyenMai = ({quyen}) => {
   const [khuyenMaiList, setKhuyenMaiList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -162,6 +162,7 @@ const KhuyenMai = () => {
         }}
         onSearch={(keyword) => setSearch(keyword.trim())}
         onExport={handleExport}
+        quyenThem={quyen?.create}
       />
 
       <KhuyenMaiFilter
@@ -178,6 +179,7 @@ const KhuyenMai = () => {
         }}
         onDelete={handleDelete}
         onToggleLock={handleToggleLock}
+        quyen={quyen}
       />
 
       <KhuyenMaiDialog

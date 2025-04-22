@@ -13,7 +13,7 @@ import Alert from "@mui/material/Alert"; // Alert thông báo
 import { exportExcel } from "../../utils/ExcelJS"; // Xuất file Excel
 import axios from "axios";
 
-const TaiKhoan = () => {
+const TaiKhoan = ({quyen}) => {
   const [taiKhoanList, setTaiKhoanList] = useState([]);
   const [phanQuyenList, setPhanQuyenList] = useState([]); 
   const [loadingTaiKhoan, setLoadingTaiKhoan] = useState(true);
@@ -166,6 +166,7 @@ const TaiKhoan = () => {
         }}
         onSearch={(keyword) => setSearch(keyword.trim())}
         onExport={handleExport}
+        quyenThem={quyen?.create}
       />
 
       <TaiKhoanFilter
@@ -183,6 +184,7 @@ const TaiKhoan = () => {
         }}
         onDelete={handleDelete}
         onToggleLock={handleToggleLock}
+        quyen={quyen}
       />
 
       <TaiKhoanDialog

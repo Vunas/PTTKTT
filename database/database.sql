@@ -337,6 +337,7 @@ CREATE TABLE PhieuNhap (
    thoiGianHuy DATETIME,
    nguoiNhap INT,  -- Khóa ngoại tham chiếu MaNhanVien
    nguoiHuy INT,  -- Khóa ngoại tham chiếu MaNhanVien
+   makho int fronekey kho(makho)
 
    CONSTRAINT lienKetNhaCungCap FOREIGN KEY (nhaCungCap)
       REFERENCES NhaCungCap(maNhaCungCap)

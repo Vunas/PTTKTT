@@ -12,7 +12,7 @@ import KhoHangFilter from "../../components/Filter/KhoHangFilter"; // Bộ lọc
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 
-const KhoHang = () => {
+const KhoHang = ({quyen}) => {
   const [khoHangList, setKhoHangList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -117,6 +117,7 @@ const KhoHang = () => {
         }}
         onSearch={(keyword) => setSearch(keyword.trim())}
         onExport={handleExport}
+        quyenThem={quyen?.create}
       />
 
       <KhoHangFilter
@@ -132,6 +133,7 @@ const KhoHang = () => {
           setDialogOpen(true);
         }}
         onDelete={handleDelete}
+        quyen={quyen}
       />
 
       <KhoHangDialog

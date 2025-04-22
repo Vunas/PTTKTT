@@ -12,7 +12,7 @@ import Snackbar from "@mui/material/Snackbar"; // Snackbar thông báo
 import Alert from "@mui/material/Alert"; // Alert thông báo
 import { exportExcel } from "../../utils/ExcelJS"; // Xuất file Excel
 
-const HoaDon = () => {
+const HoaDon = ({quyen}) => {
   const [hoaDonList, setHoaDonList] = useState([]);
   const [chiTietDonHang, setChiTietDonHang] = useState([]);
   const [khuyenMaiList, setKhuyenMaiList] = useState([]);
@@ -153,6 +153,7 @@ const HoaDon = () => {
         // }}
         onSearch={(keyword) => setSearch(keyword.trim())}
         onExport={handleExport}
+        quyenThem={false}
       />
 
       <HoaDonFilter
@@ -170,6 +171,7 @@ const HoaDon = () => {
           fetchChiTietDonHang(hoaDon.maDonHang)
         }}
         onDelete={handleDelete}
+        quyen={quyen}
       />
 
       <HoaDonDialog

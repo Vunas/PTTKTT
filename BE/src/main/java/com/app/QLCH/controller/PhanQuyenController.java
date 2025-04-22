@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
+
 import com.app.QLCH.model.PhanQuyen;
 import com.app.QLCH.service.PhanQuyenService;
 
@@ -30,6 +32,17 @@ public class PhanQuyenController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy quyền với ID: " + id);
         }
+    }
+
+    @GetMapping("/danhsachquyen/{id}")
+    public ResponseEntity<?> getDanhSachQuyenById(@PathVariable Integer id) {
+        Map<String, Map<String, Boolean>> danhSachQuyen = phanQuyenService.getDanhSachQuyen(id);
+        
+        if (danhSachQuyen == null || danhSachQuyen.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy quyền với ID: " + id);
+        }
+    
+        return ResponseEntity.ok(danhSachQuyen);
     }
 
     // API thêm hoặc cập nhật quyền

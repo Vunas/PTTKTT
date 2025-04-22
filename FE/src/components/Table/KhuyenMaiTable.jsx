@@ -14,7 +14,13 @@ import CreateIcon from "@mui/icons-material/Create";
 import LockIcon from "@mui/icons-material/Lock"; // Icon Khóa
 import LockOpenIcon from "@mui/icons-material/LockOpen"; // Icon Mở Khóa
 
-const KhuyenMaiTable = ({ khuyenMaiList, onEdit, onDelete, onToggleLock }) => {
+const KhuyenMaiTable = ({
+  khuyenMaiList,
+  onEdit,
+  onDelete,
+  onToggleLock,
+  quyen,
+}) => {
   const [sortField, setSortField] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
 
@@ -42,28 +48,40 @@ const KhuyenMaiTable = ({ khuyenMaiList, onEdit, onDelete, onToggleLock }) => {
         <Table stickyHeader>
           <TableHead>
             <TableRow>
-              <TableCell align="center" onClick={() => handleSort("maKhuyenMai")}>
+              <TableCell
+                align="center"
+                onClick={() => handleSort("maKhuyenMai")}
+              >
                 <strong>
                   Mã Khuyến Mãi{" "}
                   {sortField === "maKhuyenMai" &&
                     (sortOrder === "asc" ? "▲" : "▼")}
                 </strong>
               </TableCell>
-              <TableCell align="center" onClick={() => handleSort("tenKhuyenMai")}>
+              <TableCell
+                align="center"
+                onClick={() => handleSort("tenKhuyenMai")}
+              >
                 <strong>
                   Tên Khuyến Mãi{" "}
                   {sortField === "tenKhuyenMai" &&
                     (sortOrder === "asc" ? "▲" : "▼")}
                 </strong>
               </TableCell>
-              <TableCell align="center" onClick={() => handleSort("loaiKhuyenMai")}>
+              <TableCell
+                align="center"
+                onClick={() => handleSort("loaiKhuyenMai")}
+              >
                 <strong>
                   Loại Khuyến Mãi{" "}
                   {sortField === "loaiKhuyenMai" &&
                     (sortOrder === "asc" ? "▲" : "▼")}
                 </strong>
               </TableCell>
-              <TableCell align="center" onClick={() => handleSort("giaTriKhuyenMai")}>
+              <TableCell
+                align="center"
+                onClick={() => handleSort("giaTriKhuyenMai")}
+              >
                 <strong>
                   Giá Trị Khuyến Mãi{" "}
                   {sortField === "giaTriKhuyenMai" &&
@@ -92,10 +110,12 @@ const KhuyenMaiTable = ({ khuyenMaiList, onEdit, onDelete, onToggleLock }) => {
                     {khuyenMai.loaiKhuyenMai === 1
                       ? "Phần Trăm Giảm"
                       : khuyenMai.loaiKhuyenMai === 2
-                      ? "Giá Cố Định Giảm"
-                      : "Quà Tặng"}
+                        ? "Giá Cố Định Giảm"
+                        : "Quà Tặng"}
                   </TableCell>
-                  <TableCell align="center">{khuyenMai.giaTriKhuyenMai}</TableCell>
+                  <TableCell align="center">
+                    {khuyenMai.giaTriKhuyenMai}
+                  </TableCell>
                   <TableCell className="text-center">
                     {khuyenMai.trangThai === 1 ? (
                       <div className="bg-green-100 text-green-700 px-2 py-1 rounded-md flex items-center justify-center w-28 mx-auto">
@@ -110,24 +130,34 @@ const KhuyenMaiTable = ({ khuyenMaiList, onEdit, onDelete, onToggleLock }) => {
                     )}
                   </TableCell>
                   <TableCell align="center">
-                    <IconButton
-                      color="primary"
-                      onClick={() => onEdit(khuyenMai)} // Chỉnh sửa khuyến mãi
-                    >
-                      <CreateIcon />
-                    </IconButton>
-                    <IconButton
-                      color="secondary"
-                      onClick={() => onDelete(khuyenMai.maKhuyenMai)} // Xóa khuyến mãi
-                    >
-                      <DeleteOutlineIcon />
-                    </IconButton>
-                    <IconButton
-                      color={khuyenMai.trangThai === 1 ? "success" : "error"}
-                      onClick={() => onToggleLock(khuyenMai.maKhuyenMai)} // Khóa/Mở khuyến mãi
-                    >
-                      {khuyenMai.trangThai === 1 ? <LockOpenIcon /> : <LockIcon />}
-                    </IconButton>
+                    {quyen?.fix && (
+                      <IconButton
+                        color="primary"
+                        onClick={() => onEdit(khuyenMai)} // Chỉnh sửa khuyến mãi
+                      >
+                        <CreateIcon />
+                      </IconButton>
+                    )}
+                    {quyen?.delete && (
+                      <IconButton
+                        color="secondary"
+                        onClick={() => onDelete(khuyenMai.maKhuyenMai)} // Xóa khuyến mãi
+                      >
+                        <DeleteOutlineIcon />
+                      </IconButton>
+                    )}
+                    {quyen?.fix && (
+                      <IconButton
+                        color={khuyenMai.trangThai === 1 ? "success" : "error"}
+                        onClick={() => onToggleLock(khuyenMai.maKhuyenMai)} // Khóa/Mở khuyến mãi
+                      >
+                        {khuyenMai.trangThai === 1 ? (
+                          <LockOpenIcon />
+                        ) : (
+                          <LockIcon />
+                        )}
+                      </IconButton>
+                    )}
                   </TableCell>
                 </TableRow>
               ))

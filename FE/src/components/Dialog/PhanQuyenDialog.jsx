@@ -32,9 +32,21 @@ const PhanQuyenDialog = ({ open, onClose, onSave, title, phanQuyen }) => {
     } else {
       setTenQuyen("");
       setDanhSachChucNang({
+        NhapKho: { truyCap: false, them: false, sua: false, xoa: false },
+        XuatKho: { truyCap: false, them: false, sua: false, xoa: false },
+        KhoHang: { truyCap: false, them: false, sua: false, xoa: false },
+        NhaCungCap: { truyCap: false, them: false, sua: false, xoa: false },
+        NguyenLieu: { truyCap: false, them: false, sua: false, xoa: false },
+        SanPham: { truyCap: false, them: false, sua: false, xoa: false },
+        CheBien: { truyCap: false, them: false, sua: false, xoa: false },
+        DonHang: { truyCap: false, them: false, sua: false, xoa: false },
+        HoaDon: { truyCap: false, them: false, sua: false, xoa: false },
+        KhuyenMai: { truyCap: false, them: false, sua: false, xoa: false },
         KhachHang: { truyCap: false, them: false, sua: false, xoa: false },
         NhanVien: { truyCap: false, them: false, sua: false, xoa: false },
         TaiKhoan: { truyCap: false, them: false, sua: false, xoa: false },
+        PhanQuyen: { truyCap: false, them: false, sua: false, xoa: false },
+        ThongKe: { truyCap: false, them: false, sua: false, xoa: false },
       });
     }
   }, [phanQuyen]);

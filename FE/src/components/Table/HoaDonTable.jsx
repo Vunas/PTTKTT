@@ -15,7 +15,13 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import fetchDataById from "../../utils/FetchDataByID";
 import exportHoaDonPDF from "../../Hook/ExportHoaDonPDF";
 
-const HoaDonTable = ({ hoaDonList, khuyenMaiList, onEdit, onDelete }) => {
+const HoaDonTable = ({
+  hoaDonList,
+  khuyenMaiList,
+  onEdit,
+  onDelete,
+  quyen,
+}) => {
   const [sortField, setSortField] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
   const [donHang, setDonHang] = useState([]);
@@ -53,9 +59,9 @@ const HoaDonTable = ({ hoaDonList, khuyenMaiList, onEdit, onDelete }) => {
       )
     );
     console.log(hoaDon);
-console.log(donHang);
-console.log(chiTietDonHang) 
- };
+    console.log(donHang);
+    console.log(chiTietDonHang);
+  };
 
   return (
     <TableContainer
@@ -108,18 +114,22 @@ console.log(chiTietDonHang)
                 <TableCell align="center">{hoaDon.tongTien}</TableCell>
                 <TableCell align="center">{hoaDon.ngayXuatHoaDon}</TableCell>
                 <TableCell align="center">
-                  <IconButton
-                    color="primary"
-                    onClick={() => onEdit(hoaDon)} // Chỉnh sửa hóa đơn
-                  >
-                    <CreateIcon />
-                  </IconButton>
-                  <IconButton
-                    color="secondary"
-                    onClick={() => onDelete(hoaDon.maHoaDon)} // Xóa hóa đơn
-                  >
-                    <DeleteOutlineIcon />
-                  </IconButton>
+                  {quyen?.fix && (
+                    <IconButton
+                      color="primary"
+                      onClick={() => onEdit(hoaDon)} // Chỉnh sửa hóa đơn
+                    >
+                      <CreateIcon />
+                    </IconButton>
+                  )}
+                  {quyen?.delete && (
+                    <IconButton
+                      color="secondary"
+                      onClick={() => onDelete(hoaDon.maHoaDon)} // Xóa hóa đơn
+                    >
+                      <DeleteOutlineIcon />
+                    </IconButton>
+                  )}
                   <IconButton
                     color="secondary"
                     onClick={() => {

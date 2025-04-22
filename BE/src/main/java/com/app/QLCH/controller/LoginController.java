@@ -59,7 +59,7 @@ public class LoginController {
                 
                 String hashedPassword = HashUtil.hashString(password);
                 if (hashedPassword.equals(taiKhoan.getMatKhau())) {
-                    if (taiKhoan.getMaPhanQuyen() != 2) {
+                    if (taiKhoan.getMaPhanQuyen() == 1) {
                         return ResponseEntity.ok(taiKhoan);
                     } else {
                         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Tài khoản không có quyền admin");
@@ -86,7 +86,7 @@ public class LoginController {
                 String email = idToken.getPayload().getEmail();
                 TaiKhoan taiKhoan = taiKhoanService.getTaiKhoanByemail(email);
                 
-                if (taiKhoan != null && taiKhoan.getMaPhanQuyen() == 2) { // Quyền admin
+                if (taiKhoan != null && taiKhoan.getMaPhanQuyen() != 1) { 
                     return ResponseEntity.ok(taiKhoan);
                 } else {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email không hợp lệ hoặc không phải admin");

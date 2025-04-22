@@ -12,7 +12,7 @@ import KhachHangFilter from "../../components/Filter/KhachHangFilter"; // Bộ l
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 
-const KhachHang = () => {
+const KhachHang = ({quyen}) => {
   const [khachHangList, setKhachHangList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -123,6 +123,7 @@ const KhachHang = () => {
         }}
         onSearch={(keyword) => setSearch(keyword.trim())}
         onExport={handleExport}
+        quyenThem={quyen?.create}
       />
 
       <KhachHangFilter
@@ -138,6 +139,7 @@ const KhachHang = () => {
           setDialogOpen(true);
         }}
         onDelete={handleDelete}
+        quyen={quyen}
       />
 
       <KhachHangDialog

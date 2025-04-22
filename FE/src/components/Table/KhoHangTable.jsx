@@ -12,7 +12,7 @@ import {
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import CreateIcon from "@mui/icons-material/Create";
 
-const KhoHangTable = ({ khoHangList, onEdit, onDelete }) => {
+const KhoHangTable = ({ khoHangList, onEdit, onDelete, quyen }) => {
   const [sortField, setSortField] = useState("");
   const [sortOrder, setSortOrder] = useState("asc"); // "asc" hoặc "desc"
 
@@ -71,18 +71,22 @@ const KhoHangTable = ({ khoHangList, onEdit, onDelete }) => {
                 <TableCell align="center">{khoHang.tenKhoHang}</TableCell>
                 <TableCell align="center">{khoHang.diaDiem}</TableCell>
                 <TableCell align="center">
-                  <IconButton
-                    color="primary"
-                    onClick={() => onEdit(khoHang)} // Chỉ hiển thị icon
-                  >
-                    <CreateIcon />
-                  </IconButton>
-                  <IconButton
-                    color="secondary"
-                    onClick={() => onDelete(khoHang.maKhoHang)} // Chỉ hiển thị icon
-                  >
-                    <DeleteOutlineIcon />
-                  </IconButton>
+                  {quyen?.fix && (
+                    <IconButton
+                      color="primary"
+                      onClick={() => onEdit(khoHang)} // Chỉ hiển thị icon
+                    >
+                      <CreateIcon />
+                    </IconButton>
+                  )}
+                  {quyen?.delete && (
+                    <IconButton
+                      color="secondary"
+                      onClick={() => onDelete(khoHang.maKhoHang)} // Chỉ hiển thị icon
+                    >
+                      <DeleteOutlineIcon />
+                    </IconButton>
+                  )}
                 </TableCell>
               </TableRow>
             ))

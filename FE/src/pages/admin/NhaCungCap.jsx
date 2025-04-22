@@ -12,7 +12,7 @@ import NhaCungCapFilter from "../../components/Filter/NhaCungCapFilter"; // Bộ
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 
-const NhaCungCap = () => {
+const NhaCungCap = ({quyen}) => {
   const [nhaCungCapList, setNhaCungCapList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -121,6 +121,7 @@ const NhaCungCap = () => {
         }}
         onSearch={(keyword) => setSearch(keyword.trim())}
         onExport={handleExport}
+        quyenThem={quyen?.create}
       />
 
       <NhaCungCapFilter
@@ -136,6 +137,7 @@ const NhaCungCap = () => {
           setDialogOpen(true);
         }}
         onDelete={handleDelete}
+        quyen={quyen}
       />
 
       <NhaCungCapDialog

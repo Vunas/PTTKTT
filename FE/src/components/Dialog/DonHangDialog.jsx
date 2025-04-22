@@ -82,8 +82,8 @@ const DonHangDialog = ({
           console.log(nhanVien);
           setNewHoaDon((prevValues) => ({
             ...prevValues,
-            maNhanVien: nhanVien.maNhanVien,
-            tenNhanVien: nhanVien.hoTen,
+            maNhanVien: nhanVien?.maNhanVien || "",
+            tenNhanVien: nhanVien?.hoTen || "",
             maDonHang: donHang.maDonHang,
             maKhachHang: donHang.maKhachHang, // Lấy maKhachHang từ đơn hàng
             maKhuyenMai: "",
@@ -488,7 +488,7 @@ const DonHangDialog = ({
                     name="maNhanVien"
                     fullWidth
                     margin="dense"
-                    value={newHoaDon.maNhanVien}
+                    value={newHoaDon.maNhanVien || ""}
                     onChange={handleChangeHoaDon}
                     error={!!errors.maNhanVien}
                     helperText={errors.maNhanVien}
