@@ -19,7 +19,7 @@ public class HoaDonController {
 
     @Autowired
     private HoaDonService hoaDonService;
-    
+
     @Autowired
     private DonHangService donHangService;
 
@@ -46,6 +46,8 @@ public class HoaDonController {
             DonHang donHang = donHangService.getDonHangById(hoaDon.getMaDonHang());
             donHang.setTrangThai(2);
             donHangService.saveDonHang(donHang);
+            if (donHang.getTrangThaiGiaoHang().equalsIgnoreCase("Đã hủy"))
+                hoaDon.setTongTien(0d);
             return ResponseEntity.ok(hoaDonService.saveHoaDon(hoaDon));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra khi lưu hóa đơn.");
@@ -61,6 +63,9 @@ public class HoaDonController {
         }
         hoaDon.setMaHoaDon(id); // Giữ nguyên ID
         donHangService.saveDonHang(hoaDon.getDonHang());
+        System.out.println(hoaDon.getDonHang().getTrangThaiGiaoHang());
+        if (hoaDon.getDonHang().getTrangThaiGiaoHang().equalsIgnoreCase("Đã hủy"))
+            hoaDon.setTongTien(0d);
         hoaDonService.saveHoaDon(hoaDon);
         return ResponseEntity.ok("Cập nhật thông tin hóa đơn thành công!");
     }

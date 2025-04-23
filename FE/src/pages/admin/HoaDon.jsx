@@ -92,8 +92,8 @@ const HoaDon = ({quyen}) => {
   };
 
   // Xử lý sửa hóa đơn
-  const handleEdit = (id, updatedData) => {
-    editItem(
+  const handleEdit = async (id, updatedData) => {
+    await editItem(
       "http://localhost:8080/api/hoadon",
       id,
       updatedData,

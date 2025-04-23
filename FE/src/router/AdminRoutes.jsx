@@ -17,8 +17,12 @@ import ThongKe from "../pages/admin/ThongKe";
 import PhieuCheBien from "../pages/admin/CheBien";
 import XuatKho from "../pages/warehouse/XuatKho";
 import NhapKho from "../pages/warehouse/NhapKho";
+import Snackbar from "@mui/material/Snackbar"; // Snackbar thông báo
+import Alert from "@mui/material/Alert"; // Alert thông báo
 
 const AdminRoutes = ({ danhSachQuyen, snackBarLogin, setSnackbarLogin }) => {
+  const handleSnackbarClose = () => setSnackbarLogin({ ...snackBarLogin, open: false });
+
   return (
     <div className="flex">
       {/* Sidebar */}
@@ -27,7 +31,7 @@ const AdminRoutes = ({ danhSachQuyen, snackBarLogin, setSnackbarLogin }) => {
       {/* Nội dung chính */}
       <div className="flex-1 p-4">
         <Routes>
-          <Route path="dashboard" element={<Dashboard snackBarLogin={snackBarLogin} setSnackbarLogin={setSnackbarLogin} />} />
+          <Route path="dashboard" element={<Dashboard />} />
           {danhSachQuyen?.CheBien?.access && (
             <Route path="chebien" element={<PhieuCheBien quyen={danhSachQuyen?.CheBien}/>} />
           )}
@@ -75,6 +79,21 @@ const AdminRoutes = ({ danhSachQuyen, snackBarLogin, setSnackbarLogin }) => {
           )}
         </Routes>
       </div>
+
+      <Snackbar
+        open={snackBarLogin.open}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackBarLogin.type}
+          variant="filled"
+        >
+          {snackBarLogin.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

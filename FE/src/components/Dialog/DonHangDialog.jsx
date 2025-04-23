@@ -416,10 +416,6 @@ const DonHangDialog = ({
       deltaSoLuong: undefined,
     }));
 
-    console.log(updatedSanPhamList);
-    console.log(newChiTietDonHang);
-    console.log(newHoaDon);
-
     const updatedHoaDon = {
       ...newHoaDon,
       tongTien: newTongTien,

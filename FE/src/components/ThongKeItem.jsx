@@ -5,6 +5,7 @@ function ThongKeItem({ title, value, icon, color }) {
   return (
     <Card
       sx={{
+        height: "150px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",

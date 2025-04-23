@@ -16,10 +16,21 @@ import {
   TableCell,
   TableBody,
   Paper,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel
 } from "@mui/material";
 import dayjs from "dayjs";
 
-const HoaDonDialog = ({ open, onClose, onSave, title, hoaDon, chiTietDonHang }) => {
+const HoaDonDialog = ({
+  open,
+  onClose,
+  onSave,
+  title,
+  hoaDon,
+  chiTietDonHang,
+}) => {
   const [newHoaDon, setNewHoaDon] = useState({
     maHoaDon: "",
     maDonHang: "",
@@ -56,8 +67,25 @@ const HoaDonDialog = ({ open, onClose, onSave, title, hoaDon, chiTietDonHang }) 
     validateField(name, value);
   };
 
+  const handleChangeDonHang = (e) => {
+    const { name, value } = e.target;
+    setNewHoaDon((prevValues) => ({
+      ...prevValues,
+      donHang: {
+        ...prevValues.donHang, // Sao chép các thuộc tính hiện tại của "donhang"
+        [name]: value, // Cập nhật thuộc tính cụ thể
+      },
+    }));
+    validateField(name, value);
+  };
+
   const handleSave = () => {
-    const requiredFields = ["maDonHang", "ngayXuatHoaDon", "tongTien", "maNhanVien"];
+    const requiredFields = [
+      "maDonHang",
+      "ngayXuatHoaDon",
+      "tongTien",
+      "maNhanVien",
+    ];
     const newErrors = {};
 
     requiredFields.forEach((field) => {
@@ -139,6 +167,32 @@ const HoaDonDialog = ({ open, onClose, onSave, title, hoaDon, chiTietDonHang }) 
               onChange={handleChange}
             />
             <TextField
+              label="Tên Khuyến Mãi"
+              name="tenKhuyenMai"
+              fullWidth
+              margin="dense"
+              value={newHoaDon.khuyenMai?.tenKhuyenMai || ""}
+              disabled
+            />
+            <FormControl
+              fullWidth
+              margin="dense"
+              error={!!errors.trangThaiGiaoHang}
+            >
+              <InputLabel>Trạng Thái Giao Hàng</InputLabel>
+              <Select
+                name="trangThaiGiaoHang"
+                value={newHoaDon.donHang?.trangThaiGiaoHang || ""}
+                onChange={handleChangeDonHang}
+              >
+                <MenuItem value="Đã đặt">Đã Đặt</MenuItem>
+                <MenuItem value="Đã xác nhận">Đã Xác Nhận</MenuItem>
+                <MenuItem value="Đang giao">Đang Giao</MenuItem>
+                <MenuItem value="Đã giao">Đã Giao</MenuItem>
+                <MenuItem value="Đã hủy">Đã Hủy</MenuItem>
+              </Select>
+            </FormControl>
+            <TextField
               label="Ngày Xuất Hóa Đơn"
               name="ngayXuatHoaDon"
               type="datetime-local"
@@ -197,11 +251,11 @@ const HoaDonDialog = ({ open, onClose, onSave, title, hoaDon, chiTietDonHang }) 
                           {item.sanPham?.tenSanPham}
                         </TableCell>
                         <TableCell>
-                        <img
-                          src={item.sanPham?.hinhAnh}
-                          alt={item.sanPham?.ten}
-                          style={{ width: 80, height: 88 }}
-                        />
+                          <img
+                            src={item.sanPham?.hinhAnh}
+                            alt={item.sanPham?.ten}
+                            style={{ width: 80, height: 88 }}
+                          />
                         </TableCell>
                         <TableCell align="center">{item.soLuong}</TableCell>
                         <TableCell align="center">{item.donGia}</TableCell>
@@ -212,7 +266,9 @@ const HoaDonDialog = ({ open, onClose, onSave, title, hoaDon, chiTietDonHang }) 
                 </Table>
               </TableContainer>
             ) : (
-              <Typography variant="subtitle2">Không có chi tiết đơn hàng.</Typography>
+              <Typography variant="subtitle2">
+                Không có chi tiết đơn hàng.
+              </Typography>
             )}
           </Grid>
         </Grid>
