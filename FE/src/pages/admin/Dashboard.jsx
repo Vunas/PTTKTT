@@ -1,9 +1,7 @@
 import React from "react";
-import Snackbar from "@mui/material/Snackbar"; // Snackbar thông báo
-import Alert from "@mui/material/Alert"; // Alert thông báo
 
-const Dashboard = ({snackBarLogin, setSnackbarLogin}) => {
-  const handleSnackbarClose = () => setSnackbarLogin({ ...snackBarLogin, open: false });
+const Dashboard = () => {
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       {/* Tiêu đề */}
@@ -64,20 +62,6 @@ const Dashboard = ({snackBarLogin, setSnackbarLogin}) => {
         </p>
       </div>
 
-      <Snackbar
-        open={snackBarLogin.open}
-        autoHideDuration={3000}
-        onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-      >
-        <Alert
-          onClose={handleSnackbarClose}
-          severity={snackBarLogin.type}
-          variant="filled"
-        >
-          {snackBarLogin.message}
-        </Alert>
-      </Snackbar>
     </div>
   );
 };

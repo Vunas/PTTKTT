@@ -50,18 +50,37 @@ const DonHang = ({ quyen }) => {
   useEffect(() => {
     const fetchAllData = async () => {
       try {
-        await fetchData("http://localhost:8080/api/khachhang", setKhachHangList, setLoadingKhachHang, setError);
-        await fetchData("http://localhost:8080/api/sanpham", setSanPhamList, setLoadingSanPham, setError);
-        await fetchData("http://localhost:8080/api/khuyenmai", setKhuyenMaiList, setLoadingDonHang, setError);
-        await fetchData("http://localhost:8080/api/donhang", setDonHangList, setLoadingDonHang, setError);
-        
+        await fetchData(
+          "http://localhost:8080/api/khachhang",
+          setKhachHangList,
+          setLoadingKhachHang,
+          setError
+        );
+        await fetchData(
+          "http://localhost:8080/api/sanpham",
+          setSanPhamList,
+          setLoadingSanPham,
+          setError
+        );
+        await fetchData(
+          "http://localhost:8080/api/khuyenmai",
+          setKhuyenMaiList,
+          setLoadingDonHang,
+          setError
+        );
+        await fetchData(
+          "http://localhost:8080/api/donhang",
+          setDonHangList,
+          setLoadingDonHang,
+          setError
+        );
       } catch (error) {
         console.error("Lỗi khi tải dữ liệu:", error);
       } finally {
         setLoadingDonHang(false);
       }
     };
-  
+
     fetchAllData();
   }, []);
 
@@ -214,7 +233,7 @@ const DonHang = ({ quyen }) => {
       setSanPhamList(newSanPhamList);
 
       // Cập nhật thông tin DonHang
-      await editList(
+      editList(
         `http://localhost:8080/api/donhang/${id}`,
         updatedDonHang,
         setError
@@ -237,6 +256,12 @@ const DonHang = ({ quyen }) => {
 
       // Refetch danh sách đơn hàng
       await fetchData(
+        "http://localhost:8080/api/donhang",
+        setDonHangList,
+        setLoadingDonHang,
+        setError
+      );
+      fetchData(
         "http://localhost:8080/api/donhang",
         setDonHangList,
         setLoadingDonHang,
