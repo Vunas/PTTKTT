@@ -32,6 +32,7 @@ public class ChiTietPhieuXuatService {
 
    // Lưu hoặc cập nhật chi tiết
    public ChiTietPhieuXuat save(ChiTietPhieuXuat chiTiet) {
+      
       return repository.save(chiTiet);
    }
 

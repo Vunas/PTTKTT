@@ -23,7 +23,7 @@ public class PhieuNhap {
       NHAP_KHO,
       HUY
    }
-   
+
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Long id;
@@ -41,15 +41,20 @@ public class PhieuNhap {
    private String ghiChu;
 
    @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "nhaCungCap", nullable = false)  // Dùng trường "nhaCungCap" để lưu khóa ngoại (id của NhaCungCap)
-   @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // Tránh vòng lặp khi serialize
+   @JoinColumn(name = "nhaCungCap", nullable = false)
+   @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
    private NhaCungCap nhaCungCap;
+
+   @ManyToOne(fetch = FetchType.LAZY)
+   @JoinColumn(name = "MaKhoHang", nullable = false)
+   @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+   private KhoHang khoHang;
 
    @Enumerated(EnumType.STRING)
    @Column(name = "trangThai", nullable = false)
    @Builder.Default
    private TrangThaiPhieuNhap trangThai = TrangThaiPhieuNhap.DAT_HANG;
-   
+
    @Column(name = "thoiGianTao", updatable = false)
    private LocalDateTime thoiGianTao;
 
@@ -60,19 +65,18 @@ public class PhieuNhap {
    private LocalDateTime thoiGianHuy;
 
    @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "nguoiNhap", nullable = false)  // Dùng trường "nguoiNhap" để lưu khóa ngoại (id của NhanVien)
-   @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // Tránh vòng lặp khi serialize
+   @JoinColumn(name = "nguoiNhap", nullable = false) // Dùng trường "nguoiNhap" để lưu khóa ngoại (id của NhanVien)
+   @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" }) // Tránh vòng lặp khi serialize
    private NhanVien nguoiNhap;
 
-   
    @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "nguoiHuy")  // Dùng trường "nguoiHuy" để lưu khóa ngoại (id của NhanVien)
-   @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // Tránh vòng lặp khi serialize
+   @JoinColumn(name = "nguoiHuy") // Dùng trường "nguoiHuy" để lưu khóa ngoại (id của NhanVien)
+   @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" }) // Tránh vòng lặp khi serialize
    private NhanVien nguoiHuy;
 
    @OneToMany(mappedBy = "phieuNhap", cascade = CascadeType.ALL, orphanRemoval = true)
    @Builder.Default
-   @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+   @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
    private List<ChiTietPhieuNhap> chiTiet = new ArrayList<>();
 
    @PrePersist

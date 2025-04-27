@@ -4,8 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.app.QLCH.model.TonKho;
+import com.app.QLCH.DTO.TonKhoDTO;
 import com.app.QLCH.model.KhoHang;
-import com.app.QLCH.model.SanPham;
+import com.app.QLCH.model.NguyenLieu;
 import com.app.QLCH.repository.TonKhoRepository;
 
 import java.util.List;
@@ -31,14 +32,14 @@ public class TonKhoService {
         return tonKhoRepository.findByKhoHang(khoHang);
     }
 
-    // Lấy tồn kho theo sản phẩm
-    public List<TonKho> getTonKhoBySanPham(SanPham sanPham) {
-        return tonKhoRepository.findBySanPham(sanPham);
+    // Lấy tồn kho theo sản phẩm (đã sửa tên biến)
+    public List<TonKho> getTonKhoByNguyenLieu(NguyenLieu nguyenLieu) {
+        return tonKhoRepository.findByNguyenLieu(nguyenLieu);
     }
 
-    // Lấy tồn kho theo kho hàng và sản phẩm
-    public TonKho getTonKhoByKhoHangAndSanPham(KhoHang khoHang, SanPham sanPham) {
-        return tonKhoRepository.findByKhoHangAndSanPham(khoHang, sanPham);
+    // Lấy tồn kho theo kho hàng và sản phẩm (đã sửa tên biến)
+    public TonKho getTonKhoByKhoHangAndNguyenLieu(KhoHang khoHang, NguyenLieu nguyenLieu) {
+        return tonKhoRepository.findByKhoHangAndNguyenLieu(khoHang, nguyenLieu);
     }
 
     // Thêm mới hoặc cập nhật tồn kho
@@ -46,9 +47,28 @@ public class TonKhoService {
         return tonKhoRepository.save(tonKho);
     }
 
-    // Kiểm tra tồn tại của sản phẩm trong kho
-    public boolean existsByKhoHangAndSanPham(KhoHang khoHang, SanPham sanPham) {
-        return tonKhoRepository.existsByKhoHangAndSanPham(khoHang, sanPham);
+    // Kiểm tra tồn tại của sản phẩm trong kho (đã sửa tên biến)
+    public boolean existsByKhoHangAndNguyenLieu(KhoHang khoHang, NguyenLieu nguyenLieu) {
+        return tonKhoRepository.existsByKhoHangAndNguyenLieu(khoHang, nguyenLieu);
+    }
+
+    public boolean updateNguyenLieuTonKho(TonKhoDTO tonKhoDTO) {
+        for (NguyenLieu nguyenLieu : tonKhoDTO.getNguyenLieuList()) {
+            TonKho tonKho=  tonKhoRepository.findByKhoHangAndNguyenLieu(tonKhoDTO.getKhoHang(), nguyenLieu);
+            if ( tonKho.getSoLuong() < nguyenLieu.getSoLuong()) {
+                return false;
+            }
+        }
+
+        for (NguyenLieu nguyenLieu : tonKhoDTO.getNguyenLieuList()) {
+            System.out.println("bat dau tu day aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+            TonKho tonKho=  tonKhoRepository.findByKhoHangAndNguyenLieu(tonKhoDTO.getKhoHang(), nguyenLieu);
+            System.out.println(tonKho.getSoLuong() + " va  " + nguyenLieu.getSoLuong());
+            tonKho.setSoLuong((tonKho.getSoLuong() - nguyenLieu.getSoLuong()));
+            tonKhoRepository.save(tonKho);
+        }
+
+        return true;
     }
 
     // Lấy tồn kho có số lượng lớn hơn giá trị
@@ -69,12 +89,12 @@ public class TonKhoService {
         }
     }
 
-    public List<TonKho> filterTonKho(Integer maKhoHang, Integer maSanPham, Integer soLuongMin, Integer soLuongMax) {
+    public List<TonKho> filterTonKho(Integer maKhoHang, Integer maNguyenLieu, Integer soLuongMin, Integer soLuongMax) {
         return tonKhoRepository.findAll().stream()
                 .filter(tonKho -> (maKhoHang == null || tonKho.getKhoHang().getMaKhoHang().equals(maKhoHang)) &&
-                        (maSanPham == null || tonKho.getSanPham().getMaSanPham().equals(maSanPham)) &&
-                        (soLuongMin == null || tonKho.getSoLuong() >= soLuongMin) &&
-                        (soLuongMax == null || tonKho.getSoLuong() <= soLuongMax))
+                                 (maNguyenLieu == null || tonKho.getNguyenLieu().getMaNguyenLieu().equals(maNguyenLieu)) &&
+                                 (soLuongMin == null || tonKho.getSoLuong() >= soLuongMin) &&
+                                 (soLuongMax == null || tonKho.getSoLuong() <= soLuongMax))
                 .collect(Collectors.toList());
     }
 }

@@ -43,6 +43,11 @@ public class PhieuXuat {
    @Column(name = "tenPhieu", nullable = false, length = 255)
    private String tenPhieu;
 
+   @ManyToOne(fetch = FetchType.LAZY)
+   @JoinColumn(name = "MaKhoHang", nullable = false)
+   @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+   private KhoHang khoHang;
+
    @Column(name = "fileChungTu", length = 255)
    private String fileChungTu;
 
@@ -53,13 +58,13 @@ public class PhieuXuat {
    private LocalDateTime thoiGianTao;
 
    @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "nguoiXuat", nullable = false)  // Dùng trường "nguoiXuat" để lưu khóa ngoại (id của NhanVien)
-   @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // Tránh vòng lặp khi serialize
+   @JoinColumn(name = "nguoiXuat", nullable = false) // Dùng trường "nguoiXuat" để lưu khóa ngoại (id của NhanVien)
+   @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" }) // Tránh vòng lặp khi serialize
    private NhanVien nguoiXuat;
 
    @OneToMany(mappedBy = "phieuXuat", cascade = CascadeType.ALL, orphanRemoval = true)
    @Builder.Default
-   @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+   @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
    private List<ChiTietPhieuXuat> chiTiet = new ArrayList<>();
 
    @PrePersist

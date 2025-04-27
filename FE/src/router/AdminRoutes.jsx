@@ -15,8 +15,8 @@ import KhuyenMai from "../pages/admin/KhuyenMai";
 import HoaDon from "../pages/admin/HoaDon";
 import ThongKe from "../pages/admin/ThongKe";
 import PhieuCheBien from "../pages/admin/CheBien";
-import XuatKho from "../pages/warehouse/XuatKho";
-import NhapKho from "../pages/warehouse/NhapKho";
+import XuatKho from "../pages/admin/XuatKho";
+import NhapKho from "../pages/admin/NhapKho";
 import Snackbar from "@mui/material/Snackbar"; // Snackbar thông báo
 import Alert from "@mui/material/Alert"; // Alert thông báo
 
@@ -36,10 +36,10 @@ const AdminRoutes = ({ danhSachQuyen, snackBarLogin, setSnackbarLogin }) => {
             <Route path="chebien" element={<PhieuCheBien quyen={danhSachQuyen?.CheBien}/>} />
           )}
           {danhSachQuyen?.NhapKho?.access && (
-            <Route path="nhapkho" element={<NhapKho />} />
+            <Route path="nhapkho" element={<NhapKho quyen={danhSachQuyen?.NhapKho} />} />
           )}
           {danhSachQuyen?.XuatKho?.access && (
-            <Route path="xuatkho" element={<XuatKho />} />
+            <Route path="xuatkho" element={<XuatKho quyen={danhSachQuyen?.XuatKho}/>} />
           )}
           {danhSachQuyen?.KhuyenMai?.access && (
             <Route path="khuyenmai" element={<KhuyenMai quyen={danhSachQuyen?.KhuyenMai} />} />

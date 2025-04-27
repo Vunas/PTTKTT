@@ -174,11 +174,11 @@ VALUES ('Kho Hà Nội', '789 Đường Trường Chinh, Quận Đống Đa, Hà
 CREATE TABLE TonKho (
     MaTonKho INT PRIMARY KEY AUTO_INCREMENT, -- Mã tồn kho tự động tăng
     MaKhoHang INT NOT NULL,                  -- Mã kho (liên kết với bảng KhoHang)
-    MaSanPham INT NOT NULL,                  -- Mã sản phẩm (liên kết với bảng SanPham)
+    MaNguyenLieu INT NOT NULL,                  -- Mã sản phẩm (liên kết với bảng NguyenLieu)
     SoLuong INT NOT NULL,                    -- Số lượng tồn kho
     NgayCapNhat TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày cập nhật
     FOREIGN KEY (MaKhoHang) REFERENCES KhoHang(MaKhoHang),
-    FOREIGN KEY (MaSanPham) REFERENCES SanPham(MaSanPham)
+    FOREIGN KEY (MaNguyenLieu) REFERENCES NguyenLieu(MaNguyenLieu)
 );
 
 INSERT INTO TonKho (MaKhoHang, MaSanPham, SoLuong) VALUES
@@ -200,27 +200,6 @@ CREATE TABLE ChiTietNguyenLieuSanPham (
     SoLuongNguyenLieu DOUBLE NOT NULL,        -- Số lượng nguyên liệu cần cho 1 sản phẩm
     FOREIGN KEY (MaSanPham) REFERENCES SanPham(MaSanPham),
     FOREIGN KEY (MaNguyenLieu) REFERENCES NguyenLieu(MaNguyenLieu)
-);
-
-CREATE TABLE NhapKho (
-    MaNhapKho INT PRIMARY KEY AUTO_INCREMENT, -- Mã nhập kho tự động tăng
-    MaKhoHang INT NOT NULL,                   -- Mã kho (liên kết với bảng KhoHang)
-    MaNguyenLieu INT NOT NULL,                -- Mã nguyên liệu (liên kết với bảng NguyenLieu)
-    SoLuong INT NOT NULL,                     -- Số lượng nhập
-    GiaNhap DOUBLE NOT NULL,                  -- Giá nhập
-    NgayNhap TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày nhập
-    FOREIGN KEY (MaKhoHang) REFERENCES KhoHang(MaKhoHang),
-    FOREIGN KEY (MaNguyenLieu) REFERENCES NguyenLieu(MaNguyenLieu)
-);
-
-CREATE TABLE XuatKho (
-    MaXuatKho INT PRIMARY KEY AUTO_INCREMENT, -- Mã xuất kho tự động tăng
-    MaKhoHang INT NOT NULL,                   -- Mã kho (liên kết với bảng KhoHang)
-    MaSanPham INT NOT NULL,                   -- Mã sản phẩm (liên kết với bảng SanPham)
-    SoLuong INT NOT NULL,                     -- Số lượng xuất
-    NgayXuat TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày xuất
-    FOREIGN KEY (MaKhoHang) REFERENCES KhoHang(MaKhoHang),
-    FOREIGN KEY (MaSanPham) REFERENCES SanPham(MaSanPham)
 );
 
 INSERT INTO ChiTietNguyenLieuSanPham (MaSanPham, MaNguyenLieu, SoLuongNguyenLieu) VALUES
@@ -325,35 +304,39 @@ INSERT INTO HoaDon (maDonHang, maKhuyenMai, tongTien, maNhanVien) VALUES
     (5, 3, 100000.00, 5);
 
 CREATE TABLE PhieuNhap (
-   id BIGINT AUTO_INCREMENT PRIMARY KEY,
-   maPhieu VARCHAR(50) UNIQUE,
-   tenPhieu VARCHAR(255) NOT NULL,
-   fileChungTu VARCHAR(255),
-   nhaCungCap INT NOT NULL,  -- Khóa ngoại tham chiếu MaNhaCungCap
-   ghiChu TEXT,
-   trangThai VARCHAR(50) NOT NULL DEFAULT 'DAT_HANG',
-   thoiGianTao DATETIME,
-   thoiGianCapNhat DATETIME,
-   thoiGianHuy DATETIME,
-   nguoiNhap INT,  -- Khóa ngoại tham chiếu MaNhanVien
-   nguoiHuy INT,  -- Khóa ngoại tham chiếu MaNhanVien
-   makho int fronekey kho(makho)
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    maPhieu VARCHAR(50) UNIQUE,
+    tenPhieu VARCHAR(255) NOT NULL,
+    fileChungTu VARCHAR(255),
+    nhaCungCap INT NOT NULL,  -- Khóa ngoại tham chiếu MaNhaCungCap
+    MaKhoHang INT NOT NULL, -- Thêm cột MaKhoHang
+    ghiChu TEXT,
+    trangThai VARCHAR(50) NOT NULL DEFAULT 'DAT_HANG',
+    thoiGianTao DATETIME,
+    thoiGianCapNhat DATETIME,
+    thoiGianHuy DATETIME,
+    nguoiNhap INT,  -- Khóa ngoại tham chiếu MaNhanVien
+    nguoiHuy INT,   -- Khóa ngoại tham chiếu MaNhanVien
 
-   CONSTRAINT lienKetNhaCungCap FOREIGN KEY (nhaCungCap)
-      REFERENCES NhaCungCap(maNhaCungCap)
-      ON DELETE CASCADE
-      ON UPDATE CASCADE,
+    CONSTRAINT lienKetNhaCungCap FOREIGN KEY (nhaCungCap)
+        REFERENCES NhaCungCap(maNhaCungCap)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
 
-   CONSTRAINT lienKetNguoiTao FOREIGN KEY (nguoiNhap)
-      REFERENCES NhanVien(MaNhanVien)
-      ON DELETE SET NULL
-      ON UPDATE CASCADE,
+    CONSTRAINT lienKetKhoHang FOREIGN KEY (MaKhoHang) -- Sửa đúng tên khóa ngoại
+        REFERENCES KhoHang(MaKhoHang) -- Tham chiếu đúng cột MaKhoHang của bảng KhoHang
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
 
-   CONSTRAINT lienKetNguoiHuy FOREIGN KEY (nguoiHuy)
-      REFERENCES NhanVien(MaNhanVien)
-      ON DELETE SET NULL
-      ON UPDATE CASCADE
+    CONSTRAINT lienKetNguoiTao FOREIGN KEY (nguoiNhap)
+        REFERENCES NhanVien(MaNhanVien)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE,
 
+    CONSTRAINT lienKetNguoiHuy FOREIGN KEY (nguoiHuy)
+        REFERENCES NhanVien(MaNhanVien)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE
 );
 
 CREATE TABLE ChiTietPhieuNhap (
@@ -374,10 +357,16 @@ CREATE TABLE PhieuXuat(
    id BIGINT AUTO_INCREMENT PRIMARY KEY,
    maPhieu VARCHAR(50) UNIQUE,
    tenPhieu VARCHAR(255) NOT NULL,
+    MaKhoHang INT NOT NULL,   
    fileChungTu VARCHAR(255),
    ghiChu TEXT,
    thoiGianTao DATETIME,
    nguoiXuat INT, -- Khóa ngoại tham chiếu MaNhanVien
+
+       CONSTRAINT lienKetKhoHangXuat FOREIGN KEY (MaKhoHang) -- Sửa đúng tên khóa ngoại
+        REFERENCES KhoHang(MaKhoHang) -- Tham chiếu đúng cột MaKhoHang của bảng KhoHang
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
 
    CONSTRAINT fk_NguoiXuat FOREIGN KEY (nguoiXuat)
       REFERENCES NhanVien(MaNhanVien)

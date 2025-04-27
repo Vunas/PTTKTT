@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import fetchData from "../../utils/FetchData";
-import { addItem, editItem, deleteItem} from "../../utils/CRUD";
+import { addItem, editItem, deleteItem } from "../../utils/CRUD";
 import filterData from "../../utils/FilterData";
 import CommonToolbar from "../../components/CommonToolBar"; // Toolbar chung
 import KhoHangDialog from "../../components/Dialog/KhoHangDialog"; // Dialog
@@ -11,9 +11,12 @@ import { exportExcel } from "../../utils/ExcelJS"; // Xuất file Excel
 import KhoHangFilter from "../../components/Filter/KhoHangFilter"; // Bộ lọc
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import TonKhoDetail from "../../components/Details/TonKhoDetail";
+import { Grid, Paper, Typography } from "@mui/material";
 
-const KhoHang = ({quyen}) => {
+const KhoHang = ({ quyen }) => {
   const [khoHangList, setKhoHangList] = useState([]);
+  const [selectedKhoHang, setSelectedKhoHang] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isDialogOpen, setDialogOpen] = useState(false);
@@ -125,16 +128,34 @@ const KhoHang = ({quyen}) => {
         onFilterParamsChange={setFilterParams}
       />
 
-      <KhoHangTable
-        khoHangList={khoHangList}
-        onEdit={(khoHang) => {
-          setTitle("Sửa Kho Hàng");
-          setEditKhoHang(khoHang);
-          setDialogOpen(true);
-        }}
-        onDelete={handleDelete}
-        quyen={quyen}
-      />
+      <Grid container spacing={2} sx={{ mt: 2 }}>
+        <Grid item xs={12} md={6}>
+          <Paper elevation={3} sx={{ p: 2 }}>
+            <Typography variant="h6" gutterBottom>
+              Danh sách Kho Hàng
+            </Typography>
+            <KhoHangTable
+              khoHangList={khoHangList}
+              onEdit={(khoHang) => {
+                setTitle("Sửa Kho Hàng");
+                setEditKhoHang(khoHang);
+                setDialogOpen(true);
+              }}
+              onDelete={handleDelete}
+              quyen={quyen}
+              setKhoHangSelected={setSelectedKhoHang}
+            />
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Paper elevation={3} sx={{ p: 2 }}>
+            <Typography variant="h6" gutterBottom>
+              Chi Tiết Tồn Kho
+            </Typography>
+            <TonKhoDetail khoHang={selectedKhoHang} />
+          </Paper>
+        </Grid>
+      </Grid>
 
       <KhoHangDialog
         open={isDialogOpen}

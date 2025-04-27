@@ -16,8 +16,8 @@ public class TonKho {
     private KhoHang khoHang; // Đối tượng kho hàng (foreign key)
 
     @ManyToOne
-    @JoinColumn(name = "MaSanPham", nullable = false) // Liên kết với bảng SanPham
-    private SanPham sanPham; // Đối tượng sản phẩm (foreign key)
+    @JoinColumn(name = "MaNguyenLieu", nullable = false) // Liên kết với bảng NguyenLieu
+    private NguyenLieu nguyenLieu; // Đối tượng sản phẩm (foreign key)
 
     @Column(name = "SoLuong", nullable = false) // Số lượng tồn kho
     private Integer soLuong;

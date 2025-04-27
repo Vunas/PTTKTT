@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import com.app.QLCH.model.TonKho;
+import com.app.QLCH.DTO.TonKhoDTO;
 import com.app.QLCH.model.KhoHang;
-import com.app.QLCH.model.SanPham;
+import com.app.QLCH.model.NguyenLieu; // Đã sửa từ SanPham thành NguyenLieu
 import com.app.QLCH.service.TonKhoService;
 
 @RestController
@@ -45,6 +46,20 @@ public class TonKhoController {
         }
     }
 
+    @PostMapping("check-update-ton-kho")
+    public ResponseEntity<?> checkTonKho(@RequestBody TonKhoDTO tonKhoDTO) {
+        try {
+            boolean result = tonKhoService.updateNguyenLieuTonKho(tonKhoDTO);
+            if (result) {
+                return ResponseEntity.ok("Tồn kho hợp lệ.");
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Số lượng trong kho không đủ");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra khi kiểm tra tồn kho.");
+        }
+    }
+
     // API lấy danh sách tồn kho theo kho hàng
     @GetMapping("/khohang/{maKhoHang}")
     public ResponseEntity<?> getTonKhoByKhoHang(@PathVariable Integer maKhoHang) {
@@ -54,40 +69,40 @@ public class TonKhoController {
         return ResponseEntity.ok(tonKhoList);
     }
 
-    // API lấy danh sách tồn kho theo sản phẩm
-    @GetMapping("/sanpham/{maSanPham}")
-    public ResponseEntity<?> getTonKhoBySanPham(@PathVariable Integer maSanPham) {
-        SanPham sanPham = new SanPham();
-        sanPham.setMaSanPham(maSanPham);
-        List<TonKho> tonKhoList = tonKhoService.getTonKhoBySanPham(sanPham);
+    // API lấy danh sách tồn kho theo sản phẩm (đã sửa tên)
+    @GetMapping("/nguyenlieu/{maNguyenLieu}")
+    public ResponseEntity<?> getTonKhoByNguyenLieu(@PathVariable Integer maNguyenLieu) {
+        NguyenLieu nguyenLieu = new NguyenLieu();
+        nguyenLieu.setMaNguyenLieu(maNguyenLieu);
+        List<TonKho> tonKhoList = tonKhoService.getTonKhoByNguyenLieu(nguyenLieu);
         return ResponseEntity.ok(tonKhoList);
     }
 
-    // API lấy tồn kho theo kho hàng và sản phẩm
+    // API lấy tồn kho theo kho hàng và sản phẩm (đã sửa tên)
     @GetMapping("/search")
-    public ResponseEntity<?> getTonKhoByKhoHangAndSanPham(
+    public ResponseEntity<?> getTonKhoByKhoHangAndNguyenLieu(
             @RequestParam Integer maKhoHang,
-            @RequestParam Integer maSanPham) {
+            @RequestParam Integer maNguyenLieu) {
         KhoHang khoHang = new KhoHang();
         khoHang.setMaKhoHang(maKhoHang);
-        SanPham sanPham = new SanPham();
-        sanPham.setMaSanPham(maSanPham);
-        TonKho tonKho = tonKhoService.getTonKhoByKhoHangAndSanPham(khoHang, sanPham);
+        NguyenLieu nguyenLieu = new NguyenLieu();
+        nguyenLieu.setMaNguyenLieu(maNguyenLieu);
+        TonKho tonKho = tonKhoService.getTonKhoByKhoHangAndNguyenLieu(khoHang, nguyenLieu);
         if (tonKho != null) {
             return ResponseEntity.ok(tonKho);
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Không tìm thấy tồn kho cho sản phẩm tại kho hàng.");
+                .body("Không tìm thấy tồn kho cho nguyên liệu tại kho hàng.");
     }
 
     @GetMapping("/filter")
     public ResponseEntity<?> filterTonKho(
             @RequestParam(required = false) Integer maKhoHang,
-            @RequestParam(required = false) Integer maSanPham,
+            @RequestParam(required = false) Integer maNguyenLieu,
             @RequestParam(required = false) Integer soLuongMin,
             @RequestParam(required = false) Integer soLuongMax) {
         try {
-            List<TonKho> filteredTonKho = tonKhoService.filterTonKho(maKhoHang, maSanPham, soLuongMin, soLuongMax);
+            List<TonKho> filteredTonKho = tonKhoService.filterTonKho(maKhoHang, maNguyenLieu, soLuongMin, soLuongMax);
             return ResponseEntity.ok(filteredTonKho);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

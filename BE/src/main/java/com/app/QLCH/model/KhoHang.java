@@ -5,21 +5,21 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "KhoHang") // Bảng tương ứng trong cơ sở dữ liệu
+@Table(name = "KhoHang")
 public class KhoHang {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // ID tự tăng
-    private Integer maKhoHang; // Mã kho hàng
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer maKhoHang;
 
-    @Column(name = "TenKhoHang", nullable = false, length = 100) // Tên kho hàng
+    @Column(name = "TenKhoHang", nullable = false, length = 100)
     private String tenKhoHang;
 
-    @Column(name = "DiaDiem", nullable = false, columnDefinition = "TEXT") // Địa điểm
+    @Column(name = "DiaDiem", nullable = false, columnDefinition = "TEXT")
     private String diaDiem;
 
-    @Column(name = "TrangThai", columnDefinition = "TINYINT(1) DEFAULT 1") // Trạng thái (1: Hoạt động, 0: Ngừng hoạt động)
+    @Column(name = "TrangThai", columnDefinition = "TINYINT(1) DEFAULT 1")
     private Integer trangThai = 1;
 
-    @Column(name = "NgayTao", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP") // Ngày tạo
+    @Column(name = "NgayTao", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private java.sql.Timestamp ngayTao;
 }
