@@ -17,6 +17,9 @@ public class TonKhoService {
     @Autowired
     private TonKhoRepository tonKhoRepository;
 
+    @Autowired
+    private NguyenLieuService nguyenLieuService;
+
     // Lấy tất cả tồn kho
     public List<TonKho> getAllTonKho() {
         return tonKhoRepository.findAll();
@@ -54,17 +57,20 @@ public class TonKhoService {
 
     public boolean updateNguyenLieuTonKho(TonKhoDTO tonKhoDTO) {
         for (NguyenLieu nguyenLieu : tonKhoDTO.getNguyenLieuList()) {
-            TonKho tonKho=  tonKhoRepository.findByKhoHangAndNguyenLieu(tonKhoDTO.getKhoHang(), nguyenLieu);
-            if ( tonKho.getSoLuong() < nguyenLieu.getSoLuong()) {
+            TonKho tonKho = tonKhoRepository.findByKhoHangAndNguyenLieu(tonKhoDTO.getKhoHang(), nguyenLieu);
+            if (tonKho.getSoLuong() < nguyenLieu.getSoLuong()) {
                 return false;
             }
         }
 
         for (NguyenLieu nguyenLieu : tonKhoDTO.getNguyenLieuList()) {
             System.out.println("bat dau tu day aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-            TonKho tonKho=  tonKhoRepository.findByKhoHangAndNguyenLieu(tonKhoDTO.getKhoHang(), nguyenLieu);
+            TonKho tonKho = tonKhoRepository.findByKhoHangAndNguyenLieu(tonKhoDTO.getKhoHang(), nguyenLieu);
             System.out.println(tonKho.getSoLuong() + " va  " + nguyenLieu.getSoLuong());
             tonKho.setSoLuong((tonKho.getSoLuong() - nguyenLieu.getSoLuong()));
+            NguyenLieu newNguyenLieu = nguyenLieuService.getNguyenLieuById(nguyenLieu.getMaNguyenLieu());
+            newNguyenLieu.setSoLuong(newNguyenLieu.getSoLuong() + nguyenLieu.getSoLuong());
+            nguyenLieuService.saveNguyenLieu(newNguyenLieu);
             tonKhoRepository.save(tonKho);
         }
 
@@ -92,9 +98,9 @@ public class TonKhoService {
     public List<TonKho> filterTonKho(Integer maKhoHang, Integer maNguyenLieu, Integer soLuongMin, Integer soLuongMax) {
         return tonKhoRepository.findAll().stream()
                 .filter(tonKho -> (maKhoHang == null || tonKho.getKhoHang().getMaKhoHang().equals(maKhoHang)) &&
-                                 (maNguyenLieu == null || tonKho.getNguyenLieu().getMaNguyenLieu().equals(maNguyenLieu)) &&
-                                 (soLuongMin == null || tonKho.getSoLuong() >= soLuongMin) &&
-                                 (soLuongMax == null || tonKho.getSoLuong() <= soLuongMax))
+                        (maNguyenLieu == null || tonKho.getNguyenLieu().getMaNguyenLieu().equals(maNguyenLieu)) &&
+                        (soLuongMin == null || tonKho.getSoLuong() >= soLuongMin) &&
+                        (soLuongMax == null || tonKho.getSoLuong() <= soLuongMax))
                 .collect(Collectors.toList());
     }
 }
