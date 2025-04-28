@@ -25,6 +25,7 @@ const App = () => {
    const [isLoggedIn, setIsLoggedIn] = useState(false);
    return (
       <BrowserRouter>
+         <div className="h-20"></div>
          <Routes>
             <Route exact path="/" element={<Home />} />
             <Route exact path="/about" element={<About />} />
