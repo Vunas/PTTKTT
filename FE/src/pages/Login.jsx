@@ -39,6 +39,12 @@ const LoginAdmin = () => {
       );
       if (response.status === 200) {
         localStorage.setItem("taiKhoan", JSON.stringify(response.data));
+        const nhanVien = await axios.get(
+          `http://localhost:8080/api/nhanvien/email/${response.data.email}`
+        );
+        if (nhanVien) {
+          localStorage.setItem("nhanvien", JSON.stringify(nhanVien.data));
+        }
         setSnackbar({
           open: true,
           message: "Đăng nhập thành công!",

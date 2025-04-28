@@ -50,8 +50,6 @@ public class TaiKhoanController {
                         .body("Email đã tồn tại!");
             }
 
-            taiKhoan.setMatKhau(HashUtil.hashString(taiKhoan.getMatKhau()));
-
             // Lưu tài khoản nếu không có lỗi
             return ResponseEntity.ok(taiKhoanService.saveTaiKhoan(taiKhoan));
         } catch (Exception e) {
@@ -83,7 +81,6 @@ public class TaiKhoanController {
             }
 
             // Mã hóa mật khẩu mới
-            existingTaiKhoan.setMatKhau(HashUtil.hashString(request.getMatKhauMoi()));
             taiKhoanService.saveTaiKhoan(existingTaiKhoan);
 
             return ResponseEntity.ok("Cập nhật mật khẩu thành công!");

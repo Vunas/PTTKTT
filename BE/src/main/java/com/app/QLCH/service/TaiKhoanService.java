@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 
 import com.app.QLCH.model.TaiKhoan;
 import com.app.QLCH.repository.TaiKhoanRepository;
+import com.app.QLCH.utils.HashUtil;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @Service
@@ -36,16 +38,17 @@ public class TaiKhoanService {
         return taiKhoanRepository.findByEmailAndTrangThai(email, 1);
     }
 
-    public boolean existsByTenDangNhap(String tenDangNhap){
+    public boolean existsByTenDangNhap(String tenDangNhap) {
         return taiKhoanRepository.existsByTenDangNhap(tenDangNhap);
     }
 
-    public boolean existsByEmail(String tenDangNhap){
+    public boolean existsByEmail(String tenDangNhap) {
         return taiKhoanRepository.existsByEmail(tenDangNhap);
     }
 
     // Thêm hoặc cập nhật tài khoản
-    public TaiKhoan saveTaiKhoan(TaiKhoan taiKhoan) {
+    public TaiKhoan saveTaiKhoan(TaiKhoan taiKhoan) throws NoSuchAlgorithmException {
+        taiKhoan.setMatKhau(HashUtil.hashString(taiKhoan.getMatKhau()));
         return taiKhoanRepository.save(taiKhoan);
     }
 

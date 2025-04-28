@@ -44,9 +44,11 @@ import {
   ManageAccountsOutlined, // Tài Khoản
   SettingsOutlined, // Phân Quyền
   BarChartOutlined, // Thống Kê
-  ExpandMoreRounded, // Icon đánh dấu mục cha khi thu nhỏ
+  ExpandMoreRounded,
+  Logout, // Icon đánh dấu mục cha khi thu nhỏ
 } from "@mui/icons-material";
 import Error from "../utils/state/Error";
+import { Button } from "@mui/material";
 
 const Sidebar = ({ danhSachQuyen }) => {
   const [isOpen, setIsOpen] = useState(true);
@@ -63,6 +65,12 @@ const Sidebar = ({ danhSachQuyen }) => {
       ...prev,
       [groupName]: !prev[groupName],
     }));
+  };
+  const nhanvien = JSON.parse(localStorage.getItem("nhanvien"));
+  const handleLogout = () => {
+    localStorage.removeItem("taiKhoan");
+    localStorage.removeItem("nhanvien");
+    window.location.reload();
   };
 
   if (!danhSachQuyen) return <Error />;
@@ -84,7 +92,7 @@ const Sidebar = ({ danhSachQuyen }) => {
       >
         {isOpen ? (
           <div className="h-14 p-4 text-xl font-semibold border-b border-gray-200">
-            Admin Panel
+            {nhanvien ? nhanvien.hoTen : "Admin Panel"}
           </div>
         ) : (
           <div className="h-14"></div>
@@ -291,7 +299,20 @@ const Sidebar = ({ danhSachQuyen }) => {
 
         {isOpen && (
           <div className="p-4 text-sm text-gray-500 border-t border-gray-200 text-center">
-            © 2025 Admin Panel
+            <Button
+              onClick={handleLogout}
+              className="w-full justify-start"
+              startIcon={<Logout />}
+              sx={{
+                color: "inherit",
+                "&:hover": {
+                  backgroundColor: "#f44336",
+                  color: "white",
+                },
+              }}
+            >
+              Đăng xuất
+            </Button>
           </div>
         )}
       </motion.div>
