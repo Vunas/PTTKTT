@@ -18,13 +18,15 @@ const Transaction = () => {
       return user ? JSON.parse(user) : null;
   });
 
+  const khachHang = JSON.parse(localStorage.getItem("khachHang"));
+
   const totalPrice = cartItems.reduce((total, item) => total + item.price * item.qty, 0);
 
   const [form, setForm] = useState({
-    hoTen: "",
-    gioiTinh: "",
-    soDienThoai: "",
-    diaChi: "",
+    hoTen: khachHang?.hoTen || "",
+    gioiTinh: khachHang?.gioiTinh || "",
+    soDienThoai: khachHang?.soDienThoai || "",
+    diaChi: khachHang?.diaChi || "",
     paymentMethod: "Tiền mặt",
     ghiChu: "",
   });
