@@ -88,7 +88,7 @@ const Navbar = () => {
                   type="button"
                   className="w-full px-3 py-2 text-sm font-semibold text-black rounded-md shadow-sm bg-yellow hover:bg-black/80 hover:text-white"
                 >
-                  Sign in
+                  Đăng nhập
                 </button>
               </Link>
             ) : (
@@ -96,7 +96,7 @@ const Navbar = () => {
                 <img
                   src={avatar}
                   alt="avatar"
-                  className="w-8 h-8 rounded-full border-2 border-yellow-500 object-cover cursor-pointer"
+                  className="w-6 h-6 rounded-full border-2 border-yellow-500 object-cover cursor-pointer"
                   onClick={handleAvatarClick}
                 />
                 <span className="text-sm font-medium text-gray-700">
@@ -157,7 +157,7 @@ const Navbar = () => {
                         type="button"
                         className="w-full px-3 py-2 mt-4 text-sm font-semibold text-black rounded-md shadow-sm bg-yellow hover:bg-black/80 hover:text-white"
                       >
-                        Sign in
+                        Đăng nhập
                       </button>
                     </Link>
                   ) : (
@@ -168,14 +168,22 @@ const Navbar = () => {
                       >
                         <span className="ml-3 text-base font-medium text-gray-900">Chỉnh sửa tài khoản</span>
                       </Link>
+
                       <Link
                         to="/setPassword"
                         className="flex items-center p-3 -m-3 text-sm font-semibold rounded-md hover:bg-gray-50"
                       >
                         <span className="ml-3 text-base font-medium text-gray-900">Sửa mật khẩu</span>
                       </Link>
+
                       <Link
-                        to="/transaction"
+                        to="/orders"
+                        className="flex items-center p-3 -m-3 text-sm font-semibold rounded-md hover:bg-gray-50"
+                      >
+                        <span className="ml-3 text-base font-medium text-gray-900">Xem đơn hàng</span>
+                      </Link>
+                      <Link
+                        to="/receipts"
                         className="flex items-center p-3 -m-3 text-sm font-semibold rounded-md hover:bg-gray-50"
                       >
                         <span className="ml-3 text-base font-medium text-gray-900">Lịch sử giao dịch</span>
@@ -196,7 +204,7 @@ const Navbar = () => {
 
 					{/* Dropdown menu for account settings */}
 					{isDropdownOpen && (
-						<div className="absolute top-16 right-10 bg-white shadow-lg p-4 rounded-md w-48 z-50">
+						<div className="absolute top-16 right-52 bg-white shadow-lg p-4 rounded-md w-48 z-50">
 							<ul>
 								<li>
 									<Link to="/setAccount" className="block py-2 text-gray-700 hover:bg-gray-100">
@@ -208,8 +216,13 @@ const Navbar = () => {
 										Sửa mật khẩu
 									</Link>
                 </li>
+                <li>
+                  <Link to="/orders" className="block py-2 text-gray-700 hover:bg-gray-100">
+										Xem đơn hàng
+									</Link>
+                </li>
 								<li>
-									<Link to="/transaction" className="block py-2 text-gray-700 hover:bg-gray-100">
+									<Link to="/receipts" className="block py-2 text-gray-700 hover:bg-gray-100">
 										Lịch sử giao dịch
 									</Link>
 								</li>

@@ -20,28 +20,21 @@ const Footer = () => {
                         <a
                            className="font-medium text-gray-600 hover:text-gray-700"
                            href="#">
-                           Privacy Policy
+                           Điều khoản dịch vụ
                         </a>
                      </li>
                      <li className="p-5">
                         <a
                            className="font-medium text-gray-600 hover:text-gray-700"
                            href="#">
-                           Terms of Service
+                           Nguyên tắc hoàn trả
                         </a>
                      </li>
                      <li className="p-5">
                         <a
                            className="font-medium text-gray-600 hover:text-gray-700"
                            href="#">
-                           Return Policy
-                        </a>
-                     </li>
-                     <li className="p-5">
-                        <a
-                           className="font-medium text-gray-600 hover:text-gray-700"
-                           href="#">
-                           Contact Us
+                           Liên hệ
                         </a>
                      </li>
                   </ul>

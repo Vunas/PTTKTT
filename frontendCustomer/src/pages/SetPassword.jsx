@@ -41,9 +41,6 @@ const SetPassword = () => {
     }
 
     try {
-      console.log(currentPassword);
-      console.log(newPassword);
-      console.log(khachHang.maTaiKhoan);
 
       const response = await axios.put(`http://localhost:8080/api/taikhoan/set-password/${khachHang.maTaiKhoan}`, {
         maTaiKhoan: khachHang.maTaiKhoan,

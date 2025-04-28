@@ -29,7 +29,7 @@ const Cart = () => {
   return (
     <>
       <Navbar />
-
+      <div className="pt-28">
       <div className="flex flex-col max-w-3xl mx-auto space-y-4 sm:p-10 sm:px-2">
         <div className="px-4 md:px-8">
           <h2 className="text-3xl font-bold">Giỏ hàng của bạn</h2>
@@ -53,7 +53,7 @@ const Cart = () => {
                 />
               ))
             ) : (
-              <h1 className="flex justify-center text-3xl font-bold">
+              <h1 className="flex justify-center text-2xl pt-20 font-bold">
                 Giỏ hàng đang trống!
               </h1>
             )}
@@ -77,6 +77,8 @@ const Cart = () => {
                 Quay lại mua hàng
               </button>
             </Link>
+            
+            { cartItems.some(item => item.qty > 0) &&(
             <Link to="/transaction">
               <button
                 type="button"
@@ -85,8 +87,12 @@ const Cart = () => {
                 Thanh toán
               </button>
             </Link>
+            )
+            }
+            
           </div>
         </div>
+      </div>
       </div>
 
       <Footer />

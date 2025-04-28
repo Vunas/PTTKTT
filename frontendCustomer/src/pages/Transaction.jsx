@@ -12,10 +12,10 @@ const Transaction = () => {
   const navigate = useNavigate();
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [currentUsername, setCurrentUsername] = useState("");
-
+  
   const [userInfo, setUserInfo] = useState(() => {
-    const user = localStorage.getItem("taiKhoan");
-    return user ? JSON.parse(user) : null;
+      const user = localStorage.getItem("taiKhoan");
+      return user ? JSON.parse(user) : null;
   });
 
   const totalPrice = cartItems.reduce((total, item) => total + item.price * item.qty, 0);
@@ -32,7 +32,7 @@ const Transaction = () => {
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-
+  
   const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
@@ -70,7 +70,7 @@ const Transaction = () => {
         khachHangData = await resKhachHang.json();
         localStorage.setItem("khachHang", JSON.stringify(khachHangData));
       }
-
+  
       // 2. Tạo đơn hàng
       const donHangData = {
         maKhachHang: khachHangData.maKhachHang,
@@ -82,18 +82,18 @@ const Transaction = () => {
         ghiChu: form.ghiChu || "",
         trangThai: 1
       };
-
+  
       const resDonHang = await fetch("http://localhost:8080/api/donhang", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(donHangData),
       });
-
+  
       if (!resDonHang.ok) throw new Error("Không thể tạo đơn hàng");
-
+  
       const donHang = await resDonHang.json();
       const maDonHangMoi = donHang.maDonHang;
-
+  
       // 3. Tạo danh sách chi tiết đơn hàng
       const chiTietList = cartItems.map(item => ({
         maDonHang: maDonHangMoi,
@@ -109,7 +109,7 @@ const Transaction = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(chiTietList),
       });
-
+  
       if (!resChiTiet.ok) throw new Error("Không thể tạo chi tiết đơn hàng");
       toast.success("Đặt hàng thành công!", { position: "top-right", autoClose: 2000 });
       dispatch(clearCart());
@@ -120,8 +120,8 @@ const Transaction = () => {
       console.error("Lỗi submit:", error);
       toast.error("Lỗi xử lý đơn hàng: " + error.message, { position: "top-right" });
     }
-  };
-
+  };  
+  
 
   return (
     <div>
@@ -175,19 +175,19 @@ const Transaction = () => {
             />
           </div>
 
-          <div className="flex flex-col">
-            <label htmlFor="email" className="font-medium text-sm mb-1">Email</label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              value={userInfo.email}
-              disabled
-              onChange={handleChange}
-              className="border border-gray-300 rounded-md p-2"
-              required
-            />
-          </div>
+        <div className="flex flex-col">
+          <label htmlFor="email" className="font-medium text-sm mb-1">Email</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            value={userInfo.email}
+            disabled
+            onChange={handleChange}
+            className="border border-gray-300 rounded-md p-2"
+            required
+          />
+        </div>
 
           <div className="flex flex-col md:col-span-2">
             <label htmlFor="diaChi" className="font-medium text-sm mb-1">Địa chỉ</label>
@@ -202,18 +202,35 @@ const Transaction = () => {
             />
           </div>
 
-          <div className="flex flex-col md:col-span-2">
-            <label htmlFor="ghiChu" className="font-medium text-sm mb-1">Ghi chú</label>
-            <input
-              id="ghiChu"
-              name="ghiChu"
-              type="text"
-              value={form.ghiChu}
-              onChange={handleChange}
-              className="border border-gray-300 rounded-md p-2"
-              required
-            />
-          </div>
+        <div className="flex flex-col md:col-span-2">
+          <label htmlFor="ghiChu" className="font-medium text-sm mb-1">Ghi chú</label>
+          <input
+            id="ghiChu"
+            name="ghiChu"
+            type="text"
+            value={form.ghiChu}
+            onChange={handleChange}
+            className="border border-gray-300 rounded-md p-2"
+            required
+          />
+        </div>
+
+
+        {/* Chọn phương thức thanh toán */}
+        <div className="flex flex-col md:col-span-2">
+          <label htmlFor="paymentMethod" className="font-medium text-sm mb-1">Phương thức thanh toán</label>
+          <select
+            id="paymentMethod"
+            name="paymentMethod"
+            value={form.paymentMethod}
+            onChange={handleChange}
+            className="border border-gray-300 rounded-md p-2"
+          >
+            <option value="Tiền mặt">Thanh toán khi nhận hàng</option>
+            <option value="Thẻ ngân hàng">Thanh toán thẻ ngân hàng</option>
+            <option value="Ví điện tử">Thanh toán ví điện tử</option>
+          </select>
+        </div>
 
 
           {/* Chọn phương thức thanh toán */}
@@ -255,18 +272,18 @@ const Transaction = () => {
             )}
           </div>
 
-          {/* Submit button */}
-          <div className="md:col-span-2 flex justify-center">
-            {!buttonDisabled && (
-              <button
-                type="submit"
-                className="bg-yellow text-white py-2 px-6 rounded-lg"
-              >
-                Xác nhận đơn hàng
-              </button>
-            )}
-          </div>
-        </form>
+        {/* Submit button */}
+        <div className="md:col-span-2 flex justify-center">
+          {!buttonDisabled && (
+        <button
+          type="submit"
+          className="bg-yellow text-white py-2 px-6 rounded-lg"
+        >
+          Xác nhận đơn hàng
+        </button>
+      )}
+        </div>
+      </form>
 
         <ToastContainer />
       </div>

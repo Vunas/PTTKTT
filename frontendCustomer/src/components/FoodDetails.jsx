@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { addToCart } from "../redux/slices/CartSlice";
+import { addToCart } from "../redux/slices/CartSlice"; // báo lỗi nhưng vẫn chạy được, đừng xóa
 import Navbar from "./Navbar";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -48,7 +48,7 @@ const FoodDetails = () => {
   if (!product) return <div className="text-center mt-10">Đang tải sản phẩm...</div>;
 
   return (
-    <div>
+    <div className="pt-28">
       <Navbar />
       <div className="max-w-5xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-lg flex flex-col md:flex-row gap-8">
         <div className="flex-1 flex justify-center items-center">

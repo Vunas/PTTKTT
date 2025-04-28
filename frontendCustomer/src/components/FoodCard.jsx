@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { addToCart } from "../redux/slices/CartSlice";
+import { addToCart } from "../redux/slices/CartSlice"; // báo lỗi nhưng vẫn chạy được, đừng xóa
 import { Navigate, useNavigate } from "react-router-dom";
 
 const FoodCard = ({ id, name, price, desc, img, handleToast }) => {
