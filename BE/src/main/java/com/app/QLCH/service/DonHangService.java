@@ -17,13 +17,22 @@ public class DonHangService {
 
     // Lấy danh sách tất cả đơn hàng đang hoạt động (không bị xóa mềm)
     public List<DonHang> getAllDonHang() {
-        return donHangRepository.findByTrangThai(1); // Lấy tất cả trừ trạng thái xóa mềm
+        return donHangRepository.findByTrangThai(1);
+    }
+
+    public List<DonHang> getAllDonHangIgnoreTrangThai() {
+        return donHangRepository.findAll();
     }
 
     // Lấy đơn hàng theo ID, nhưng không bao gồm đơn hàng bị xóa mềm
     public DonHang getDonHangById(Integer id) {
         DonHang donHang = donHangRepository.findById(id).orElse(null);
         return (donHang != null && donHang.getTrangThai() == 1) ? donHang : null;
+    }
+
+    public DonHang getDonHangByIdIgnoreTrangThai(Integer id) {
+        DonHang donHang = donHangRepository.findById(id).orElse(null);
+        return (donHang != null) ? donHang : null;
     }
 
     // Thêm hoặc cập nhật đơn hàng
@@ -57,12 +66,14 @@ public class DonHangService {
         if (maKhachHang == null) {
             return donHangRepository
                     .findByNgayDatBetweenAndTrangThaiGiaoHangContainingIgnoreCaseAndDiaChiGiaoHangContainingIgnoreCaseAndPhuongThucThanhToanContainingIgnoreCaseAndTongGiaBetweenAndTrangThai(
-                            startDate, endDate, trangThaiGiaoHang != null ? trangThaiGiaoHang : "", diaChiGiaoHang, phuongThucThanhToan, minGia, maxGia,
+                            startDate, endDate, trangThaiGiaoHang != null ? trangThaiGiaoHang : "", diaChiGiaoHang,
+                            phuongThucThanhToan, minGia, maxGia,
                             1);
         } else {
             return donHangRepository
                     .findByMaKhachHangAndNgayDatBetweenAndTrangThaiGiaoHangContainingIgnoreCaseAndDiaChiGiaoHangContainingIgnoreCaseAndPhuongThucThanhToanContainingIgnoreCaseAndTongGiaBetweenAndTrangThai(
-                            maKhachHang, startDate, endDate, trangThaiGiaoHang != null? trangThaiGiaoHang : "", diaChiGiaoHang, phuongThucThanhToan,
+                            maKhachHang, startDate, endDate, trangThaiGiaoHang != null ? trangThaiGiaoHang : "",
+                            diaChiGiaoHang, phuongThucThanhToan,
                             minGia, maxGia, 1);
         }
     }

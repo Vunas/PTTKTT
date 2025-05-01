@@ -35,6 +35,15 @@ public class DonHangController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy đơn hàng với ID: " + id);
     }
 
+    @GetMapping("/ignoreTrangThai/{id}")
+    public ResponseEntity<?> getDonHangIgnoreTrangThaiById(@PathVariable Integer id) {
+        DonHang donHang = donHangService.getDonHangByIdIgnoreTrangThai(id);
+        if (donHang != null) {
+            return ResponseEntity.ok(donHang);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy đơn hàng với ID: " + id);
+    }
+
     // API thêm mới đơn hàng
     @PostMapping
     public ResponseEntity<?> saveDonHang(@RequestBody DonHang donHang) {
