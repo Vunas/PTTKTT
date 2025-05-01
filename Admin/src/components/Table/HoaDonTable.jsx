@@ -43,24 +43,29 @@ const HoaDonTable = ({
   };
 
   const getData = async (hoaDon) => {
-    console.log(errors);
-    setDonHang(
-      await fetchDataById(
-        "http://localhost:8080/api/donhang",
+    try {
+      console.log("Đang lấy dữ liệu...");
+      const donHangData = await fetchDataById(
+        "http://localhost:8080/api/donhang/ignoreTrangThai",
         hoaDon.maDonHang,
         setErrors
-      )
-    );
-    setChiTietDonHang(
-      await fetchDataById(
+      );
+      const chiTietData = await fetchDataById(
         "http://localhost:8080/api/chitietdonhang/donhang",
         hoaDon.maDonHang,
         setErrors
-      )
-    );
-    console.log(hoaDon);
-    console.log(donHang);
-    console.log(chiTietDonHang);
+      );
+
+      setDonHang(donHangData);
+      setChiTietDonHang(chiTietData);
+
+      console.log("Dữ liệu đã cập nhật!");
+      console.log("Hoa Don:", hoaDon);
+      console.log("Don Hang:", donHangData);
+      console.log("Chi Tiet Don Hang:", chiTietData);
+    } catch (error) {
+      console.error("Lỗi khi lấy dữ liệu:", error);
+    }
   };
 
   return (
@@ -115,17 +120,14 @@ const HoaDonTable = ({
                 <TableCell align="center">{hoaDon.ngayXuatHoaDon}</TableCell>
                 <TableCell align="center">
                   {quyen?.fix && (
-                    <IconButton
-                      color="primary"
-                      onClick={() => onEdit(hoaDon)} // Chỉnh sửa hóa đơn
-                    >
+                    <IconButton color="primary" onClick={() => onEdit(hoaDon)}>
                       <CreateIcon />
                     </IconButton>
                   )}
                   {quyen?.delete && (
                     <IconButton
                       color="secondary"
-                      onClick={() => onDelete(hoaDon.maHoaDon)} // Xóa hóa đơn
+                      onClick={() => onDelete(hoaDon.maHoaDon)}
                     >
                       <DeleteOutlineIcon />
                     </IconButton>
@@ -146,7 +148,7 @@ const HoaDonTable = ({
                           );
                         }
                       );
-                    }} // Xóa hóa đơn
+                    }}
                   >
                     <PictureAsPdfIcon />
                   </IconButton>

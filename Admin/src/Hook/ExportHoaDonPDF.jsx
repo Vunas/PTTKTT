@@ -3,7 +3,13 @@ import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = pdfFonts.default?.pdfMake?.vfs || {};
 
-const exportHoaDonPDF = (donHang, hoaDon, chiTietDonHang, KhuyenMaiList, tongTien) => {
+const exportHoaDonPDF = (
+  donHang,
+  hoaDon,
+  chiTietDonHang,
+  KhuyenMaiList,
+  tongTien
+) => {
   // 🏪 Thông tin công ty và tiêu đề
   const content = [
     { text: "HÓA ĐƠN BÁN HÀNG", style: "header", alignment: "center" },
@@ -14,7 +20,7 @@ const exportHoaDonPDF = (donHang, hoaDon, chiTietDonHang, KhuyenMaiList, tongTie
 
   // 👤 Thông tin khách hàng
   const customerInfo = [
-    ["Khách hàng:", donHang.maKhachHang],
+    ["Khách hàng:", donHang.maKhachHang ? donHang.maKhachHang : ""],
     ["Địa chỉ:", donHang.diaChiGiaoHang || "nhận tại quầy"],
     ["Ngày đặt:", dayjs(donHang.ngayDat).format("DD/MM/YYYY HH:mm")],
     ["Ngày xuất HĐ:", dayjs(hoaDon.ngayXuatHoaDon).format("DD/MM/YYYY HH:mm")],
@@ -31,7 +37,6 @@ const exportHoaDonPDF = (donHang, hoaDon, chiTietDonHang, KhuyenMaiList, tongTie
     margin: [0, 10, 0, 10],
   });
 
-  // 🛒 Danh sách sản phẩm
   // 🛒 Danh sách sản phẩm
   const productColumns = ["Tên sản phẩm", "Số lượng", "Đơn giá", "Thành tiền"];
 
