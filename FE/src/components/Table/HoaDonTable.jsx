@@ -43,25 +43,30 @@ const HoaDonTable = ({
   };
 
   const getData = async (hoaDon) => {
-    console.log(errors);
-    setDonHang(
-      await fetchDataById(
-        "http://localhost:8080/api/donhang",
-        hoaDon.maDonHang,
-        setErrors
-      )
-    );
-    setChiTietDonHang(
-      await fetchDataById(
-        "http://localhost:8080/api/chitietdonhang/donhang",
-        hoaDon.maDonHang,
-        setErrors
-      )
-    );
-    console.log(hoaDon);
-    console.log(donHang);
-    console.log(chiTietDonHang);
-  };
+    try {
+        console.log("Đang lấy dữ liệu...");
+        const donHangData = await fetchDataById(
+            "http://localhost:8080/api/donhang/ignoreTrangThai",
+            hoaDon.maDonHang,
+            setErrors
+        );
+        const chiTietData = await fetchDataById(
+            "http://localhost:8080/api/chitietdonhang/donhang",
+            hoaDon.maDonHang,
+            setErrors
+        );
+
+        setDonHang(donHangData);
+        setChiTietDonHang(chiTietData);
+
+        console.log("Dữ liệu đã cập nhật!");
+        console.log("Hoa Don:", hoaDon);
+        console.log("Don Hang:", donHangData);
+        console.log("Chi Tiet Don Hang:", chiTietData);
+    } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu:", error);
+    }
+};
 
   return (
     <TableContainer
@@ -117,7 +122,7 @@ const HoaDonTable = ({
                   {quyen?.fix && (
                     <IconButton
                       color="primary"
-                      onClick={() => onEdit(hoaDon)} // Chỉnh sửa hóa đơn
+                      onClick={() => onEdit(hoaDon)}
                     >
                       <CreateIcon />
                     </IconButton>
@@ -125,7 +130,7 @@ const HoaDonTable = ({
                   {quyen?.delete && (
                     <IconButton
                       color="secondary"
-                      onClick={() => onDelete(hoaDon.maHoaDon)} // Xóa hóa đơn
+                      onClick={() => onDelete(hoaDon.maHoaDon)}
                     >
                       <DeleteOutlineIcon />
                     </IconButton>
@@ -146,7 +151,7 @@ const HoaDonTable = ({
                           );
                         }
                       );
-                    }} // Xóa hóa đơn
+                    }}
                   >
                     <PictureAsPdfIcon />
                   </IconButton>
