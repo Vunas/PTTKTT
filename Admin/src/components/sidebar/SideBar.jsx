@@ -47,7 +47,7 @@ import {
   ExpandMoreRounded,
   Logout, // Icon đánh dấu mục cha khi thu nhỏ
 } from "@mui/icons-material";
-import Error from "../utils/state/Error";
+import Error from "../../utils/state/Error";
 import { Button } from "@mui/material";
 
 const Sidebar = ({ danhSachQuyen }) => {

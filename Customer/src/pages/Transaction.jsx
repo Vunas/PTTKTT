@@ -41,25 +41,28 @@ const Transaction = () => {
     e.preventDefault();
 
     const newKhachHang = {
-      hoTen: form.hoTen,
-      gioiTinh: form.gioiTinh,
-      soDienThoai: form.soDienThoai,
-      email: userInfo.email,
-      diaChi: form.diaChi,
+      hoTen: form.hoTen || "",
+      gioiTinh: form.gioiTinh || "",
+      soDienThoai: form.soDienThoai || "",
+      email: userInfo.email || "",
+      diaChi: form.diaChi || "",
       trangThai: 1,
       ngayTao: new Date().toISOString().split("T")[0]
     };
 
     try {
+      console.log(newKhachHang)
       // 1. Kiểm tra hoặc tạo khách hàng
       const checkRes = await fetch(
-        `http://localhost:8080/api/khachhang/find?email=${form.email}&soDienThoai=${form.soDienThoai}`
+        `http://localhost:8080/api/khachhang/find?email=${userInfo.email}&soDienThoai=${""}`
       );
 
       let khachHangData = null;
+      console.log(newKhachHang)
 
       if (checkRes.ok) {
         khachHangData = await checkRes.json();
+        console.log(checkRes)
       } else {
         const resKhachHang = await fetch("http://localhost:8080/api/khachhang", {
           method: "POST",
@@ -68,7 +71,7 @@ const Transaction = () => {
         });
 
         if (!resKhachHang.ok) throw new Error("Không thể tạo khách hàng");
-
+        if (resKhachHang.ok) {console.log(resKhachHang)}
         khachHangData = await resKhachHang.json();
         localStorage.setItem("khachHang", JSON.stringify(khachHangData));
       }
@@ -215,23 +218,6 @@ const Transaction = () => {
             className="border border-gray-300 rounded-md p-2"
             required
           />
-        </div>
-
-
-        {/* Chọn phương thức thanh toán */}
-        <div className="flex flex-col md:col-span-2">
-          <label htmlFor="paymentMethod" className="font-medium text-sm mb-1">Phương thức thanh toán</label>
-          <select
-            id="paymentMethod"
-            name="paymentMethod"
-            value={form.paymentMethod}
-            onChange={handleChange}
-            className="border border-gray-300 rounded-md p-2"
-          >
-            <option value="Tiền mặt">Thanh toán khi nhận hàng</option>
-            <option value="Thẻ ngân hàng">Thanh toán thẻ ngân hàng</option>
-            <option value="Ví điện tử">Thanh toán ví điện tử</option>
-          </select>
         </div>
 
 

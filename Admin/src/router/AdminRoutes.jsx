@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import Sidebar from "../components/SideBar"; // Import Sidebar từ components
+import Sidebar from "../components/sidebar/SideBar"; // Import Sidebar từ components
 import Dashboard from "../pages/admin/Dashboard";
 import NhanVien from "../pages/admin/NhanVien";
 import KhachHang from "../pages/admin/KhachHang";
@@ -17,12 +17,8 @@ import ThongKe from "../pages/admin/ThongKe";
 import PhieuCheBien from "../pages/admin/CheBien";
 import XuatKho from "../pages/admin/XuatKho";
 import NhapKho from "../pages/admin/NhapKho";
-import Snackbar from "@mui/material/Snackbar"; // Snackbar thông báo
-import Alert from "@mui/material/Alert"; // Alert thông báo
 
-const AdminRoutes = ({ danhSachQuyen, snackBarLogin, setSnackbarLogin }) => {
-  const handleSnackbarClose = () => setSnackbarLogin({ ...snackBarLogin, open: false });
-
+const AdminRoutes = ({ danhSachQuyen }) => {
   return (
     <div className="flex">
       {/* Sidebar */}
@@ -33,67 +29,94 @@ const AdminRoutes = ({ danhSachQuyen, snackBarLogin, setSnackbarLogin }) => {
         <Routes>
           <Route path="dashboard" element={<Dashboard />} />
           {danhSachQuyen?.CheBien?.access && (
-            <Route path="chebien" element={<PhieuCheBien quyen={danhSachQuyen?.CheBien}/>} />
+            <Route
+              path="chebien"
+              element={<PhieuCheBien quyen={danhSachQuyen?.CheBien} />}
+            />
           )}
           {danhSachQuyen?.NhapKho?.access && (
-            <Route path="nhapkho" element={<NhapKho quyen={danhSachQuyen?.NhapKho} />} />
+            <Route
+              path="nhapkho"
+              element={<NhapKho quyen={danhSachQuyen?.NhapKho} />}
+            />
           )}
           {danhSachQuyen?.XuatKho?.access && (
-            <Route path="xuatkho" element={<XuatKho quyen={danhSachQuyen?.XuatKho}/>} />
+            <Route
+              path="xuatkho"
+              element={<XuatKho quyen={danhSachQuyen?.XuatKho} />}
+            />
           )}
           {danhSachQuyen?.KhuyenMai?.access && (
-            <Route path="khuyenmai" element={<KhuyenMai quyen={danhSachQuyen?.KhuyenMai} />} />
+            <Route
+              path="khuyenmai"
+              element={<KhuyenMai quyen={danhSachQuyen?.KhuyenMai} />}
+            />
           )}
           {danhSachQuyen?.DonHang?.access && (
-            <Route path="donhang" element={<DonHang quyen={danhSachQuyen?.DonHang} />} />
+            <Route
+              path="donhang"
+              element={<DonHang quyen={danhSachQuyen?.DonHang} />}
+            />
           )}
           {danhSachQuyen?.HoaDon?.access && (
-            <Route path="hoadon" element={<HoaDon quyen={danhSachQuyen?.HoaDon} />} />
+            <Route
+              path="hoadon"
+              element={<HoaDon quyen={danhSachQuyen?.HoaDon} />}
+            />
           )}
           {danhSachQuyen?.KhoHang?.access && (
-            <Route path="khohang" element={<KhoHang quyen={danhSachQuyen?.KhoHang} />} />
+            <Route
+              path="khohang"
+              element={<KhoHang quyen={danhSachQuyen?.KhoHang} />}
+            />
           )}
           {danhSachQuyen?.NhaCungCap?.access && (
-            <Route path="nhacungcap" element={<NhaCungCap quyen={danhSachQuyen?.NhaCungCap} />} />
+            <Route
+              path="nhacungcap"
+              element={<NhaCungCap quyen={danhSachQuyen?.NhaCungCap} />}
+            />
           )}
           {danhSachQuyen?.SanPham?.access && (
-            <Route path="sanpham" element={<SanPham quyen={danhSachQuyen?.SanPham}/>} />
+            <Route
+              path="sanpham"
+              element={<SanPham quyen={danhSachQuyen?.SanPham} />}
+            />
           )}
           {danhSachQuyen?.NguyenLieu?.access && (
-            <Route path="nguyenlieu" element={<NguyenLieu quyen={danhSachQuyen?.NguyenLieu} />} />
+            <Route
+              path="nguyenlieu"
+              element={<NguyenLieu quyen={danhSachQuyen?.NguyenLieu} />}
+            />
           )}
           {danhSachQuyen?.NhanVien?.access && (
-            <Route path="nhanvien" element={<NhanVien quyen={danhSachQuyen?.NhanVien} />} />
+            <Route
+              path="nhanvien"
+              element={<NhanVien quyen={danhSachQuyen?.NhanVien} />}
+            />
           )}
           {danhSachQuyen?.KhachHang?.access && (
-            <Route path="khachhang" element={<KhachHang quyen={danhSachQuyen?.KhachHang}/>} />
+            <Route
+              path="khachhang"
+              element={<KhachHang quyen={danhSachQuyen?.KhachHang} />}
+            />
           )}
           {danhSachQuyen?.TaiKhoan?.access && (
-            <Route path="taikhoan" element={<TaiKhoan quyen={danhSachQuyen?.TaiKhoan}/>} />
+            <Route
+              path="taikhoan"
+              element={<TaiKhoan quyen={danhSachQuyen?.TaiKhoan} />}
+            />
           )}
           {danhSachQuyen?.PhanQuyen?.access && (
-            <Route path="phanquyen" element={<PhanQuyen quyen={danhSachQuyen?.PhanQuyen} />} />
+            <Route
+              path="phanquyen"
+              element={<PhanQuyen quyen={danhSachQuyen?.PhanQuyen} />}
+            />
           )}
           {danhSachQuyen?.ThongKe?.access && (
             <Route path="thongke" element={<ThongKe />} />
           )}
         </Routes>
       </div>
-
-      <Snackbar
-        open={snackBarLogin.open}
-        autoHideDuration={3000}
-        onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-      >
-        <Alert
-          onClose={handleSnackbarClose}
-          severity={snackBarLogin.type}
-          variant="filled"
-        >
-          {snackBarLogin.message}
-        </Alert>
-      </Snackbar>
     </div>
   );
 };
