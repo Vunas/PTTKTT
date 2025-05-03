@@ -1,12 +1,24 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import SideBarQLK from "../components/sidebar/SideBarQLK";
 import KhoHang from "../pages/admin/KhoHang";
 import NhaCungCap from "../pages/admin/NhaCungCap";
 import NhapKho from "../pages/admin/NhapKho";
 import XuatKho from "../pages/admin/XuatKho";
+import LoginAdmin from "../pages/Login";
 
-const WarehouseRoutes = ({ danhSachQuyen }) => {
+const WarehouseRoutes = ({ danhSachQuyen, isLoggedIn }) => {
+  if (!isLoggedIn)
+    return (
+      <Routes>
+        <Route
+          path="*"
+          element={
+            isLoggedIn ? <Navigate to="/warehouse" replace /> : <LoginAdmin />
+          }
+        />
+      </Routes>
+    );
   return (
     <div className="flex">
       {/* Sidebar */}

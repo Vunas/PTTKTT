@@ -1,13 +1,29 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import SideBarQLK from "../components/sidebar/SideBarQLK";
 import NguyenLieu from "../pages/admin/NguyenLieu";
 import SanPham from "../pages/admin/SanPham";
 import CheBien from "../pages/admin/CheBien";
 import SideBarSanPham from "../components/sidebar/SideBarSanPham";
 import PhieuCheBien from "../pages/admin/CheBien";
+import LoginAdmin from "../pages/Login";
 
-const ProductRoutes = ({ danhSachQuyen }) => {
+const ProductRoutes = ({ danhSachQuyen, isLoggedIn }) => {
+  if (!isLoggedIn)
+    return (
+      <Routes>
+        <Route
+          path="*"
+          element={
+            isLoggedIn ? (
+              <Navigate to="/product" replace />
+            ) : (
+              <LoginAdmin />
+            )
+          }
+        />
+      </Routes>
+    );
   return (
     <div className="flex">
       {/* Sidebar */}

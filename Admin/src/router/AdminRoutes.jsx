@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Sidebar from "../components/sidebar/SideBar"; // Import Sidebar từ components
 import Dashboard from "../pages/admin/Dashboard";
 import NhanVien from "../pages/admin/NhanVien";
@@ -17,8 +17,24 @@ import ThongKe from "../pages/admin/ThongKe";
 import PhieuCheBien from "../pages/admin/CheBien";
 import XuatKho from "../pages/admin/XuatKho";
 import NhapKho from "../pages/admin/NhapKho";
+import LoginAdmin from "../pages/Login";
 
-const AdminRoutes = ({ danhSachQuyen }) => {
+const AdminRoutes = ({ danhSachQuyen, isLoggedIn }) => {
+  if (!isLoggedIn)
+    return (
+      <Routes>
+        <Route
+          path="*"
+          element={
+            isLoggedIn ? (
+              <Navigate to="/admin/dashboard" replace />
+            ) : (
+              <LoginAdmin />
+            )
+          }
+        />
+      </Routes>
+    );
   return (
     <div className="flex">
       {/* Sidebar */}

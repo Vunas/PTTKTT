@@ -67,7 +67,7 @@ const App = () => {
   }, []);
 
   if (loading) {
-    return <Loading/>
+    return <Loading />;
   }
 
   return (
@@ -76,53 +76,35 @@ const App = () => {
         <Routes>
           <Route
             path="/login-admin"
-            element={
-              isLoggedIn ? (
-                <Navigate to="/admin/dashboard" replace />
-              ) : (
-                <LoginAdmin />
-              )
-            }
+            element={isLoggedIn ? <Navigate to="" replace /> : <LoginAdmin />}
           />
           <Route
             path="/admin/*"
-            element={
-              isLoggedIn ? (
-                <AdminRoutes danhSachQuyen={danhSachQuyen} />
-              ) : (
-                <Navigate to="/login-admin" replace />
-              )
-            }
+            element=<AdminRoutes
+              danhSachQuyen={danhSachQuyen}
+              isLoggedIn={isLoggedIn}
+            />
           />
           <Route
             path="/warehouse/*"
-            element={
-              isLoggedIn ? (
-                <WarehouseRoutes danhSachQuyen={danhSachQuyen} />
-              ) : (
-                <Navigate to="/login-admin" replace />
-              )
-            }
+            element=<WarehouseRoutes
+              danhSachQuyen={danhSachQuyen}
+              isLoggedIn={isLoggedIn}
+            />
           />
           <Route
             path="/product/*"
-            element={
-              isLoggedIn ? (
-                <ProductRoutes danhSachQuyen={danhSachQuyen} />
-              ) : (
-                <Navigate to="/login-admin" replace />
-              )
-            }
+            element=<ProductRoutes
+              danhSachQuyen={danhSachQuyen}
+              isLoggedIn={isLoggedIn}
+            />
           />
           <Route
             path="/sale/*"
-            element={
-              isLoggedIn ? (
-                <SaleRoutes danhSachQuyen={danhSachQuyen} />
-              ) : (
-                <Navigate to="/login-admin" replace />
-              )
-            }
+            element=<SaleRoutes
+              danhSachQuyen={danhSachQuyen}
+              isLoggedIn={isLoggedIn}
+            />
           />
           <Route path="*" element={<Page404 />} />
         </Routes>
