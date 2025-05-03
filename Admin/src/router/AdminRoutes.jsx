@@ -43,6 +43,10 @@ const AdminRoutes = ({ danhSachQuyen, isLoggedIn }) => {
       {/* Nội dung chính */}
       <div className="flex-1 p-4">
         <Routes>
+          <Route
+            path="*"
+            element={<Navigate to="/admin/dashboard" replace />}
+          />
           <Route path="dashboard" element={<Dashboard />} />
           {danhSachQuyen?.CheBien?.access && (
             <Route
