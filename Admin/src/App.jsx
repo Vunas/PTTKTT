@@ -106,7 +106,7 @@ const App = () => {
               isLoggedIn={isLoggedIn}
             />
           />
-          <Route path="*" element={<Page404 />} />
+          <Route path="*" element={<Page404 href={"/admin"} />} />
         </Routes>
       </Router>
       <Snackbar

@@ -1,7 +1,7 @@
 import React from "react";
 import notFoundGif from "../../assets/gif/notfound.gif";
 
-const Page404 = () => {
+const Page404 = ({href}) => {
   return (
     <div
       className="flex flex-col items-center justify-center min-h-screen font-arvo"
@@ -22,7 +22,7 @@ const Page404 = () => {
           The page you're looking for can't be found.
         </p>
         <a
-          href="http://localhost:5173"
+          href= {href || "http://localhost:5173"} 
           className="mt-6 inline-block px-6 py-3 bg-pink-100 text-pink-800 rounded-lg hover:bg-pink-200 transition-transform transform hover:scale-105 shadow-lg"
         >
           Go Home
