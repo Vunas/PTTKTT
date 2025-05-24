@@ -1,5 +1,4 @@
 # PTTKTT
-# PTTKTT
 # 🍔 FastFood Store Management System
 
 A web-based management system for fast food stores built with **Spring Boot** (backend) and **ReactJS** (frontend). This project helps manage ingredients, products, orders, inventory, employees, customers and accounts efficiently.
@@ -75,8 +74,6 @@ This project uses **MySQL** or **XAMPP** for database management.
 - [x] ReactJS customer interface
 - [ ] Authentication & Authorization
 - [ ] Testing and deployment
-
-## 📸 Screenshots 
 
 
 ---
